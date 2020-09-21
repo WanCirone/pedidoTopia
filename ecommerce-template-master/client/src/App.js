@@ -1,7 +1,7 @@
 import React from 'react';
 import './App.css';
 import styles from "./App.css";
-import {BrowseRouter as Router, Route, Switch} from "react-router.dom"
+import { BrowserRouter as Router, Route , Switch} from 'react-router-dom'
 import Button from "@material-ui/core/Button";
 import Footer from "./Footer/Footer.js";
 import Add_Product from "./AddProduct/Add_Product.js"

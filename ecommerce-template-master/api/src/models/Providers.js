@@ -4,9 +4,17 @@ const { DataTypes } = require("sequelize");
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define("provider", {
-    Id: {
-      type: DataTypes.STRING,
-      allowNull: false
+    IdML: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true,
+      primaryKey: true
+    },
+    IdSH: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      unique: true,
+      primaryKey: true
     },
     Name: {
       type: DataTypes.STRING,

@@ -4,13 +4,13 @@ const { DataTypes } = require("sequelize");
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define("provider", {
-    id_ML: {
+    meli_Id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
       primaryKey: true
     },
-    id_SH: {
+    shopify_Id: {
       type: DataTypes.INTEGER,
       allowNull: false,
       unique: true,
@@ -24,7 +24,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       allowNull: false
     },
-    api_URL: { 
+    api_Url: { 
       type: DataTypes.STRING,
       allowNull: false
     },

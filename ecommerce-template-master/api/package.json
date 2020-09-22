@@ -22,6 +22,7 @@
     "express": "^4.17.1",
     "ioredis": "^4.17.3",
     "jsonwebtoken": "^8.5.1",
+    "mercadolibre": "0.0.13",
     "morgan": "^1.10.0",
     "ngrok": "^3.3.0",
     "pg": "^8.3.0",

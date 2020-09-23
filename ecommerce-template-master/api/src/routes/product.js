@@ -119,7 +119,46 @@ server.get("/", (req, res) => {
     })
       .then((res) => res.json())
       .then((jsonToken) => console.log(jsonToken));
-    // esse jsonToken es el objetito que contiene con el token
+    // ese jsonToken es el objetito que contiene con el token
   }
   res.send(req.query.code);
 });
+
+//Borrar un producto
+server.delete('/:id', (req, res) => {
+	const { id } = req.params;
+	var idML = "";
+	
+	Product.findOne({ where: { id: req.params.id }})
+		.then((product) => {
+			if (!product) return ('Id no válido')
+			// console.log('product encontrado: '+ JSON.stringify(product))
+			idML = product.idML
+			product.destroy().then(() => {
+				// console.log('producto borrado db: '+ JSON.stringify(product))
+			})
+			fetch(`https://api.mercadolibre.com/items/${idML}?access_token=${token}`, {
+				method: 'PUT',
+				header: {
+				  "Content-Type": "application/json", "Accept": "application/json" },
+				body: JSON.stringify({"status": "closed"}),
+			})
+			.then(res => res.json())
+		})
+	  .catch(error => {
+      console.error('Error:', error);
+      res.status(500).send(error)
+    })
+
+    fetch(`https://${SHOPIFY_API_KEY}:${SHOPIFY_API_PASSWORD}@${APP_DOMAIN}/admin/api/2020-07/`+ `/products/${req.params.id}.json`, {
+      method: "DELETE",
+    })
+    .then(res => res.json())
+    .then((res) => res.send("OK"))
+    .catch((error) => {
+      res.status(500).send(error);
+    })
+})
+
+
+

@@ -63,7 +63,9 @@ export default function Table_Products() {
 
   const classes = useStyles();
   return (
+
     <div style={{ width: "850px", marginRight: "auto", marginLeft: "auto" }}>
+    
       <TableContainer component={Paper}>
         <Table className={classes.table} aria-label="customized table">
           <TableHead>
@@ -73,9 +75,11 @@ export default function Table_Products() {
               <StyledTableCell align="left">Producto&nbsp;</StyledTableCell>
               <StyledTableCell align="center">Proveedor&nbsp;</StyledTableCell>
               <StyledTableCell align="right">Stock</StyledTableCell>
-              <StyledTableCell align="right">Tipo&nbsp;</StyledTableCell>
+              <StyledTableCell align="right">Sku&nbsp;</StyledTableCell>
+              <StyledTableCell align="right">Descripcion&nbsp;</StyledTableCell>
               <StyledTableCell align="right">Precio</StyledTableCell>
-              <StyledTableCell align="right">Editar</StyledTableCell>
+              <StyledTableCell align="right">Publicar</StyledTableCell>
+              
             </TableRow>
           </TableHead>
           <TableBody>
@@ -117,10 +121,8 @@ export default function Table_Products() {
                     {product.variants.length > 0 && product.variants[0].price}
                   </StyledTableCell>
                   <StyledTableCell align="right">
-                    <Button href={`/edit/${product.id}`}>
-                      <i>
-                        <EditIcon />
-                      </i>
+                    <Button href={`/edit/${product.id}`} color = "primary">
+                     Publicar
                     </Button>
                   </StyledTableCell>
                 </StyledTableRow>

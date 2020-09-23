@@ -9,10 +9,10 @@ let {
   SHOPIFY_API_KEY,
   SHOPIFY_API_PASSWORD,
   APP_DOMAIN,
-  USER_ID_MELI_test,
   client_id,
   client_secret,
   redirect_uri,
+  USER_ID_MELI_test,
   code_test,
   access_token_test,
 } = process.env;
@@ -27,7 +27,7 @@ const mercadolibre = new meli.Meli(
 );
 
 const getUrlCode = mercadolibre.getAuthURL(redirect_uri);
-console.log(getUrlCode);
+// console.log(getUrlCode);
 
 const meliAuthorize = mercadolibre.authorize(
   code_test,
@@ -92,44 +92,6 @@ server.get("/", async (req, res, next) => {
 });
 
 module.exports = server;
-
-server.use("/auth", async (req, res, next) => {
-  const testUrlMeliProduct = `https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=${client_id}&redirect_uri=${redirect_uri}`;
-
-  let optionsMeliProduct = {
-    method: "GET",
-    uri: testUrlMeliProduct,
-    json: true,
-  };
-  console.log(testUrlMeliProduct);
-
-  let producto = await request(optionsMeliProduct);
-
-  res.send(producto);
-});
-
-// server.get("/", (req, res) => {
-//   const code = req.query.code;
-
-//   if (code) {
-//     const body = {
-//       grant_type: "authorization_code",
-//       client_id: "2319781659457528",
-//       client_secret: "h0B0WpaJevSc0RZoGxbzpXRTSGNQ6336",
-//       code: code,
-//       redirect_uri: "http://localhost:3000",
-//     };
-//     fetch("https://api.mercadolibre.com/oauth/token", {
-//       method: "post",
-//       body: JSON.stringify(body),
-//       headers: { "Content-Type": "application/json" },
-//     })
-//       .then((res) => res.json())
-//       .then((jsonToken) => console.log(jsonToken));
-//     // ese jsonToken es el objetito que contiene con el token
-//   }
-//   res.send(req.query.code);
-// });
 
 //Borrar un producto
 server.delete("/:id", (req, res) => {

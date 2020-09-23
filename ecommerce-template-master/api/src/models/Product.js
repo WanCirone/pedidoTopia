@@ -12,18 +12,6 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       // allowNull: false,
     },
-    price: {
-      type: DataTypes.FLOAT,
-      // allowNull: false,
-    },
-    meli_Id: {
-      type: DataTypes.STRING,
-      // allowNull: false,
-    },
-    shopify_Id: {
-      type: DataTypes.STRING,
-      // allowNull: false,
-    },
     proveedor: {
       type: DataTypes.STRING,
       // allowNull: false,

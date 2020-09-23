@@ -129,59 +129,6 @@ export default function Table_Products() {
               <p>No hay datos para mostrar</p>
             )}
           </TableBody>
-
-          <TableBody>
-            {productsML ? (
-              productsML.map((product) => (
-                // console.log(product)&&
-                <StyledTableRow key={product.id}>
-                  <StyledTableCell align="left">
-                    <Button href={`/answer/${product.id}`}>
-                      <i>
-                        <DeleteOutlineIcon />
-                      </i>
-                    </Button>
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    <span>
-                      <img
-                        // src={product.image && product.image.src}
-                        height="100px"
-                        width="100px"
-                        alt=""
-                      />
-                    </span>
-                  </StyledTableCell>
-                  <StyledTableCell align="left">
-                    {/* {product.title} */}
-                  </StyledTableCell>
-                  <StyledTableCell align="center">
-                    {/* {product.vendor} */}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    {/* {product.variants[0] &&
-                      product.variants[0].inventory_quantity} */}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    {/* {product.product_type} */}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    {/* {product.variants.length > 0 && product.variants[0].price} */}
-                  </StyledTableCell>
-                  <StyledTableCell align="right">
-                    <Button href={`/edit/${product.id}`}>
-                      <i>
-                        <EditIcon />
-                      </i>
-                    </Button>
-                  </StyledTableCell>
-                </StyledTableRow>
-              ))
-            ) : (
-              <p>No hay datos para mostrar</p>
-            )}
-          </TableBody>
-
           </Table>
       </TableContainer>
       <div style={{ paddingLeft: "auto" }}>

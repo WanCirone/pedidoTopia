@@ -108,28 +108,28 @@ server.use("/auth", async (req, res, next) => {
   res.send(producto);
 });
 
-server.get("/", (req, res) => {
-  const code = req.query.code;
+// server.get("/", (req, res) => {
+//   const code = req.query.code;
 
-  if (code) {
-    const body = {
-      grant_type: "authorization_code",
-      client_id: "2319781659457528",
-      client_secret: "h0B0WpaJevSc0RZoGxbzpXRTSGNQ6336",
-      code: code,
-      redirect_uri: "http://localhost:3000",
-    };
-    fetch("https://api.mercadolibre.com/oauth/token", {
-      method: "post",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((jsonToken) => console.log(jsonToken));
-    // ese jsonToken es el objetito que contiene con el token
-  }
-  res.send(req.query.code);
-});
+//   if (code) {
+//     const body = {
+//       grant_type: "authorization_code",
+//       client_id: "2319781659457528",
+//       client_secret: "h0B0WpaJevSc0RZoGxbzpXRTSGNQ6336",
+//       code: code,
+//       redirect_uri: "http://localhost:3000",
+//     };
+//     fetch("https://api.mercadolibre.com/oauth/token", {
+//       method: "post",
+//       body: JSON.stringify(body),
+//       headers: { "Content-Type": "application/json" },
+//     })
+//       .then((res) => res.json())
+//       .then((jsonToken) => console.log(jsonToken));
+//     // ese jsonToken es el objetito que contiene con el token
+//   }
+//   res.send(req.query.code);
+// });
 
 //Borrar un producto
 server.delete("/:id", (req, res) => {

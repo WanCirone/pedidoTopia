@@ -9,41 +9,38 @@ let {
   SHOPIFY_API_KEY,
   SHOPIFY_API_PASSWORD,
   APP_DOMAIN,
+  USER_ID_MELI,
   client_id,
   client_secret,
   redirect_uri,
-  USER_ID_MELI_test,
-  code_test,
-  access_token_test,
+  code,
+  access_token,
+  refresh_token,
 } = process.env;
 
-var refresh_token_test = "TG-5f6abc66c4cd230006feb4da-649319078";
+//var refresh_token = "";
 
 const mercadolibre = new meli.Meli(
   client_id,
   client_secret,
-  access_token_test,
-  refresh_token_test
+  access_token,
+  refresh_token
 );
 
 const getUrlCode = mercadolibre.getAuthURL(redirect_uri);
 // console.log(getUrlCode);
 
-const meliAuthorize = mercadolibre.authorize(
-  code_test,
-  redirect_uri,
-  (err, res) => {
-    if (res.access_token) {
-      console.log(res);
-      access_token_test = res.access_token;
-      refresh_token_test = res.refresh_token;
-    }
+const meliAuthorize = mercadolibre.authorize(code, redirect_uri, (err, res) => {
+  if (res.access_token) {
+    console.log(res);
+    access_token = res.access_token;
+    refresh_token = res.refresh_token;
   }
-);
+});
 
 const meliRefreshToken = mercadolibre.refreshAccessToken((err, res) => {
-  access_token_test = res.access_token;
-  refresh_token_test = res.refresh_token;
+  access_token = res.access_token;
+  refresh_token = res.refresh_token;
   console.log(res);
 });
 
@@ -63,7 +60,7 @@ server.get("/", async (req, res, next) => {
   const productsShopify = await request(optionsShopify);
 
   //Ruta pra traer los items de un user de MeLi
-  const testUrlMeLI = `https://api.mercadolibre.com/users/${USER_ID_MELI_test}/items/search?access_token=${access_token_test}`;
+  const testUrlMeLI = `https://api.mercadolibre.com/users/${USER_ID_MELI}/items/search?access_token=${access_token}`;
 
   let optionsMeli = {
     method: "GET",
@@ -76,7 +73,7 @@ server.get("/", async (req, res, next) => {
 
   var productMeLi = [];
   for (let i = 0; i < resultado.length; i++) {
-    const testUrlMeliProduct = `https://api.mercadolibre.com/items?ids=${resultado[i]}&access_token=${access_token_test}`;
+    const testUrlMeliProduct = `https://api.mercadolibre.com/items?ids=${resultado[i]}&access_token=${access_token}`;
 
     let optionsMeliProduct = {
       method: "GET",

@@ -1,6 +1,7 @@
 const server = require("express").Router();
 const request = require("request-promise");
-var meli = require("mercadolibre");
+const meli = require("mercadolibre");
+
 //Modelos
 const { Product } = require("../db.js");
 //Shopify y MeLi
@@ -8,36 +9,38 @@ let {
   SHOPIFY_API_KEY,
   SHOPIFY_API_PASSWORD,
   APP_DOMAIN,
-  USER_ID_MELI,
+  USER_ID_MELI_test,
   client_id,
   client_secret,
   redirect_uri,
-  code,
-  access_token,
-  refresh_token,
+  code_test,
+  access_token_test,
 } = process.env;
+
+var refresh_token_test = "TG-5f6abc66c4cd230006feb4da-649319078";
 
 const mercadolibre = new meli.Meli(
   client_id,
   client_secret,
-  access_token,
-  refresh_token
+  access_token_test,
+  refresh_token_test
 );
-const getUrlCode = mercadolibre.getAuthURL(redirect_uri);
-// console.log(getUrlCode);
 
-const meliAuthorize = mercadolibre.authorize(code, redirect_uri, (err, res) => {
+const getUrlCode = mercadolibre.getAuthURL(redirect_uri);
+console.log(getUrlCode)
+
+const meliAuthorize = mercadolibre.authorize(code_test, redirect_uri, (err, res) => {
   if (res.access_token) {
-    console.log(res);
-    access_token = res.access_token;
-    refresh_token = res.refresh_token;
+  console.log(res);
+  access_token_test = res.access_token;
+  refresh_token_test = res.refresh_token;
   }
 });
 
 const meliRefreshToken = mercadolibre.refreshAccessToken((err, res) => {
-  access_token = res.access_token;
-  refresh_token = res.refresh_token;
-  // console.log(res);
+  access_token_test = res.access_token;
+  refresh_token_test = res.refresh_token;
+  console.log(res);
 });
 
 // mercadolibre.get("sites/MLA/categories", function (err, res) {
@@ -56,7 +59,7 @@ server.get("/", async (req, res, next) => {
   const productsShopify = await request(optionsShopify);
 
   //Ruta pra traer los items de un user de MeLi
-  const testUrlMeLI = `https://api.mercadolibre.com/users/${USER_ID_MELI}/items/search?access_token=${access_token}`;
+  const testUrlMeLI = `https://api.mercadolibre.com/users/${USER_ID_MELI_test}/items/search?access_token=${access_token_test}`;
 
   let optionsMeli = {
     method: "GET",
@@ -69,7 +72,8 @@ server.get("/", async (req, res, next) => {
 
   var productMeLi = [];
   for (let i = 0; i < resultado.length; i++) {
-    const testUrlMeliProduct = `https://api.mercadolibre.com/items?ids=${resultado[i]}&access_token=${access_token}`;
+    const testUrlMeliProduct =
+     `https://api.mercadolibre.com/items?ids=${resultado[i]}&access_token=${access_token_test}`;
 
     let optionsMeliProduct = {
       method: "GET",
@@ -101,25 +105,25 @@ server.use("/auth", async (req, res, next) => {
   res.send(producto);
 });
 
-server.get("/", (req, res) => {
-  const code = req.query.code;
+// server.get("/", (req, res) => {
+//   const code = req.query.code;
 
-  if (code) {
-    const body = {
-      grant_type: "authorization_code",
-      client_id: "2319781659457528",
-      client_secret: "h0B0WpaJevSc0RZoGxbzpXRTSGNQ6336",
-      code: code,
-      redirect_uri: "http://localhost:3000",
-    };
-    fetch("https://api.mercadolibre.com/oauth/token", {
-      method: "post",
-      body: JSON.stringify(body),
-      headers: { "Content-Type": "application/json" },
-    })
-      .then((res) => res.json())
-      .then((jsonToken) => console.log(jsonToken));
-    // esse jsonToken es el objetito que contiene con el token
-  }
-  res.send(req.query.code);
-});
+//   if (code) {
+//     const body = {
+//       grant_type: "authorization_code",
+//       client_id: "2319781659457528",
+//       client_secret: "h0B0WpaJevSc0RZoGxbzpXRTSGNQ6336",
+//       code: code,
+//       redirect_uri: "http://localhost:3000",
+//     };
+//     fetch("https://api.mercadolibre.com/oauth/token", {
+//       method: "post",
+//       body: JSON.stringify(body),
+//       headers: { "Content-Type": "application/json" },
+//     })
+//       .then((res) => res.json())
+//       .then((jsonToken) => console.log(jsonToken));
+//     // esse jsonToken es el objetito que contiene con el token
+//   }
+//   res.send(req.query.code);
+// });

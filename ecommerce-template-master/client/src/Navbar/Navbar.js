@@ -21,7 +21,7 @@ import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
 import ListIcon from '@material-ui/icons/List';
 import AddBoxIcon from '@material-ui/icons/AddBox';
-import { MenuList } from '@material-ui/core';
+import { Button, MenuList } from '@material-ui/core';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -43,6 +43,7 @@ const useStyles = makeStyles((theme) => ({
     marginRight: drawerWidth,
   },
   title: {
+   
     flexGrow: 1,
   },
   hide: {
@@ -96,9 +97,13 @@ return(
         })}
       >
         <Toolbar>
+          
           <Typography variant="h6" noWrap className={classes.title}>
+            <Button variant = "h6" noWrap color = "inherit" href = "/"> 
             PedidoTopia
+            </Button>
           </Typography>
+          
           <IconButton
             color="inherit"
             aria-label="open drawer"

@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import axios from 'axios'
+import React from 'react'
+
 import { useHistory } from 'react-router-dom'
 //Material-ui
 import { withStyles, makeStyles } from '@material-ui/core/styles'
@@ -40,28 +40,21 @@ const useStyles = makeStyles({
 
 export default function Table_Products() {
   const history = useHistory()
-  const [products, setProducts] = useState()
-  const [productsML, setProductsML] = useState()
-
-  useEffect(() => {
-    if (!products) {
-      axios.get('http://localhost:3000/shopify/products').then((res) => {
-        console.log(res.data)
-        setProducts(res.data)
-      })
-    }
-    if (!productsML) {
-      axios
-        .get(
-          'https://api.mercadolibre.com/users/640321140/items/search?access_token=APP_USR-2326379537505729-091523-3d68bd458b59e01de43ea162cfa1b3fd-640321140'
-        )
-        .then((res) => {
-          console.log(res.data)
-          setProducts(res.data)
-        })
-    }
-  }, [setProductsML])
-
+  const products = [
+    {
+      id: 1,
+      image: {
+        src:
+          'https://www.venex.com.ar/products_images/1599498841_notebooklenovothinkpade14corei510210u8gbssd256gb14.jpg',
+      },
+      title: 'NOTEBOOK LENOVO THINKPAD E14 CORE I5',
+      stock: 20,
+      price: 109000,
+      sku: '111TY777UI89',
+      description:
+        'La ThinkPad E14 se ha sometido a pruebas de especificaciones militares para soportar los entornos de trabajo más extremos y adversos, por lo que no te dejará tirado. No solo puede funcionar en cualquier lugar, desde lugares de frío extenso hasta zonas con un calor sofocante, sino también puede soportar golpes, caídas e incluso derrames accidentales.',
+    },
+  ]
   const classes = useStyles()
   return (
     <div
@@ -112,18 +105,16 @@ export default function Table_Products() {
                   <StyledTableCell align='left'>
                     {product.title}
                   </StyledTableCell>
-                  <StyledTableCell align='center'>
-                    {product.vendor}
+                  <StyledTableCell align='center'>Sin subir</StyledTableCell>
+                  <StyledTableCell align='right'>
+                    {product.stock}
+                  </StyledTableCell>
+                  <StyledTableCell align='right'>{product.sku}</StyledTableCell>
+                  <StyledTableCell align='right'>
+                    {product.description.slice(0, 40) + '...'}
                   </StyledTableCell>
                   <StyledTableCell align='right'>
-                    {product.variants[0] &&
-                      product.variants[0].inventory_quantity}
-                  </StyledTableCell>
-                  <StyledTableCell align='right'>
-                    {product.product_type}
-                  </StyledTableCell>
-                  <StyledTableCell align='right'>
-                    {product.variants.length > 0 && product.variants[0].price}
+                    {product.price}
                   </StyledTableCell>
                   <StyledTableCell align='right'>
                     <Button href={`/edit/${product.id}`} color='primary'>

@@ -1,8 +1,7 @@
 import React from 'react'
 import { makeStyles } from '@material-ui/core/styles'
 import CssBaseline from '@material-ui/core/CssBaseline'
-import AppBar from '@material-ui/core/AppBar'
-import Toolbar from '@material-ui/core/Toolbar'
+import { connect } from 'react-redux'
 import Paper from '@material-ui/core/Paper'
 import Stepper from '@material-ui/core/Stepper'
 import Step from '@material-ui/core/Step'
@@ -10,8 +9,9 @@ import StepLabel from '@material-ui/core/StepLabel'
 import Button from '@material-ui/core/Button'
 import Link from '@material-ui/core/Link'
 import Typography from '@material-ui/core/Typography'
-import AddressForm from './AddressForm'
-import PaymentForm from './PaymentForm'
+import FormProductDetail from './FormProductDetail'
+import FormSelectImages from './FormSelectImages'
+import { firstStepProduct } from '../../actions'
 
 function Copyright() {
   return (
@@ -65,23 +65,36 @@ const useStyles = makeStyles((theme) => ({
 
 const steps = ['Product Details', 'Select Images']
 
-function getStepContent(step) {
-  switch (step) {
-    case 0:
-      return <AddressForm />
-    case 1:
-      return <PaymentForm />
-
-    default:
-      throw new Error('Unknown step')
-  }
-}
-
-export default function FormProduct() {
+function FormProduct({ setProductDetails }) {
   const classes = useStyles()
   const [activeStep, setActiveStep] = React.useState(0)
+  const [input, setInput] = React.useState({})
 
+  const handleInputChange = (e) => {
+    setInput({
+      ...input,
+      [e.target.name]: e.target.value,
+    })
+  }
+
+  function getStepContent(step) {
+    switch (step) {
+      case 0:
+        return (
+          <FormProductDetail
+            handleInputChange={handleInputChange}
+            values={input}
+          />
+        )
+      case 1:
+        return <FormSelectImages />
+
+      default:
+        throw new Error('Unknown step')
+    }
+  }
   const handleNext = () => {
+    setProductDetails(input)
     setActiveStep(activeStep + 1)
   }
 
@@ -118,14 +131,26 @@ export default function FormProduct() {
                       Back
                     </Button>
                   )}
-                  <Button
-                    variant='contained'
-                    color='primary'
-                    onClick={handleNext}
-                    className={classes.button}
-                  >
-                    {activeStep === steps.length - 1 ? 'Create' : 'Next'}
-                  </Button>
+                  {activeStep === 0 && (
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleNext}
+                      className={classes.button}
+                    >
+                      Next
+                    </Button>
+                  )}
+                  {activeStep === 1 && (
+                    <Button
+                      variant='contained'
+                      color='primary'
+                      onClick={handleNext}
+                      className={classes.button}
+                    >
+                      Create
+                    </Button>
+                  )}
                 </div>
               </React.Fragment>
             )}
@@ -136,3 +161,11 @@ export default function FormProduct() {
     </React.Fragment>
   )
 }
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setProductDetails: (product) => dispatch(firstStepProduct(product)),
+  }
+}
+
+export default connect(null, mapDispatchToProps)(FormProduct)

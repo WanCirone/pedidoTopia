@@ -28,29 +28,21 @@ const mercadolibre = new meli.Meli(
 );
 
 const getUrlCode = mercadolibre.getAuthURL(redirect_uri);
-console.log(getUrlCode);
+// console.log(getUrlCode);
 
-const meliAuthorize = mercadolibre.authorize(
-  code,
-  redirect_uri,
-  (err, res) => {
-    if (res.access_token) {
-      console.log(res);
-      access_token = res.access_token;
-      refresh_token = res.refresh_token;
-    }
+const meliAuthorize = mercadolibre.authorize(code, redirect_uri, (err, res) => {
+  if (res.access_token) {
+    // console.log(res);
+    access_token = res.access_token;
+    refresh_token = res.refresh_token;
   }
-);
+});
 
 const meliRefreshToken = mercadolibre.refreshAccessToken((err, res) => {
   access_token = res.access_token;
   refresh_token = res.refresh_token;
-  console.log(res);
+  // console.log(res);
 });
-
-// mercadolibre.get("sites/MLA/categories", function (err, res) {
-//   console.log(err, res);
-// });
 
 server.get("/", async (req, res, next) => {
   //Ruta para traer todos los productos de Shopify
@@ -63,21 +55,17 @@ server.get("/", async (req, res, next) => {
   };
   const productsShopify = await request(optionsShopify);
 
-  //Ruta pra traer los items de un user de MeLi
-  const testUrlMeLI = `https://api.mercadolibre.com/users/${USER_ID_MELI}/items/search?access_token=${access_token}`;
+  //Ruta para traer los items de un user de MeLi
+  const rutaMeli = "https://api.mercadolibre.com";
+  const testUrlMeLI = `${rutaMeli}/users/${USER_ID_MELI}/items/search?access_token=${access_token}`;
 
-  let optionsMeli = {
-    method: "GET",
-    uri: testUrlMeLI,
-    json: true,
-  };
-
+  const optionsMeli = { method: "GET", uri: testUrlMeLI, json: true };
   const productsMeLi = await request(optionsMeli);
   const resultado = productsMeLi.results;
 
   var productMeLi = [];
   for (let i = 0; i < resultado.length; i++) {
-    const testUrlMeliProduct = `https://api.mercadolibre.com/items?ids=${resultado[i]}&access_token=${access_token}`;
+    const testUrlMeliProduct = `${rutaMeli}/items?ids=${resultado[i]}&access_token=${access_token}`;
 
     let optionsMeliProduct = {
       method: "GET",
@@ -91,46 +79,6 @@ server.get("/", async (req, res, next) => {
 
   res.json({ productMeLi, productsShopify });
 });
-
-module.exports = server;
-
-server.use("/auth", async (req, res, next) => {
-  const testUrlMeliProduct = `https://auth.mercadolibre.com.ar/authorization?response_type=code&client_id=${client_id}&redirect_uri=${redirect_uri}`;
-
-  let optionsMeliProduct = {
-    method: "GET",
-    uri: testUrlMeliProduct,
-    json: true,
-  };
-  console.log(testUrlMeliProduct);
-
-  let producto = await request(optionsMeliProduct);
-
-  res.send(producto);
-});
-
-// server.get("/", (req, res) => {
-//   const code = req.query.code;
-
-//   if (code) {
-//     const body = {
-//       grant_type: "authorization_code",
-//       client_id: "2319781659457528",
-//       client_secret: "h0B0WpaJevSc0RZoGxbzpXRTSGNQ6336",
-//       code: code,
-//       redirect_uri: "http://localhost:3000",
-//     };
-//     fetch("https://api.mercadolibre.com/oauth/token", {
-//       method: "post",
-//       body: JSON.stringify(body),
-//       headers: { "Content-Type": "application/json" },
-//     })
-//       .then((res) => res.json())
-//       .then((jsonToken) => console.log(jsonToken));
-//     // ese jsonToken es el objetito que contiene con el token
-//   }
-//   res.send(req.query.code);
-// });
 
 //Borrar un producto
 server.delete("/:id", (req, res) => {
@@ -181,36 +129,35 @@ server.post("/", (req, res) => {
     const mercadolibre = new meli.Meli(client_id, client_secret, access_token);
     // var user
     // mercadolibre.get('/users/me', function (err, res) {
-    //     console.log(err, res.site_id) 
+    //     console.log(err, res.site_id)
     //   user = res.site_id
     //   console.log("estes es el user", user)
     // });
     // var predict
     // mercadolibre.get(`/sites/${site_id}/category_predictor/predict?title=${encodeURIComponent(req.body.title)}`, function (err, res) {
-    //   console.log(err, res) 
+    //   console.log(err, res)
     //   predict = res
     // });
-		// console.log("este es el predict", predict)
-		// console.log(req.body)
+    // console.log("este es el predict", predict)
+    // console.log(req.body)
     const body = {
       title: req.body.title,
       category_id: req.body.category_id,
       price: req.body.price,
       currency_id: req.body.currency_id,
       available_quantity: req.body.available_quantity,
-      buying_mode: 'buy_it_now',
+      buying_mode: "buy_it_now",
       listing_type_id: req.body.listing_type_id,
       condition: req.body.condition,
       description: req.body.description,
-      tags: [ 'immediate_payment' ],
+      tags: ["immediate_payment"],
       pictures: [
         {
-          source: `${req.protocol}://${req.get('host')}/pictures/${req.file}`
-				}
-				
-      ]
+          source: `${req.protocol}://${req.get("host")}/pictures/${req.file}`,
+        },
+      ],
     };
-    mercadolibre.post('/items', body, null, (err, response) => {
+    mercadolibre.post("/items", body, null, (err, response) => {
       if (err) {
         throw err;
       } else {
@@ -219,8 +166,10 @@ server.post("/", (req, res) => {
         res.send(response);
       }
     });
-  } catch(err) {
-    console.log('Error', err);
+  } catch (err) {
+    console.log("Error", err);
     res.status(500).send(`Error! ${err}`);
   }
 });
+
+module.exports = server;

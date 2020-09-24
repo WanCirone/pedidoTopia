@@ -32,7 +32,7 @@ const getUrlCode = mercadolibre.getAuthURL(redirect_uri);
 
 const meliAuthorize = mercadolibre.authorize(code, redirect_uri, (err, res) => {
   if (res.access_token) {
-    console.log(res);
+    // console.log(res);
     access_token = res.access_token;
     refresh_token = res.refresh_token;
   }
@@ -41,12 +41,8 @@ const meliAuthorize = mercadolibre.authorize(code, redirect_uri, (err, res) => {
 const meliRefreshToken = mercadolibre.refreshAccessToken((err, res) => {
   access_token = res.access_token;
   refresh_token = res.refresh_token;
-  console.log(res);
+  // console.log(res);
 });
-
-// mercadolibre.get("sites/MLA/categories", function (err, res) {
-//   console.log(err, res);
-// });
 
 server.get("/", async (req, res, next) => {
   //Ruta para traer todos los productos de Shopify
@@ -59,21 +55,17 @@ server.get("/", async (req, res, next) => {
   };
   const productsShopify = await request(optionsShopify);
 
-  //Ruta pra traer los items de un user de MeLi
-  const testUrlMeLI = `https://api.mercadolibre.com/users/${USER_ID_MELI}/items/search?access_token=${access_token}`;
+  //Ruta para traer los items de un user de MeLi
+  const rutaMeli = "https://api.mercadolibre.com";
+  const testUrlMeLI = `${rutaMeli}/users/${USER_ID_MELI}/items/search?access_token=${access_token}`;
 
-  let optionsMeli = {
-    method: "GET",
-    uri: testUrlMeLI,
-    json: true,
-  };
-
+  const optionsMeli = { method: "GET", uri: testUrlMeLI, json: true };
   const productsMeLi = await request(optionsMeli);
   const resultado = productsMeLi.results;
 
   var productMeLi = [];
   for (let i = 0; i < resultado.length; i++) {
-    const testUrlMeliProduct = `https://api.mercadolibre.com/items?ids=${resultado[i]}&access_token=${access_token}`;
+    const testUrlMeliProduct = `${rutaMeli}/items?ids=${resultado[i]}&access_token=${access_token}`;
 
     let optionsMeliProduct = {
       method: "GET",
@@ -87,8 +79,6 @@ server.get("/", async (req, res, next) => {
 
   res.json({ productMeLi, productsShopify });
 });
-
-module.exports = server;
 
 //Borrar un producto
 server.delete("/:id", (req, res) => {
@@ -133,3 +123,5 @@ server.delete("/:id", (req, res) => {
       res.status(500).send(error);
     });
 });
+
+module.exports = server;

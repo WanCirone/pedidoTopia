@@ -16,6 +16,7 @@ server.use(
     credentials: true,
   })
 );
+
 server.use(bodyParser.urlencoded({ extended: true, limit: "50mb" }));
 server.use(bodyParser.json({ limit: "50mb" }));
 server.use(cookieParser());
@@ -35,15 +36,16 @@ server.use((req, res, next) => {
   next();
 });
 
+server.use("/callback", (req, res) => {
+  // res.send(req.body.topic);
+  res.send(req.body);
+  console.log(req.body);
+});
 server.use("/", routes);
 
 // let code;
 server.use("/", (req, res) => {
   res.send(req.query);
-});
-
-server.use("/callback", (req, res) => {
-  res.send("ok");
 });
 
 // Error catching endware.

@@ -6,31 +6,31 @@ module.exports = (sequelize) => {
   sequelize.define("provider", {
     meli_Id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      // allowNull: false,
       unique: true,
-      primaryKey: true
+      // primaryKey: true,
     },
     shopify_Id: {
       type: DataTypes.INTEGER,
-      allowNull: false,
+      // allowNull: false,
       unique: true,
-      primaryKey: true
+      // primaryKey: true,
     },
     name: {
       type: DataTypes.STRING,
-      allowNull: false
+      allowNull: false,
     },
     token: {
       type: DataTypes.STRING,
-      allowNull: false
+      // allowNull: false
     },
-    api_Url: { 
+    api_Url: {
       type: DataTypes.STRING,
-      allowNull: false
+      // allowNull: false
     },
     app_Id: {
       type: DataTypes.STRING,
-      allowNull: false
-    }
+      // allowNull: false
+    },
   });
 };

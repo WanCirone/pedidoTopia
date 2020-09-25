@@ -91,7 +91,7 @@ function Publicar(){
         <Button 
         variant='contained' 
         color='secondary' 
-        href='/table'
+        href='/'
         > Cancelar 
         </Button>
         </div>

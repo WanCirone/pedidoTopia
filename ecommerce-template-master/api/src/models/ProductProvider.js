@@ -18,7 +18,7 @@ module.exports = (sequelize) => {
       defaultValue: null
     },
     productId_Meli: {
-      type: DataTypes.BIGINT,
+      type: DataTypes.STRING,
       defaultValue: null
     },
     link_meli: {

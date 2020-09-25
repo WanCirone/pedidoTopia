@@ -25,6 +25,7 @@
     "mercadolibre": "0.0.13",
     "morgan": "^1.10.0",
     "ngrok": "^3.3.0",
+    "node-fetch": "^2.6.1",
     "pg": "^8.3.0",
     "request-promise": "^4.2.6",
     "sequelize": "^6.3.4"

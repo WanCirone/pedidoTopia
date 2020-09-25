@@ -32,7 +32,7 @@ const getUrlCode = mercadolibre.getAuthURL(redirect_uri);
 
 const meliAuthorize = mercadolibre.authorize(code, redirect_uri, (err, res) => {
   if (res.access_token) {
-    // console.log(res);
+    console.log(res);
     access_token = res.access_token;
     refresh_token = res.refresh_token;
   }

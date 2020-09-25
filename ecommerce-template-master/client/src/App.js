@@ -15,7 +15,7 @@ function App() {
           <Navbar />
         </Route>
         <Switch>
-          <Route path='/table' exact>
+          <Route path='/' exact>
             <Table_Products />
           </Route>
           <Route path='/product' exact>

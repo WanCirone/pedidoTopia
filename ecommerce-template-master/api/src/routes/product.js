@@ -154,7 +154,7 @@ console.log(req.params.id)
 
     var data =  {
       title: prod.dataValues.title,
-      category_id: prod.dataValues.categories[0].id_Meli,
+      category_id: "MLA3530",
       price: prod.providers[0].dataValues.productprovider.precio,
       currency_id:"ARS",
       available_quantity: prod.providers[0].dataValues.productprovider.stock,
@@ -175,7 +175,7 @@ console.log(req.params.id)
       ],
       pictures:[
         {
-          source: null
+          source: "https://d26lpennugtm8s.cloudfront.net/stores/678/525/products/71-9c9d1cf749d0242a5815701896774858-640-0.jpg"
         }
       ],
       attributes:[
@@ -188,19 +188,46 @@ console.log(req.params.id)
           value_name: "M"
          }
       ]
-    }; console.log(data);
+    }; 
+
+    console.log(JSON.stringify(data))
+
     fetch(`https://api.mercadolibre.com/items?access_token=${access_token}`, {
       method: 'POST', 
       body: JSON.stringify(data)})
       .then(res => res.json())
       .then((response)=> {
+        if(response.error) throw new Error('No se publico')
+        else {
         console.log('Se creo el producto: '+ JSON.stringify(response) + ' en MELI')
+        console.log('Se creo el producto: '+ JSON.stringify(response.id) + ' en MELI')
+        console.log('Se creo el link: '+ JSON.stringify(response.permalink) + ' en MELI')
+        console.log('req.params.id: '+ req.params.id)
+
+        Productprovider.findOne({
+          where: {
+            productId: req.params.id
+          }
+        }).then(productToUpadte => {
+          productToUpadte.update({
+            productId_Meli: response.id,
+            link_meli: response.permalink
+          })
+
+          Product.findOne({
+            where: { id: req.params.id },
+            include: [Provider]
+          })
+          .then((producto) => res.send(producto))
+        })
+      }
       })
       .catch(err => res.status(502).json({ 
         error: "No se pudo crear el producto en MELI"
       }))
   })
 })
+
 server.post('/publicar/:id', async (req, res) => {
   const idProd = req.params.id;
   const { source, precio, stock } = req.body;
@@ -263,5 +290,13 @@ async function publicarShopify(producto, precio, stock){
   console.log('post es: '+ JSON.stringify(post))
   return post
 }
+
+server.get('/db', (req, res) => {
+  Product.findAll({
+    include: [Category, Provider],
+}).then((products) => {
+  res.send(products)
+})
+})
 
 module.exports = server;

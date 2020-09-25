@@ -140,7 +140,7 @@ return(
         <MenuList >
           {['Tabla Productos'].map((text, index,) => (
             <ListItem button key={text}>
-                <Link to ="/table"> 
+                <Link to ="/"> 
               <ListItemIcon>{index % 2 === 0 ? <ListIcon /> : <ListIcon />}</ListItemIcon>
               </Link>
               <ListItemText primary={text} />

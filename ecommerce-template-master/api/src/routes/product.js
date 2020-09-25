@@ -1,9 +1,12 @@
+const { crearProducto } = require('./utils');
 const server = require("express").Router();
 const request = require("request-promise");
 const meli = require("mercadolibre");
+const fetch = require('node-fetch')
 
 //Modelos
-const { Product } = require("../db.js");
+const { Product, Category, Orders, Productprovider, Provider } = require("../db.js");
+
 //Shopify y MeLi
 let {
   SHOPIFY_API_KEY,
@@ -19,6 +22,7 @@ let {
 } = process.env;
 
 //var refresh_token = "";
+const testUrl = `https://${SHOPIFY_API_KEY}:${SHOPIFY_API_PASSWORD}@${APP_DOMAIN}/admin/api/2020-07/`;
 
 const mercadolibre = new meli.Meli(
   client_id,
@@ -80,96 +84,184 @@ server.get("/", async (req, res, next) => {
   res.json({ productMeLi, productsShopify });
 });
 
-//Borrar un producto
-server.delete("/:id", (req, res) => {
-  const { id } = req.params;
-  var idML = "";
-
-  Product.findOne({ where: { id: req.params.id } })
-    .then((product) => {
-      if (!product) return "Id no válido";
-      // console.log('product encontrado: '+ JSON.stringify(product))
-      idML = product.idML;
-      product.destroy().then(() => {
-        // console.log('producto borrado db: '+ JSON.stringify(product))
-      });
-      fetch(
-        `https://api.mercadolibre.com/items/${idML}?access_token=${token}`,
-        {
-          method: "PUT",
-          header: {
-            "Content-Type": "application/json",
-            Accept: "application/json",
-          },
-          body: JSON.stringify({ status: "closed" }),
-        }
-      ).then((res) => res.json());
-    })
-    .catch((error) => {
-      console.error("Error:", error);
-      res.status(500).send(error);
-    });
-
-  fetch(
-    `https://${SHOPIFY_API_KEY}:${SHOPIFY_API_PASSWORD}@${APP_DOMAIN}/admin/api/2020-07/` +
-      `/products/${req.params.id}.json`,
-    {
-      method: "DELETE",
-    }
-  )
-    .then((res) => res.json())
-    .then((res) => res.send("OK"))
-    .catch((error) => {
-      res.status(500).send(error);
-    });
-});
-
-server.post("/", (req, res) => {
-  try {
-    const mercadolibre = new meli.Meli(client_id, client_secret, access_token);
-    // var user
-    // mercadolibre.get('/users/me', function (err, res) {
-    //     console.log(err, res.site_id)
-    //   user = res.site_id
-    //   console.log("estes es el user", user)
-    // });
-    // var predict
-    // mercadolibre.get(`/sites/${site_id}/category_predictor/predict?title=${encodeURIComponent(req.body.title)}`, function (err, res) {
-    //   console.log(err, res)
-    //   predict = res
-    // });
-    // console.log("este es el predict", predict)
-    // console.log(req.body)
-    const body = {
+//Cargar un producto en mi BD
+server.post('/bd', (req, res) => {
+  const promiseProducto = Product.findOrCreate({
+    where: {
       title: req.body.title,
-      category_id: req.body.category_id,
-      price: req.body.price,
-      currency_id: req.body.currency_id,
-      available_quantity: req.body.available_quantity,
-      buying_mode: "buy_it_now",
-      listing_type_id: req.body.listing_type_id,
-      condition: req.body.condition,
       description: req.body.description,
-      tags: ["immediate_payment"],
-      pictures: [
-        {
-          source: `${req.protocol}://${req.get("host")}/pictures/${req.file}`,
+      proveedor: req.body.proveedor,
+    },
+  });
+  const promiseCategoria = Category.findOrCreate({
+    where: {
+      title: req.body.category_title,
+      description: req.body.category_description,
+      id_Meli: req.body.category_id_Meli,
+    },
+  });
+  const promiseProvider = Provider.findOrCreate({
+    where: {
+      meli_Id: req.body.meli_Id,
+      name: req.body.name_provider,
+    },
+  });
+
+  Promise.all([promiseProducto, promiseCategoria, promiseProvider])
+    .then((values) => {
+      product = values[0][0];
+      category = values[1][0];
+      provider = values[2][0];
+      productId = values[0][0].dataValues.id;
+      product.addCategories(productId);
+      provider.addProducts(productId, {
+        through: {
+          fecha_creacion: req.body.fecha_creacion,
+          stock: req.body.stock,
+          precio: req.body.precio,
         },
-      ],
-    };
-    mercadolibre.post("/items", body, null, (err, response) => {
-      if (err) {
-        throw err;
-      } else {
-        // console.log('publicado na categoria:', predict.name);
-        // console.log('category probability (0-1):', predict.prediction_probability, predict.variations);
-        res.send(response);
-      }
-    });
-  } catch (err) {
-    console.log("Error", err);
-    res.status(500).send(`Error! ${err}`);
-  }
+      });
+    })
+    .catch((e) => {
+      console.log(e);
+    })
+  .then(prod => { res.status(202).send('Se ha creado producto en la bd') })
+  .catch(err => {
+    console.log('No se ha podido crear el producto' + err)
+    res.sendStatus(400)
+  })
+})
+
+//Crear o encontrar producto en DB
+server.post("/", async (req, res) => {
+  
+  //Crea y devuelve el producto
+  const p = await crearProducto(req)
+
+  res.send(p);
 });
+
+//Publicar un producto en MELI
+server.post("/meli/:id", (req, res) => {
+console.log(req.params.id)
+  Product.findOne({ where: {
+    id: req.params.id },
+    include: 
+      [ Category, Provider ]
+  })
+  .then(prod => {
+    console.log(prod)
+
+    var data =  {
+      title: prod.dataValues.title,
+      category_id: prod.dataValues.categories[0].id_Meli,
+      price: prod.providers[0].dataValues.productprovider.precio,
+      currency_id:"ARS",
+      available_quantity: prod.providers[0].dataValues.productprovider.stock,
+      condition:"new",
+      listing_type_id:"gold_special",
+      description:{
+         plain_text: prod.dataValues.description
+      },
+      sale_terms:[
+         {
+          id:"WARRANTY_TYPE",
+          value_name:""
+         },
+         {
+          id:"WARRANTY_TIME",
+          value_name:"90 días"
+         }
+      ],
+      pictures:[
+        {
+          source: null
+        }
+      ],
+      attributes:[
+        {
+          id:"COLOR",
+          value_name:"Azul"
+         },
+         {
+          id:"SIZE",
+          value_name: "M"
+         }
+      ]
+    }; console.log(data);
+    fetch(`https://api.mercadolibre.com/items?access_token=${access_token}`, {
+      method: 'POST', 
+      body: JSON.stringify(data)})
+      .then(res => res.json())
+      .then((response)=> {
+        console.log('Se creo el producto: '+ JSON.stringify(response) + ' en MELI')
+      })
+      .catch(err => res.status(502).json({ 
+        error: "No se pudo crear el producto en MELI"
+      }))
+  })
+})
+server.post('/publicar/:id', async (req, res) => {
+  const idProd = req.params.id;
+  const { source, precio, stock } = req.body;
+
+  // Busco el producto que quiere publicar el usuario 
+  const productToUpdate = await Product.findOne({
+    where: { id: idProd }
+  })
+
+  // Le envio el Producto a la funcion
+  const prod = await publicarShopify(productToUpdate , precio, stock)
+  
+  const idShopifyNuevo = prod.product.id
+
+  const productModificado = await Productprovider.findOne({
+    where: {
+      productId: idProd
+    }
+  })
+
+  await productModificado.update({
+    productId_Shopify: idShopifyNuevo
+  })
+  
+  Product.findOne({
+    where: { id: idProd },
+    include: [Provider]
+  })
+  .then((producto) => res.send(producto))
+    
+});
+
+async function publicarShopify(producto, precio, stock){
+
+  const productoShopify = {
+    product: {
+        title: producto.title,
+        body_html: "<strong>Good snowboard!</strong>",
+        vendor: producto.proveedor,
+        published_scope: "web",
+        variants: [
+          {
+            inventory_management: "shopify",
+            inventory_quantity: stock,
+            price: precio,
+          },
+        ],
+        images: [],
+      },
+};
+
+  let options = {
+    method: "POST",
+    uri: testUrl + "products.json",
+    body: productoShopify,
+    json: true,
+  }; 
+
+  const post = await request(options);
+  console.log('post es: '+ JSON.stringify(post))
+  return post
+}
 
 module.exports = server;

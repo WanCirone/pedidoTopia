@@ -1,9 +1,10 @@
+const { crearProducto } = require('./utils');
 const server = require("express").Router();
 const request = require("request-promise");
 const meli = require("mercadolibre");
 
 //Modelos
-const { Product } = require("../db.js");
+const { Product, Category, Provider } = require("../db.js");
 //Shopify y MeLi
 let {
   SHOPIFY_API_KEY,
@@ -124,52 +125,74 @@ server.delete("/:id", (req, res) => {
     });
 });
 
-server.post("/", (req, res) => {
-  try {
-    const mercadolibre = new meli.Meli(client_id, client_secret, access_token);
-    // var user
-    // mercadolibre.get('/users/me', function (err, res) {
-    //     console.log(err, res.site_id)
-    //   user = res.site_id
-    //   console.log("estes es el user", user)
-    // });
-    // var predict
-    // mercadolibre.get(`/sites/${site_id}/category_predictor/predict?title=${encodeURIComponent(req.body.title)}`, function (err, res) {
-    //   console.log(err, res)
-    //   predict = res
-    // });
-    // console.log("este es el predict", predict)
-    // console.log(req.body)
-    const body = {
-      title: req.body.title,
-      category_id: req.body.category_id,
-      price: req.body.price,
-      currency_id: req.body.currency_id,
-      available_quantity: req.body.available_quantity,
-      buying_mode: "buy_it_now",
-      listing_type_id: req.body.listing_type_id,
-      condition: req.body.condition,
-      description: req.body.description,
-      tags: ["immediate_payment"],
-      pictures: [
-        {
-          source: `${req.protocol}://${req.get("host")}/pictures/${req.file}`,
-        },
-      ],
-    };
-    mercadolibre.post("/items", body, null, (err, response) => {
-      if (err) {
-        throw err;
-      } else {
-        // console.log('publicado na categoria:', predict.name);
-        // console.log('category probability (0-1):', predict.prediction_probability, predict.variations);
-        res.send(response);
-      }
-    });
-  } catch (err) {
-    console.log("Error", err);
-    res.status(500).send(`Error! ${err}`);
-  }
+server.post("/", async (req, res) => {
+  
+  //Crea y devuelve el producto
+  const p = await crearProducto(req)
+
+  res.send(p);
 });
+
+server.post('/:id', (req, res) => {
+  const PublicarProductoMeli = Product.findOne({
+    where: {
+      id: req.params.id
+    }},
+    {include:
+       [
+         Category, Provider
+        ]})
+        console.log(PublicarProductoMeli)
+
+
+try {
+  // const mercadolibre = new meli.Meli(client_id, client_secret, access_token);
+  // var user
+  // mercadolibre.get('/users/me', function (err, res) {
+  //     console.log(err, res.site_id)
+  //   user = res.site_id
+  //   console.log("estes es el user", user)
+  // });
+  // var predict
+  // mercadolibre.get(`/sites/${site_id}/category_predictor/predict?title=${encodeURIComponent(req.body.title)}`, function (err, res) {
+  //   console.log(err, res)
+  //   predict = res
+  // });
+  // console.log("este es el predict", predict)
+  // console.log(req.body)
+  const body = {
+    title: req.body.title,
+    category_id: req.body.category_id,
+    price: req.body.price,
+    currency_id: req.body.currency_id,
+    available_quantity: req.body.available_quantity,
+    buying_mode: "buy_it_now",
+    listing_type_id: req.body.listing_type_id,
+    condition: req.body.condition,
+    description: req.body.description,
+    tags: ["immediate_payment"],
+    pictures: [
+      {
+        source: `${req.protocol}://${req.get("host")}/pictures/${req.file}`,
+      },
+    ],
+  };
+  mercadolibre.post("/items", body, null, (err, response) => {
+    if (err) {
+      throw err;
+    } else {
+      // console.log('publicado na categoria:', predict.name);
+      // console.log('category probability (0-1):', predict.prediction_probability, predict.variations);
+      res.send(response);
+    }
+  });
+} catch (err) {
+  console.log("Error", err);
+  res.status(500).send(`Error! ${err}`);
+}
+
+
+        res.send(PublicarProductoMeli)
+})
 
 module.exports = server;

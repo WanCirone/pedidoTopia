@@ -1,8 +1,8 @@
-import React from 'react'
-
+import React , {useState}from 'react'
+import styles from "./Publicar.module.css"
 import { useHistory } from 'react-router-dom'
 //Material-ui
-import { withStyles, makeStyles } from '@material-ui/core/styles'
+import { withStyles, makeStyles, StylesProvider } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
 import TableBody from '@material-ui/core/TableBody'
@@ -12,6 +12,14 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
+import Checkbox from '@material-ui/core/Checkbox';
+import FormGroup from '@material-ui/core/FormGroup';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
+import FormControl from '@material-ui/core/FormControl';
+import FormLabel from '@material-ui/core/FormLabel';
+import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded';
+
+import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded';
 //import { Box } from "@material-ui/core";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -34,11 +42,66 @@ const StyledTableRow = withStyles((theme) => ({
 
 const useStyles = makeStyles({
   table: {
-    minWidth: 500,
+    minWidth: 600,
   },
 })
 
+function Publicar(){
+  return(
+  <form className = {styles.form}>
+      <div className={styles.content}>
+        <i className = {styles.icon}><AttachMoneyRoundedIcon/> </i>
+        <div className={styles.inputcontenedor}>
+        <input
+        type = "number"
+        placeholder = "Price"
+        />
+        </div>
+        <i className = {styles.icon}><AccountBalanceRoundedIcon/> </i>
+        <div className={styles.inputcontenedor}>
+        <input
+        type = "number"
+        placeholder = "Stock"
+        />
+        </div>
+        {/* <FormGroup aria-label="position" row marginTop = "20px"> */}
+        <div className = {styles.Checkbox}>
+        <FormControlLabel
+          value="end"
+          control={<Checkbox color="primary" />}
+          label="Mercado Libre"
+          labelPlacement="end"
+        />
+           <FormControlLabel
+          value="end"
+          control={<Checkbox color="secondary" />}
+          label="Shopify"
+          labelPlacement="end"
+          fontFamily = 'Raleway'
+        />
+        </div>
+        {/* </FormGroup> */}
+        <div className = {styles.button}>
+        <Button 
+        variant='contained' 
+        color='primary'
+        > 
+        Publicar 
+        </Button>
+        <Button 
+        variant='contained' 
+        color='secondary' 
+        href='/table'
+        > Cancelar 
+        </Button>
+        </div>
+      </div>
+  </form>
+  )
+};
+
 export default function Table_Products() {
+  const [renderPublicar, setRenderPublicar] = useState(false);
   const history = useHistory()
   const products = [
     {
@@ -59,7 +122,7 @@ export default function Table_Products() {
   return (
     <div
       style={{
-        width: '850px',
+        width: '1050px',
         marginRight: 'auto',
         marginLeft: 'auto',
         marginTop: '80px',
@@ -74,10 +137,10 @@ export default function Table_Products() {
               <StyledTableCell align='left'>Producto&nbsp;</StyledTableCell>
               <StyledTableCell align='center'>Proveedor&nbsp;</StyledTableCell>
               <StyledTableCell align='right'>Stock</StyledTableCell>
-              <StyledTableCell align='right'>Sku&nbsp;</StyledTableCell>
+              <StyledTableCell align='center'>Sku&nbsp;</StyledTableCell>
               <StyledTableCell align='right'>Descripcion&nbsp;</StyledTableCell>
               <StyledTableCell align='right'>Precio</StyledTableCell>
-              <StyledTableCell align='right'>Publicar</StyledTableCell>
+              <StyledTableCell align='right'></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
@@ -117,18 +180,19 @@ export default function Table_Products() {
                     {product.price}
                   </StyledTableCell>
                   <StyledTableCell align='right'>
-                    <Button href={`/edit/${product.id}`} color='primary'>
+                    <Button color = "primary" onClick = { () => setRenderPublicar(true)} >
                       Publicar
                     </Button>
                   </StyledTableCell>
                 </StyledTableRow>
               ))
-            ) : (
-              <p>No hay datos para mostrar</p>
-            )}
+              ) : (
+                <p>No hay datos para mostrar</p>
+                )}
           </TableBody>
         </Table>
       </TableContainer>
+      {renderPublicar && <Publicar />}
       <div style={{ paddingLeft: 'auto' }}>
         <tr>
           <td>

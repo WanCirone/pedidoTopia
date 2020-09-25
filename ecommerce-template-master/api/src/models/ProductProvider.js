@@ -17,5 +17,15 @@ module.exports = (sequelize) => {
       type: DataTypes.BIGINT,
       defaultValue: null
     },
+    productId_Meli: {
+      type: DataTypes.BIGINT,
+      defaultValue: null
+    },
+    link_meli: {
+      type: DataTypes.STRING,
+    },
+    link_shopify: {
+      type: DataTypes.STRING,
+    },
   });
 };

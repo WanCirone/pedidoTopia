@@ -1,3 +1,4 @@
+const { crearProducto } = require('./utils');
 const server = require("express").Router();
 const request = require("request-promise");
 const meli = require("mercadolibre");
@@ -131,6 +132,15 @@ server.post('/bd', (req, res) => {
   })
 })
 
+//Crear o encontrar producto en DB
+server.post("/", async (req, res) => {
+  
+  //Crea y devuelve el producto
+  const p = await crearProducto(req)
+
+  res.send(p);
+});
+
 //Publicar un producto en MELI
 server.post("/meli/:id", (req, res) => {
 console.log(req.params.id)
@@ -191,7 +201,6 @@ console.log(req.params.id)
       }))
   })
 })
-  
 server.post('/publicar/:id', async (req, res) => {
   const idProd = req.params.id;
   const { source, precio, stock } = req.body;
@@ -225,7 +234,6 @@ server.post('/publicar/:id', async (req, res) => {
 });
 
 async function publicarShopify(producto, precio, stock){
-  console.log('entra a pblc shopify: '+ datos)
 
   const productoShopify = {
     product: {

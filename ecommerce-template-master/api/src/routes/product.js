@@ -2,9 +2,11 @@ const { crearProducto } = require('./utils');
 const server = require("express").Router();
 const request = require("request-promise");
 const meli = require("mercadolibre");
+const fetch = require('node-fetch')
 
 //Modelos
-const { Product, Category, Provider } = require("../db.js");
+const { Product, Category, Orders, Productprovider, Provider } = require("../db.js");
+
 //Shopify y MeLi
 let {
   SHOPIFY_API_KEY,
@@ -125,6 +127,7 @@ server.delete("/:id", (req, res) => {
     });
 });
 
+//Crear o encontrar producto en DB
 server.post("/", async (req, res) => {
   
   //Crea y devuelve el producto
@@ -132,5 +135,66 @@ server.post("/", async (req, res) => {
 
   res.send(p);
 });
+
+//Publicar un producto en MELI
+server.post("/meli/:id", (req, res) => {
+console.log(req.params.id)
+  Product.findOne({ where: {
+    id: req.params.id },
+    include: 
+      [ Category, Provider ]
+  })
+  .then(prod => {
+    console.log(prod)
+
+    var data =  {
+      title: prod.dataValues.title,
+      category_id: prod.dataValues.categories[0].id_Meli,
+      price: prod.providers[0].dataValues.productprovider.precio,
+      currency_id:"ARS",
+      available_quantity: prod.providers[0].dataValues.productprovider.stock,
+      condition:"new",
+      listing_type_id:"gold_special",
+      description:{
+         plain_text: prod.dataValues.description
+      },
+      sale_terms:[
+         {
+          id:"WARRANTY_TYPE",
+          value_name:""
+         },
+         {
+          id:"WARRANTY_TIME",
+          value_name:"90 días"
+         }
+      ],
+      pictures:[
+        {
+          source: null
+        }
+      ],
+      attributes:[
+        {
+          id:"COLOR",
+          value_name:"Azul"
+         },
+         {
+          id:"SIZE",
+          value_name: "M"
+         }
+      ]
+    }; console.log(data);
+    fetch(`https://api.mercadolibre.com/items?access_token=${access_token}`, {
+      method: 'POST', 
+      body: JSON.stringify(data)})
+      .then(res => res.json())
+      .then((response)=> {
+        console.log('Se creo el producto: '+ JSON.stringify(response) + ' en MELI')
+      })
+      .catch(err => res.status(502).json({ 
+        error: "No se pudo crear el producto en MELI"
+      }))
+  })
+})
 
 module.exports = server;

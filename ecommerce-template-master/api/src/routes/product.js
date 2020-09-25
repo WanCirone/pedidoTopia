@@ -264,4 +264,13 @@ async function publicarShopify(producto, precio, stock){
   return post
 }
 
+server.get('/db', (req, res) => {
+  Product.findAll({
+    include: [Category, Provider],
+}).then((products) => {
+  console.log(JSON.stringify(products))
+  res.send(products)
+})
+})
+
 module.exports = server;

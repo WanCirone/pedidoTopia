@@ -3,7 +3,7 @@ const request = require("request-promise");
 const meli = require("mercadolibre");
 
 //Modelos
-const { Product } = require("../db.js");
+const { Product, Provider, Productprovider } = require("../db.js");
 //Shopify y MeLi
 let {
   SHOPIFY_API_KEY,
@@ -19,6 +19,7 @@ let {
 } = process.env;
 
 //var refresh_token = "";
+const testUrl = `https://${SHOPIFY_API_KEY}:${SHOPIFY_API_PASSWORD}@${APP_DOMAIN}/admin/api/2020-07/`;
 
 const mercadolibre = new meli.Meli(
   client_id,
@@ -171,5 +172,69 @@ server.post("/", (req, res) => {
     res.status(500).send(`Error! ${err}`);
   }
 });
+
+server.post('/publicar/:id', async (req, res) => {
+  const idProd = req.params.id;
+  const { source, precio, stock } = req.body;
+
+  // Busco el producto que quiere publicar el usuario 
+  const productToUpdate = await Product.findOne({
+    where: { id: idProd }
+  })
+
+  // Le envio el Producto a la funcion
+  const prod = await publicarShopify(productToUpdate , precio, stock)
+  
+  const idShopifyNuevo = prod.product.id
+
+  const productModificado = await Productprovider.findOne({
+    where: {
+      productId: idProd
+    }
+  })
+
+  await productModificado.update({
+    productId_Shopify: idShopifyNuevo
+  })
+  
+  Product.findOne({
+    where: { id: idProd },
+    include: [Provider]
+  })
+  .then((producto) => res.send(producto))
+    
+});
+
+async function publicarShopify(producto, precio, stock){
+  console.log('entra a pblc shopify: '+ datos)
+
+  const productoShopify = {
+    product: {
+        title: producto.title,
+        body_html: "<strong>Good snowboard!</strong>",
+        vendor: producto.proveedor,
+        published_scope: "web",
+        variants: [
+          {
+            inventory_management: "shopify",
+            inventory_quantity: stock,
+            price: precio,
+          },
+        ],
+        images: [],
+      },
+};
+
+  let options = {
+    method: "POST",
+    uri: testUrl + "products.json",
+    body: productoShopify,
+    json: true,
+  }; 
+
+  const post = await request(options);
+  console.log('post es: '+ JSON.stringify(post))
+  return post
+}
 
 module.exports = server;

@@ -13,5 +13,9 @@ module.exports = (sequelize) => {
     precio: {
       type: DataTypes.REAL,
     },
+    productId_Shopify: {
+      type: DataTypes.BIGINT,
+      defaultValue: null
+    },
   });
 };

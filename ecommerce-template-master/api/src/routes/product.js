@@ -1,3 +1,4 @@
+const { crearProducto } = require('./utils');
 const server = require("express").Router();
 const request = require("request-promise");
 const meli = require("mercadolibre");
@@ -82,53 +83,58 @@ server.get("/", async (req, res, next) => {
   res.json({ productMeLi, productsShopify });
 });
 
-//Cargar un producto en mi BD
-server.post('/bd', (req, res) => {
-  const promiseProducto = Product.findOrCreate({
-    where: {
-      title: req.body.title,
-      description: req.body.description,
-      proveedor: req.body.proveedor,
-    },
-  });
-  const promiseCategoria = Category.findOrCreate({
-    where: {
-      title: req.body.category_title,
-      description: req.body.category_description,
-      id_Meli: req.body.category_id_Meli,
-    },
-  });
-  const promiseProvider = Provider.findOrCreate({
-    where: {
-      meli_Id: req.body.meli_Id,
-      name: req.body.name_provider,
-    },
-  });
+//Borrar un producto
+server.delete("/:id", (req, res) => {
+  const { id } = req.params;
+  var idML = "";
 
-  Promise.all([promiseProducto, promiseCategoria, promiseProvider])
-    .then((values) => {
-      product = values[0][0];
-      category = values[1][0];
-      provider = values[2][0];
-      productId = values[0][0].dataValues.id;
-      product.addCategories(productId);
-      provider.addProducts(productId, {
-        through: {
-          fecha_creacion: req.body.fecha_creacion,
-          stock: req.body.stock,
-          precio: req.body.precio,
-        },
+  Product.findOne({ where: { id: req.params.id } })
+    .then((product) => {
+      if (!product) return "Id no válido";
+      // console.log('product encontrado: '+ JSON.stringify(product))
+      idML = product.idML;
+      product.destroy().then(() => {
+        // console.log('producto borrado db: '+ JSON.stringify(product))
       });
+      fetch(
+        `https://api.mercadolibre.com/items/${idML}?access_token=${token}`,
+        {
+          method: "PUT",
+          header: {
+            "Content-Type": "application/json",
+            Accept: "application/json",
+          },
+          body: JSON.stringify({ status: "closed" }),
+        }
+      ).then((res) => res.json());
     })
-    .catch((e) => {
-      console.log(e);
-    })
-  .then(prod => { res.status(202).send('Se ha creado producto en la bd') })
-  .catch(err => {
-    console.log('No se ha podido crear el producto' + err)
-    res.sendStatus(400)
-  })
-})
+    .catch((error) => {
+      console.error("Error:", error);
+      res.status(500).send(error);
+    });
+
+  fetch(
+    `https://${SHOPIFY_API_KEY}:${SHOPIFY_API_PASSWORD}@${APP_DOMAIN}/admin/api/2020-07/` +
+      `/products/${req.params.id}.json`,
+    {
+      method: "DELETE",
+    }
+  )
+    .then((res) => res.json())
+    .then((res) => res.send("OK"))
+    .catch((error) => {
+      res.status(500).send(error);
+    });
+});
+
+//Crear o encontrar producto en DB
+server.post("/", async (req, res) => {
+  
+  //Crea y devuelve el producto
+  const p = await crearProducto(req)
+
+  res.send(p);
+});
 
 //Publicar un producto en MELI
 server.post("/meli/:id", (req, res) => {
@@ -190,6 +196,5 @@ console.log(req.params.id)
       }))
   })
 })
-  
 
 module.exports = server;

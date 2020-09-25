@@ -11,7 +11,8 @@ const {
   Provider,
 } = require("../db.js");
 
-function crearProducto(req) {
+  //Crea o encuentra el producto y lo devuelve
+async function crearProducto(req) {
   const promiseProducto = Product.findOrCreate({
     where: {
       title: req.body.title,
@@ -33,12 +34,14 @@ function crearProducto(req) {
     },
   });
 
-  Promise.all([promiseProducto, promiseCategoria, promiseProvider])
+  let p
+
+  await Promise.all([promiseProducto, promiseCategoria, promiseProvider])
     .then((values) => {
-      product = values[0][0];
-      category = values[1][0];
-      provider = values[2][0];
-      productId = values[0][0].dataValues.id;
+      const product = values[0][0];
+      const category = values[1][0];
+      const provider = values[2][0];
+      const productId = values[0][0].dataValues.id;
       product.addCategories(productId);
       provider.addProducts(productId, {
         through: {
@@ -47,10 +50,13 @@ function crearProducto(req) {
           precio: req.body.precio,
         },
       });
+      p = product
     })
     .catch((e) => {
       console.log(e);
-    });
+    })
+
+  return p
 }
 
 info = {
@@ -71,4 +77,4 @@ info = {
 
 crearProducto(info);
 
-module.exports = server;
+module.exports = { crearProducto, utils: server };

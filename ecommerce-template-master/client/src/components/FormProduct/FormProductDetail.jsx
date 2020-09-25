@@ -33,6 +33,17 @@ export default function FormProductDetail({ handleInputChange, values }) {
         </Grid>
         <Grid item xs={12}>
           <TextField
+            name='category'
+            label='Suggested category'
+            value={values.category}
+            fullWidth
+            multiline
+            rowsMax={4}
+            onChange={handleInputChange}
+          />
+        </Grid>
+        <Grid item xs={12}>
+          <TextField
             name='sku'
             label='SKU'
             value={values.sku}

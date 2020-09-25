@@ -16,5 +16,13 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       // allowNull: false,
     },
+    stock_inicial: {
+      type: DataTypes.INTEGER,
+      defaultValue: 0
+    },
+    precio_inicial: {
+      type: DataTypes.REAL,
+      defaultValue: 0
+    },
   });
 };

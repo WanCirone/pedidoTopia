@@ -54,6 +54,35 @@ export default function Table_Products() {
       description:
         'La ThinkPad E14 se ha sometido a pruebas de especificaciones militares para soportar los entornos de trabajo más extremos y adversos, por lo que no te dejará tirado. No solo puede funcionar en cualquier lugar, desde lugares de frío extenso hasta zonas con un calor sofocante, sino también puede soportar golpes, caídas e incluso derrames accidentales.',
     },
+
+    {
+      id: 2,
+      image: {
+        src:
+          'https://d26lpennugtm8s.cloudfront.net/stores/911/585/products/jbl-flip-5-21-a3cd6bd39bb60bc05f15810292397285-640-0.jpg',
+      },
+      title: 'PARLANTE BLUETOOTH JBL FLIP 5',
+      stock: 15,
+      price: 12999,
+      sku: 'JBLFLIP5BLKAM',
+      description:
+        'Lleva la fiesta contigo. No te preocupes por cosas sin importancia como cargar la batería. El Flip 5 te ofrece más de 12 horas de reproducción. Disfruta de una música más potente, durante más tiempo y con el famoso sonido JBL.',
+    },
+
+    {
+      id: 3,
+      image: {
+        src:
+          'https://d26lpennugtm8s.cloudfront.net/stores/001/166/416/products/8245933-1-11-67cb081bd5fd9832d315886143864513-480-0.jpg',
+      },
+      title: 'Impresora Hp Ink 5075 Advantage',
+      stock: 43,
+      price: 19999,
+      sku: '824593',
+      description:
+        'Impresora Todo en Uno HP DeskJet Ink Advantage 5075 Conectividad inalámbrica en la que puede confiar Obtenga una configuración sencilla Wi-Fi en menos de un minuto y empiece a imprimir al instante.',
+        
+    },
   ]
   const classes = useStyles()
   return (

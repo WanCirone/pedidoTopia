@@ -1,14 +1,10 @@
-import React, { useState } from 'react'
+import React from 'react'
+import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
-import Grid from '@material-ui/core/Grid'
-import TextField from '@material-ui/core/TextField'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
-import Checkbox from '@material-ui/core/Checkbox'
-import Slider from "../Slider/Slider.js"
+import Slider from '../Slider/Slider.js'
+import { secondStepImages } from '../../actions/index.js'
 
-export default function PaymentForm() {
-  const [images, setImages] = useState([])
-
+function FormSelectImages({ setImages, images }) {
   const uploadImg = async (e) => {
     const files = e.target.files
     var newImages = []
@@ -42,7 +38,7 @@ export default function PaymentForm() {
 
       <div>
         <div marginRight='auto' marginLeft='auto'>
-          {images.length > 0 && <Slider images={images} />}
+          {images && images.length > 0 && <Slider images={images} />}
         </div>
         <input
           type='file'
@@ -57,3 +53,15 @@ export default function PaymentForm() {
     </React.Fragment>
   )
 }
+
+const mapStateToProps = (state) => ({
+  images: state.product.images,
+})
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    setImages: (images) => dispatch(secondStepImages(images)),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(FormSelectImages)

@@ -1,9 +1,12 @@
+const { crearProducto } = require('./utils');
 const server = require("express").Router();
 const request = require("request-promise");
 const meli = require("mercadolibre");
+const fetch = require('node-fetch')
 
 //Modelos
-const { Product, Provider, Productprovider } = require("../db.js");
+const { Product, Category, Orders, Productprovider, Provider } = require("../db.js");
+
 //Shopify y MeLi
 let {
   SHOPIFY_API_KEY,
@@ -125,53 +128,75 @@ server.delete("/:id", (req, res) => {
     });
 });
 
-server.post("/", (req, res) => {
-  try {
-    const mercadolibre = new meli.Meli(client_id, client_secret, access_token);
-    // var user
-    // mercadolibre.get('/users/me', function (err, res) {
-    //     console.log(err, res.site_id)
-    //   user = res.site_id
-    //   console.log("estes es el user", user)
-    // });
-    // var predict
-    // mercadolibre.get(`/sites/${site_id}/category_predictor/predict?title=${encodeURIComponent(req.body.title)}`, function (err, res) {
-    //   console.log(err, res)
-    //   predict = res
-    // });
-    // console.log("este es el predict", predict)
-    // console.log(req.body)
-    const body = {
-      title: req.body.title,
-      category_id: req.body.category_id,
-      price: req.body.price,
-      currency_id: req.body.currency_id,
-      available_quantity: req.body.available_quantity,
-      buying_mode: "buy_it_now",
-      listing_type_id: req.body.listing_type_id,
-      condition: req.body.condition,
-      description: req.body.description,
-      tags: ["immediate_payment"],
-      pictures: [
-        {
-          source: `${req.protocol}://${req.get("host")}/pictures/${req.file}`,
-        },
-      ],
-    };
-    mercadolibre.post("/items", body, null, (err, response) => {
-      if (err) {
-        throw err;
-      } else {
-        // console.log('publicado na categoria:', predict.name);
-        // console.log('category probability (0-1):', predict.prediction_probability, predict.variations);
-        res.send(response);
-      }
-    });
-  } catch (err) {
-    console.log("Error", err);
-    res.status(500).send(`Error! ${err}`);
-  }
+//Crear o encontrar producto en DB
+server.post("/", async (req, res) => {
+  
+  //Crea y devuelve el producto
+  const p = await crearProducto(req)
+
+  res.send(p);
 });
+
+//Publicar un producto en MELI
+server.post("/meli/:id", (req, res) => {
+console.log(req.params.id)
+  Product.findOne({ where: {
+    id: req.params.id },
+    include: 
+      [ Category, Provider ]
+  })
+  .then(prod => {
+    console.log(prod)
+
+    var data =  {
+      title: prod.dataValues.title,
+      category_id: prod.dataValues.categories[0].id_Meli,
+      price: prod.providers[0].dataValues.productprovider.precio,
+      currency_id:"ARS",
+      available_quantity: prod.providers[0].dataValues.productprovider.stock,
+      condition:"new",
+      listing_type_id:"gold_special",
+      description:{
+         plain_text: prod.dataValues.description
+      },
+      sale_terms:[
+         {
+          id:"WARRANTY_TYPE",
+          value_name:""
+         },
+         {
+          id:"WARRANTY_TIME",
+          value_name:"90 días"
+         }
+      ],
+      pictures:[
+        {
+          source: null
+        }
+      ],
+      attributes:[
+        {
+          id:"COLOR",
+          value_name:"Azul"
+         },
+         {
+          id:"SIZE",
+          value_name: "M"
+         }
+      ]
+    }; console.log(data);
+    fetch(`https://api.mercadolibre.com/items?access_token=${access_token}`, {
+      method: 'POST', 
+      body: JSON.stringify(data)})
+      .then(res => res.json())
+      .then((response)=> {
+        console.log('Se creo el producto: '+ JSON.stringify(response) + ' en MELI')
+      })
+      .catch(err => res.status(502).json({ 
+        error: "No se pudo crear el producto en MELI"
+      }))
+  })
+})
 
 server.post('/publicar/:id', async (req, res) => {
   const idProd = req.params.id;

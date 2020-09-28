@@ -48,8 +48,8 @@ const {
 } = sequelize.models;
 
 // Aca vendrian las relaciones
-Product.hasMany(Category);
-Category.belongsTo(Product);
+Category.hasMany(Product);
+Product.belongsTo(Category);
 
 Product.belongsToMany(Provider, { through: Productprovider });
 Provider.belongsToMany(Product, { through: Productprovider });

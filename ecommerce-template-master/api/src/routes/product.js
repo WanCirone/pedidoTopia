@@ -85,61 +85,54 @@ server.get("/", async (req, res, next) => {
 });
 
 //Cargar un producto en mi BD
-server.post('/bd', (req, res) => {
+server.post('/', (req, res) => {
+  
   const promiseProducto = Product.findOrCreate({
     where: {
       title: req.body.title,
       description: req.body.description,
-      proveedor: req.body.proveedor,
+      sku: req.body.sku,
+      stock_inicial: req.body.stock_inicial,
+      precio_inicial: req.body.precio_inicial,
     },
   });
+  
   const promiseCategoria = Category.findOrCreate({
     where: {
-      title: req.body.category_title,
-      description: req.body.category_description,
-      id_Meli: req.body.category_id_Meli,
-    },
-  });
-  const promiseProvider = Provider.findOrCreate({
-    where: {
-      meli_Id: req.body.meli_Id,
-      name: req.body.name_provider,
+      title_sugerido: req.body.category_sugerida,
     },
   });
 
-  Promise.all([promiseProducto, promiseCategoria, promiseProvider])
+  Promise.all([promiseProducto, promiseCategoria])
     .then((values) => {
       product = values[0][0];
       category = values[1][0];
-      provider = values[2][0];
-      productId = values[0][0].dataValues.id;
-      product.addCategories(productId);
-      provider.addProducts(productId, {
-        through: {
-          fecha_creacion: req.body.fecha_creacion,
-          stock: req.body.stock,
-          precio: req.body.precio,
-        },
-      });
+    
+      product.update({
+        categoryId : category.id
+      })
+      .then(product => {
+        console.log('product aqui seria: '+ JSON.stringify(product))
+        return Product.findOne({
+          where: { id: product.id },
+          include: [Category]
+        })
+      })
+      .then((producto) => res.send(producto))
     })
-    .catch((e) => {
-      console.log(e);
+    .catch(err => {
+      console.log('No se ha podido crear el producto' + err)
+      res.sendStatus(400)
     })
-  .then(prod => { res.status(202).send('Se ha creado producto en la bd') })
-  .catch(err => {
-    console.log('No se ha podido crear el producto' + err)
-    res.sendStatus(400)
   })
-})
-
 //Crear o encontrar producto en DB
-server.post("/", async (req, res) => {
+// server.post("/", async (req, res) => {
   
-  //Crea y devuelve el producto
-  const p = await crearProducto(req)
+//   //Crea y devuelve el producto
+//   const p = await crearProducto(req)
 
-  res.send(p);
-});
+//   res.send(p);
+// });
 
 //Publicar un producto en MELI
 server.post("/meli/:id", (req, res) => {

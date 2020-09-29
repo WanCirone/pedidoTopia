@@ -36,3 +36,16 @@ export function getProducts() {
       )
   }
 }
+
+export function getCategories(id) {
+  return function (dispatch) {
+    return fetch(`http://localhost:3000/categories/predictor/${id}`)
+      .then((res) => res.json())
+      .then((categories) =>
+        dispatch({
+          type: 'GET_CATEGORIES',
+          payload: categories,
+        })
+      )
+  }
+}

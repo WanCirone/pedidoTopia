@@ -1,56 +1,56 @@
-.form{
-    top:0;
-    left:0;
-    background-color: rgba(0,0,0,.8);
-    position: fixed;
-    width: 100%;
-    height: 100%;
-    z-index: 502;
+.form {
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.8);
+  position: fixed;
+  width: 100%;
+  height: 100%;
+  z-index: 502;
 }
-.content{
-    background-color: whitesmoke;
-    width: 500px;
-    height: 350px;
-    margin-left: auto;
-    margin-right: auto;
-    margin-top: 200px;
-    border-radius:8px;
-    border: 2px solid black;
+.content {
+  background-color: whitesmoke;
+  width: 500px;
+  /* height: 350px; */
+  margin-left: auto;
+  margin-right: auto;
+  margin-top: 200px;
+  border-radius: 8px;
+  border: 2px solid black;
 }
-.button{
-    margin-top: -38px;
-    margin-left: 270px;
+.button {
+  margin-top: -38px;
+  margin-left: 270px;
 }
-.content input[type=number]{
-    font-size: 20px;
-    width: 100%;
-    padding: 10px;
-    border-radius: 6px;
+.content input[type='number'] {
+  font-size: 20px;
+  width: 100%;
+  padding: 10px;
+  border-radius: 6px;
 }
-.inputcontenedor{
-    margin-top: 30px;
-    margin-left: 40px;
-    margin-bottom: 5px;
-    border: 1px solid white;
-    background-color: white;
-    position: relative;
-    width: 420px;
+.inputcontenedor {
+  margin-top: 30px;
+  margin-left: 40px;
+  margin-bottom: 5px;
+  border: 1px solid white;
+  background-color: white;
+  position: relative;
+  width: 420px;
 }
-.icon{
-    padding-right: 5px;
-    position: relative;
-    width: 500px;
+.icon {
+  padding-right: 5px;
+  position: relative;
+  width: 500px;
 }
-.icon svg{
-    font-size: 30px;
-    margin-left: 7px;
-    position: relative;
-    top:75px;
+.icon svg {
+  font-size: 30px;
+  margin-left: 7px;
+  position: relative;
+  top: 75px;
 }
-.Checkbox{
-    margin-left: 15px;
-    margin-top: 60px;
+.Checkbox {
+  margin-left: 15px;
+  margin-top: 60px;
 }
-.span{
-    border-radius: 8px;
+.span {
+  border-radius: 8px;
 }

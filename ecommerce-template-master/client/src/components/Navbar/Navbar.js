@@ -22,6 +22,7 @@ import MailIcon from '@material-ui/icons/Mail';
 import ListIcon from '@material-ui/icons/List';
 import AddBoxIcon from '@material-ui/icons/AddBox';
 import { Button, MenuList } from '@material-ui/core';
+import FeaturedPlayListOutlinedIcon from '@material-ui/icons/FeaturedPlayListOutlined';
 const drawerWidth = 240;
 
 const useStyles = makeStyles((theme) => ({
@@ -153,6 +154,16 @@ return(
             <ListItem button key={text}>
                 <Link to ="/product">
               <ListItemIcon>{index % 2 === 0 ? <AddBoxIcon  /> : <AddBoxIcon />}</ListItemIcon>
+              </Link>
+              <ListItemText primary={text} />
+            </ListItem>
+          ))}
+        </MenuList>
+        <MenuList >
+          {['Lista de Ordenes'].map((text, index,) => (
+            <ListItem button key={text}>
+                <Link to ="/orders"> 
+              <ListItemIcon>{index % 2 === 0 ? <FeaturedPlayListOutlinedIcon /> : <FeaturedPlayListOutlinedIcon />}</ListItemIcon>
               </Link>
               <ListItemText primary={text} />
             </ListItem>

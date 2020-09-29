@@ -6,7 +6,7 @@ import Footer from './components/Footer/Footer.js'
 import Navbar from './components/Navbar/Navbar.js'
 import Table_Products from './components/Table_Products/Table_Products.jsx'
 import FormProduct from './components/FormProduct/FormProduct'
-
+import Orders from "./components/Orders/Orders.js"
 function App() {
   return (
     <Router>
@@ -23,6 +23,9 @@ function App() {
           </Route>
           <Route path='/' exact>
             <Footer />
+          </Route>
+          <Route path='/orders' exact>
+            <Orders />
           </Route>
         </Switch>
       </div>

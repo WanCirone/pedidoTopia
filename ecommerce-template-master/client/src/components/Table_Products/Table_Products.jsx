@@ -1,8 +1,9 @@
 import React , {useState}from 'react'
 import styles from "./Publicar.module.css"
 import { useHistory } from 'react-router-dom'
+import s from "./Borrar.module.css"
 //Material-ui
-import { withStyles, makeStyles, StylesProvider } from '@material-ui/core/styles'
+import { withStyles, makeStyles} from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
 import TableBody from '@material-ui/core/TableBody'
@@ -18,8 +19,9 @@ import FormControlLabel from '@material-ui/core/FormControlLabel';
 import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded';
-
 import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded';
+
+import Alert from '@material-ui/lab/Alert';
 //import { Box } from "@material-ui/core";
 
 const StyledTableCell = withStyles((theme) => ({
@@ -45,6 +47,46 @@ const useStyles = makeStyles({
     minWidth: 600,
   },
 })
+const useStyless = makeStyles((theme) => ({
+  root: {
+    width: '90%',
+    marginTop: theme.spacing(8),
+    marginLeft: "20px",
+    fontSize: "100px"
+  },
+}));
+function Borrar (){
+  const classes = useStyless();
+  return (
+    <form className = {s.formulario}>
+       <div className = {s.contenedor}>
+    
+      <div className={classes.root}>
+      <Alert variant="outlined" severity="error" marginTop = "100px" height = "100px" marginLeft = "50px">
+        ¿Seguro que deseas Borrar?      
+      </Alert>
+      </div>
+        <div className = {s.buttons}>
+         <Button
+         variant = "contained"
+         color = "primary"
+         
+         >
+          Borrar
+         </Button>
+         <Button
+         variant = "contained"
+         color = "secondary"
+         href = "/"
+         
+         >
+          Cancelar
+         </Button>
+         </div>
+     </div>
+    </form>
+  );
+}
 
 function Publicar(){
   return(
@@ -102,6 +144,7 @@ function Publicar(){
 
 export default function Table_Products() {
   const [renderPublicar, setRenderPublicar] = useState(false);
+  const [renderBorrar, setRenderBorrar] = useState(false);
   const history = useHistory()
   const products = [
     {
@@ -112,7 +155,7 @@ export default function Table_Products() {
       },
       proveedor: {
         src: 
-        "https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png",
+        "https://seeklogo.com/images/M/mercado-livre-logo-D1DC52B13E-seeklogo.com.png",
        },
       title: 'NOTEBOOK LENOVO THINKPAD E14 CORE I5',
       stock: 20,
@@ -130,7 +173,8 @@ export default function Table_Products() {
       },
       proveedor: {
         src: 
-        "https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png",
+        "https://seeklogo.com/images/S/shopify-logo-1C711BCDE4-seeklogo.com.png",
+        src: "https://seeklogo.com/images/M/mercado-livre-logo-D1DC52B13E-seeklogo.com.png",
        },
       title: 'PARLANTE BLUETOOTH JBL FLIP 5',
       stock: 15,
@@ -147,9 +191,8 @@ export default function Table_Products() {
           'https://d26lpennugtm8s.cloudfront.net/stores/001/166/416/products/8245933-1-11-67cb081bd5fd9832d315886143864513-480-0.jpg',
       },
       proveedor: {
-       src: 
-       "https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png",
-      },
+         src: "https://seeklogo.com/images/M/mercado-livre-logo-D1DC52B13E-seeklogo.com.png",
+    },
       title: 'Impresora Hp Ink 5075 Advantage',
       stock: 43,
       price: 19999,
@@ -180,7 +223,12 @@ export default function Table_Products() {
               <StyledTableCell align='right'>Stock</StyledTableCell>
               <StyledTableCell align='center'>Sku&nbsp;</StyledTableCell>
               <StyledTableCell align='right'>Descripcion&nbsp;</StyledTableCell>
-              <StyledTableCell align='right'>Precio</StyledTableCell>
+              <StyledTableCell align='right'>
+                Precio
+                <div>
+
+                </div>
+                </StyledTableCell>
               <StyledTableCell align='right'></StyledTableCell>
             </TableRow>
           </TableHead>
@@ -190,7 +238,7 @@ export default function Table_Products() {
                 // console.log(product)&&
                 <StyledTableRow key={product.id}>
                   <StyledTableCell align='left'>
-                    <Button href={`/answer/${product.id}`}>
+                    <Button onClick = { () => setRenderBorrar(true)} >
                       <i>
                         <DeleteOutlineIcon />
                       </i>
@@ -203,7 +251,7 @@ export default function Table_Products() {
                         height='100px'
                         width='100px'
                         alt=''
-                      />
+                        />
                     </span>
                   </StyledTableCell>
                   <StyledTableCell align='left'>
@@ -213,10 +261,10 @@ export default function Table_Products() {
                   <span className = {styles.span}>
                       <img
                         src={product.proveedor && product.proveedor.src}
-                        height='30px'
-                        width='120px'
+                        height='25px'
+                        width='30px'
                         alt=''
-                      />
+                        />
                     </span>
                   </StyledTableCell>
                   <StyledTableCell align='right'>
@@ -242,6 +290,7 @@ export default function Table_Products() {
           </TableBody>
         </Table>
       </TableContainer>
+      {renderBorrar && <Borrar />}
       {renderPublicar && <Publicar />}
       <div style={{ paddingLeft: 'auto' }}>
         <tr>

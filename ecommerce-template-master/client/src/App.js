@@ -5,6 +5,7 @@ import { BrowserRouter as Router, Route, Switch } from 'react-router-dom'
 import Footer from './components/Footer/Footer.js'
 import Navbar from './components/Navbar/Navbar.js'
 import Table_Products from './components/Table_Products/Table_Products.jsx'
+import PostProduct from './components/Table_Products/PostProduct.jsx'
 import FormProduct from './components/FormProduct/FormProduct'
 
 function App() {
@@ -18,6 +19,7 @@ function App() {
           <Route path='/' exact>
             <Table_Products />
           </Route>
+          <Route path='/post/:id' component={PostProduct} />
           <Route path='/product' exact>
             <FormProduct />
           </Route>

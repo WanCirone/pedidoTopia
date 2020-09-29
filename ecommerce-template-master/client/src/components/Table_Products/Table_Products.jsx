@@ -149,7 +149,8 @@ function Publicar(){
 function Table_Products({ products, getListProducts }) {
   const classes = useStyles()
   const history = useHistory()
-
+  const [renderPublicar, setRenderPublicar] = useState(false);
+  const [renderBorrar, setRenderBorrar] = useState(false);
   useEffect(() => {
     getListProducts()
   }, [])

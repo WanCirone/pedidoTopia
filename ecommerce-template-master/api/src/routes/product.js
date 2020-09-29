@@ -1,8 +1,6 @@
-const { crearProducto } = require('./utils');
 const server = require("express").Router();
 const request = require("request-promise");
 const meli = require("mercadolibre");
-const fetch = require('node-fetch')
 
 //Modelos
 const { Product, Category, Orders, Productprovider, Provider } = require("../db.js");
@@ -20,6 +18,8 @@ let {
   access_token,
   refresh_token,
 } = process.env;
+
+console.log('acces_token: '+ access_token)
 
 //var refresh_token = "";
 const testUrl = `https://${SHOPIFY_API_KEY}:${SHOPIFY_API_PASSWORD}@${APP_DOMAIN}/admin/api/2020-07/`;
@@ -108,11 +108,13 @@ server.post('/', (req, res) => {
       product = values[0][0];
       category = values[1][0];
     
+      console.log('prods: '+JSON.stringify(product))
+      console.log('cats: '+JSON.stringify(category))
+
       product.update({
         categoryId : category.id
       })
       .then(product => {
-        console.log('product aqui seria: '+ JSON.stringify(product))
         return Product.findOne({
           where: { id: product.id },
           include: [Category]
@@ -133,56 +135,6 @@ server.post('/', (req, res) => {
 
 //   res.send(p);
 // });
-
-//Publicar un producto en MELI
-server.post("/meli/:id", (req, res) => {
-console.log(req.params.id)
-  Product.findOne({ where: {
-    id: req.params.id },
-    include: 
-      [ Category, Provider ]
-  })
-  .then(prod => {
-    console.log(prod)
-
-    
-    console.log(JSON.stringify(data))
-
-    fetch(`https://api.mercadolibre.com/items?access_token=${access_token}`, {
-      method: 'POST', 
-      body: JSON.stringify(data)})
-      .then(res => res.json())
-      .then((response)=> {
-        if(response.error) throw new Error('No se publico')
-        else {
-        console.log('Se creo el producto: '+ JSON.stringify(response) + ' en MELI')
-        console.log('Se creo el producto: '+ JSON.stringify(response.id) + ' en MELI')
-        console.log('Se creo el link: '+ JSON.stringify(response.permalink) + ' en MELI')
-        console.log('req.params.id: '+ req.params.id)
-
-        Productprovider.findOne({
-          where: {
-            productId: req.params.id
-          }
-        }).then(productToUpadte => {
-          productToUpadte.update({
-            productId_Meli: response.id,
-            link_meli: response.permalink
-          })
-
-          Product.findOne({
-            where: { id: req.params.id },
-            include: [Provider]
-          })
-          .then((producto) => res.send(producto))
-        })
-      }
-      })
-      .catch(err => res.status(502).json({ 
-        error: "No se pudo crear el producto en MELI"
-      }))
-  })
-})
 
 server.post('/publicar/:id', async (req, res) => {
   const idProd = req.params.id;

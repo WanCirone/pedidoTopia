@@ -4,18 +4,6 @@ const { DataTypes } = require("sequelize");
 module.exports = (sequelize) => {
   // defino el modelo
   sequelize.define("provider", {
-    meli_Id: {
-      type: DataTypes.INTEGER,
-      // allowNull: false,
-      unique: true,
-      // primaryKey: true,
-    },
-    shopify_Id: {
-      type: DataTypes.INTEGER,
-      // allowNull: false,
-      unique: true,
-      // primaryKey: true,
-    },
     name: {
       type: DataTypes.STRING,
       allowNull: false,

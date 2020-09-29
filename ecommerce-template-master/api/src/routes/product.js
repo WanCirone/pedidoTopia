@@ -145,44 +145,7 @@ console.log(req.params.id)
   .then(prod => {
     console.log(prod)
 
-    var data =  {
-      title: prod.dataValues.title,
-      category_id: "MLA3530",
-      price: prod.providers[0].dataValues.productprovider.precio,
-      currency_id:"ARS",
-      available_quantity: prod.providers[0].dataValues.productprovider.stock,
-      condition:"new",
-      listing_type_id:"gold_special",
-      description:{
-         plain_text: prod.dataValues.description
-      },
-      sale_terms:[
-         {
-          id:"WARRANTY_TYPE",
-          value_name:""
-         },
-         {
-          id:"WARRANTY_TIME",
-          value_name:"90 días"
-         }
-      ],
-      pictures:[
-        {
-          source: "https://d26lpennugtm8s.cloudfront.net/stores/678/525/products/71-9c9d1cf749d0242a5815701896774858-640-0.jpg"
-        }
-      ],
-      attributes:[
-        {
-          id:"COLOR",
-          value_name:"Azul"
-         },
-         {
-          id:"SIZE",
-          value_name: "M"
-         }
-      ]
-    }; 
-
+    
     console.log(JSON.stringify(data))
 
     fetch(`https://api.mercadolibre.com/items?access_token=${access_token}`, {
@@ -223,27 +186,46 @@ console.log(req.params.id)
 
 server.post('/publicar/:id', async (req, res) => {
   const idProd = req.params.id;
-  const { source, precio, stock } = req.body;
+  const { source, precio, stock, category_id } = req.body;
+  let prod = null;
+  let link = null;
+  let providerId = null;
+  console.log("req bodye s: "+ JSON.stringify(req.body))
 
   // Busco el producto que quiere publicar el usuario 
-  const productToUpdate = await Product.findOne({
+  const productToPublish = await Product.findOne({
     where: { id: idProd }
   })
 
-  // Le envio el Producto a la funcion
-  const prod = await publicarShopify(productToUpdate , precio, stock)
-  
-  const idShopifyNuevo = prod.product.id
+  if(source === 'shopify'){
+    // Le envio el Producto a la funcion
+    prod = await publicarShopify(productToPublish , precio, stock)
+    
+    await productToPublish.update({
+      productId_Shopify: prod.product.id
+    })
 
-  const productModificado = await Productprovider.findOne({
-    where: {
-      productId: idProd
-    }
+    providerId = 2;
+
+  } else if(source === 'mercadolibre') {
+    prod = await publicarMeli(productToPublish, precio, stock, category_id)
+
+    await productToPublish.update({
+      productId_Meli: prod.id
+    })
+    providerId = 1;
+    link = prod.permalink;
+
+  }
+
+  await Productprovider.create({
+    stock,
+    precio,
+    link,
+    productId: productToPublish.id,
+    providerId 
   })
 
-  await productModificado.update({
-    productId_Shopify: idShopifyNuevo
-  })
   
   Product.findOne({
     where: { id: idProd },
@@ -281,6 +263,60 @@ async function publicarShopify(producto, precio, stock){
 
   const post = await request(options);
   console.log('post es: '+ JSON.stringify(post))
+  return post
+}
+
+async function publicarMeli(producto, precio, stock, category_id){
+  console.log(JSON.stringify(producto))
+  let data = {
+    title: producto.title,
+    category_id: category_id,
+    price: precio,
+    currency_id:"ARS",
+    available_quantity: stock,
+    buying_mode:"buy_it_now",
+    condition:"new",
+    listing_type_id:"gold_special",
+    description:{
+        plain_text: producto.description
+    },
+    video_id:"YOUTUBE_ID_HERE",
+    sale_terms:[
+        {
+          id:"WARRANTY_TYPE",
+          value_name:"Garantía del vendedor"
+        },
+        {
+          id:"WARRANTY_TIME",
+          value_name:"90 días"
+        }
+    ],
+    pictures:[
+        {
+          source:"http://mla-s2-p.mlstatic.com/968521-MLA20805195516_072016-O.jpg"
+        }
+    ],
+    attributes:[
+        {
+          id:"BRAND",
+          value_name:"Marca del producto"
+        },
+        {
+          id:"EAN",
+          value_name:"7898095297749"
+        }
+    ]
+  }
+
+  let options = {
+    method: "POST",
+    uri: `https://api.mercadolibre.com/items?access_token=${access_token}`,
+    body: data,
+    json: true,
+  }; 
+
+  const post = await request(options);
+  console.log('post en meli es: '+ JSON.stringify(post))
   return post
 }
 

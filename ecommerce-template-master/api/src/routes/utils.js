@@ -59,22 +59,22 @@ async function crearProducto(req) {
   return p
 }
 
-info = {
-  body: {
-    title: "Lucho",
-    description: "Sin cerebro",
-    proveedor: "tio alber",
-    category_title: "lavado de cerebro",
-    category_description: "pan y circo",
-    category_id_Meli: "MLA1530456",
-    meli_Id: "125",
-    name_provider: "mercadolibre",
-    fecha_creacion: "24/09/2020",
-    stock: 1,
-    precio: 2.5,
-  },
-};
+// info = {
+//   body: {
+//     title: "Lucho",
+//     description: "Sin cerebro",
+//     proveedor: "tio alber",
+//     category_title: "lavado de cerebro",
+//     category_description: "pan y circo",
+//     category_id_Meli: "MLA1530456",
+//     meli_Id: "125",
+//     name_provider: "mercadolibre",
+//     fecha_creacion: "24/09/2020",
+//     stock: 1,
+//     precio: 2.5,
+//   },
+// };
 
-crearProducto(info);
+// crearProducto(info);
 
 module.exports = { crearProducto, utils: server };

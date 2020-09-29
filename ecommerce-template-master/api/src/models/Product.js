@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       // allowNull: false,
     },
-    proveedor: {
+    sku: {
       type: DataTypes.STRING,
       // allowNull: false,
     },
@@ -24,5 +24,8 @@ module.exports = (sequelize) => {
       type: DataTypes.REAL,
       defaultValue: 0
     },
+    images: {
+      type: DataTypes.ARRAY(DataTypes.TEXT)
+    }
   });
 };

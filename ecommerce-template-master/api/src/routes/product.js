@@ -91,62 +91,54 @@ server.get("/", async (req, res, next) => {
 });
 
 //Cargar un producto en mi BD
-server.post("/bd", (req, res) => {
+server.post("/", (req, res) => {
   const promiseProducto = Product.findOrCreate({
     where: {
       title: req.body.title,
       description: req.body.description,
-      proveedor: req.body.proveedor,
-    },
-  });
-  const promiseCategoria = Category.findOrCreate({
-    where: {
-      title: req.body.category_title,
-      description: req.body.category_description,
-      id_Meli: req.body.category_id_Meli,
-    },
-  });
-  const promiseProvider = Provider.findOrCreate({
-    where: {
-      meli_Id: req.body.meli_Id,
-      name: req.body.name_provider,
+      sku: req.body.sku,
+      stock_inicial: req.body.stock_inicial,
+      precio_inicial: req.body.precio_inicial,
     },
   });
 
-  Promise.all([promiseProducto, promiseCategoria, promiseProvider])
+  const promiseCategoria = Category.findOrCreate({
+    where: {
+      title_sugerido: req.body.category_sugerida,
+    },
+  });
+
+  Promise.all([promiseProducto, promiseCategoria])
     .then((values) => {
       product = values[0][0];
       category = values[1][0];
-      provider = values[2][0];
-      productId = values[0][0].dataValues.id;
-      product.addCategories(productId);
-      provider.addProducts(productId, {
-        through: {
-          fecha_creacion: req.body.fecha_creacion,
-          stock: req.body.stock,
-          precio: req.body.precio,
-        },
-      });
-    })
-    .catch((e) => {
-      console.log(e);
-    })
-    .then((prod) => {
-      res.status(202).send("Se ha creado producto en la bd");
+
+      product
+        .update({
+          categoryId: category.id,
+        })
+        .then((product) => {
+          console.log("product aqui seria: " + JSON.stringify(product));
+          return Product.findOne({
+            where: { id: product.id },
+            include: [Category],
+          });
+        })
+        .then((producto) => res.send(producto));
     })
     .catch((err) => {
       console.log("No se ha podido crear el producto" + err);
       res.sendStatus(400);
     });
 });
-
 //Crear o encontrar producto en DB
-server.post("/", async (req, res) => {
-  //Crea y devuelve el producto
-  const p = await crearProducto(req);
+// server.post("/", async (req, res) => {
 
-  res.send(p);
-});
+//   //Crea y devuelve el producto
+//   const p = await crearProducto(req)
+
+//   res.send(p);
+// });
 
 //Publicar un producto en MELI
 server.post("/meli/:id", (req, res) => {
@@ -161,7 +153,7 @@ server.post("/meli/:id", (req, res) => {
 
     var data = {
       title: prod.dataValues.title,
-      category_id: prod.dataValues.categories[0].id_Meli,
+      category_id: "MLA3530",
       price: prod.providers[0].dataValues.productprovider.precio,
       currency_id: "ARS",
       available_quantity: prod.providers[0].dataValues.productprovider.stock,
@@ -182,7 +174,8 @@ server.post("/meli/:id", (req, res) => {
       ],
       pictures: [
         {
-          source: null,
+          source:
+            "https://d26lpennugtm8s.cloudfront.net/stores/678/525/products/71-9c9d1cf749d0242a5815701896774858-640-0.jpg",
         },
       ],
       attributes: [
@@ -196,16 +189,46 @@ server.post("/meli/:id", (req, res) => {
         },
       ],
     };
-    console.log(data);
+
+    console.log(JSON.stringify(data));
+
     fetch(`https://api.mercadolibre.com/items?access_token=${access_token}`, {
       method: "POST",
       body: JSON.stringify(data),
     })
       .then((res) => res.json())
       .then((response) => {
-        console.log(
-          "Se creo el producto: " + JSON.stringify(response) + " en MELI"
-        );
+        if (response.error) throw new Error("No se publico");
+        else {
+          console.log(
+            "Se creo el producto: " + JSON.stringify(response) + " en MELI"
+          );
+          console.log(
+            "Se creo el producto: " + JSON.stringify(response.id) + " en MELI"
+          );
+          console.log(
+            "Se creo el link: " +
+              JSON.stringify(response.permalink) +
+              " en MELI"
+          );
+          console.log("req.params.id: " + req.params.id);
+
+          Productprovider.findOne({
+            where: {
+              productId: req.params.id,
+            },
+          }).then((productToUpadte) => {
+            productToUpadte.update({
+              productId_Meli: response.id,
+              link_meli: response.permalink,
+            });
+
+            Product.findOne({
+              where: { id: req.params.id },
+              include: [Provider],
+            }).then((producto) => res.send(producto));
+          });
+        }
       })
       .catch((err) =>
         res.status(502).json({
@@ -274,5 +297,13 @@ async function publicarShopify(producto, precio, stock) {
   console.log("post es: " + JSON.stringify(post));
   return post;
 }
+
+server.get("/db", (req, res) => {
+  Product.findAll({
+    include: [Category, Provider],
+  }).then((products) => {
+    res.send(products);
+  });
+});
 
 module.exports = server;

@@ -11,9 +11,11 @@ function Footer() {
           <li>Joaquin Quiroga</li>
           <li>Franco Silva</li>
           <li>German Moreno</li>
-          <li>Marcelo Britos</li>
-          <li>Facundo Sadava</li>
-          <li>Bruno Dionel Vicente</li>
+        </ul>
+        <ul className = {s.Footer}>
+        <li>Marcelo Britos</li>
+        <li>Facundo Sadava</li>
+        <li>Bruno Dionel Vicente</li>
         </ul>
       </div>
       

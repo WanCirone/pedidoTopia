@@ -93,7 +93,59 @@ function Borrar (){
     </form>
   );
 }
-
+function Publicar(){
+  return(
+  <form className = {styles.form}>
+      <div className={styles.content}>
+        <i className = {styles.icon}><AttachMoneyRoundedIcon/> </i>
+        <div className={styles.inputcontenedor}>
+        <input
+        type = "number"
+        placeholder = "Price"
+        />
+        </div>
+        <i className = {styles.icon}><AccountBalanceRoundedIcon/> </i>
+        <div className={styles.inputcontenedor}>
+        <input
+        type = "number"
+        placeholder = "Stock"
+        />
+        </div>
+        {/* <FormGroup aria-label="position" row marginTop = "20px"> */}
+        <div className = {styles.Checkbox}>
+        <FormControlLabel
+          value="end"
+          control={<Checkbox color="primary" />}
+          label="Mercado Libre"
+          labelPlacement="end"
+        />
+           <FormControlLabel
+          value="end"
+          control={<Checkbox color="secondary" />}
+          label="Shopify"
+          labelPlacement="end"
+          fontFamily = 'Raleway'
+        />
+        </div>
+        {/* </FormGroup> */}
+        <div className = {styles.button}>
+        <Button 
+        variant='contained' 
+        color='primary'
+        > 
+        Publicar 
+        </Button>
+        <Button 
+        variant='contained' 
+        color='secondary' 
+        href='/'
+        > Cancelar 
+        </Button>
+        </div>
+      </div>
+  </form>
+  )
+};
 function Table_Products({ products, getListProducts }) {
   const classes = useStyles()
   const history = useHistory()

@@ -1,9 +1,13 @@
-import React , {useState}from 'react'
-import styles from "./Publicar.module.css"
+import React, { useState, useEffect } from 'react'
+import styles from './Publicar.module.css'
 import { useHistory } from 'react-router-dom'
 import s from "./Borrar.module.css"
 //Material-ui
-import { withStyles, makeStyles} from '@material-ui/core/styles'
+import {
+  withStyles,
+  makeStyles,
+  StylesProvider,
+} from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
 import TableBody from '@material-ui/core/TableBody'
@@ -23,6 +27,8 @@ import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded';
 
 import Alert from '@material-ui/lab/Alert';
 //import { Box } from "@material-ui/core";
+import { connect } from 'react-redux'
+import { getProducts } from '../../actions'
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -88,121 +94,14 @@ function Borrar (){
   );
 }
 
-function Publicar(){
-  return(
-  <form className = {styles.form}>
-      <div className={styles.content}>
-        <i className = {styles.icon}><AttachMoneyRoundedIcon/> </i>
-        <div className={styles.inputcontenedor}>
-        <input
-        type = "number"
-        placeholder = "Price"
-        />
-        </div>
-        <i className = {styles.icon}><AccountBalanceRoundedIcon/> </i>
-        <div className={styles.inputcontenedor}>
-        <input
-        type = "number"
-        placeholder = "Stock"
-        />
-        </div>
-        {/* <FormGroup aria-label="position" row marginTop = "20px"> */}
-        <div className = {styles.Checkbox}>
-        <FormControlLabel
-          value="end"
-          control={<Checkbox color="primary" />}
-          label="Mercado Libre"
-          labelPlacement="end"
-        />
-           <FormControlLabel
-          value="end"
-          control={<Checkbox color="secondary" />}
-          label="Shopify"
-          labelPlacement="end"
-          fontFamily = 'Raleway'
-        />
-        </div>
-        {/* </FormGroup> */}
-        <div className = {styles.button}>
-        <Button 
-        variant='contained' 
-        color='primary'
-        > 
-        Publicar 
-        </Button>
-        <Button 
-        variant='contained' 
-        color='secondary' 
-        href='/'
-        > Cancelar 
-        </Button>
-        </div>
-      </div>
-  </form>
-  )
-};
-
-export default function Table_Products() {
-  const [renderPublicar, setRenderPublicar] = useState(false);
-  const [renderBorrar, setRenderBorrar] = useState(false);
-  const history = useHistory()
-  const products = [
-    {
-      id: 1,
-      image: {
-        src:
-          'https://www.venex.com.ar/products_images/1599498841_notebooklenovothinkpade14corei510210u8gbssd256gb14.jpg',
-      },
-      proveedor: {
-        src: 
-        "https://seeklogo.com/images/M/mercado-livre-logo-D1DC52B13E-seeklogo.com.png",
-       },
-      title: 'NOTEBOOK LENOVO THINKPAD E14 CORE I5',
-      stock: 20,
-      price: 109000,
-      sku: '111TY777UI89',
-      description:
-        'Una experiencia distinta!',
-    },
-
-    {
-      id: 2,
-      image: {
-        src:
-          'https://d26lpennugtm8s.cloudfront.net/stores/911/585/products/jbl-flip-5-21-a3cd6bd39bb60bc05f15810292397285-640-0.jpg',
-      },
-      proveedor: {
-        src: 
-        "https://seeklogo.com/images/S/shopify-logo-1C711BCDE4-seeklogo.com.png",
-        src: "https://seeklogo.com/images/M/mercado-livre-logo-D1DC52B13E-seeklogo.com.png",
-       },
-      title: 'PARLANTE BLUETOOTH JBL FLIP 5',
-      stock: 15,
-      price: 12999,
-      sku: 'JBLFLIP5BLKAM',
-      description:
-        'Ofrece más de 12 horas de reproducción.',
-    },
-
-    {
-      id: 3,
-      image: {
-        src:
-          'https://d26lpennugtm8s.cloudfront.net/stores/001/166/416/products/8245933-1-11-67cb081bd5fd9832d315886143864513-480-0.jpg',
-      },
-      proveedor: {
-         src: "https://seeklogo.com/images/M/mercado-livre-logo-D1DC52B13E-seeklogo.com.png",
-    },
-      title: 'Impresora Hp Ink 5075 Advantage',
-      stock: 43,
-      price: 19999,
-      sku: 'KJASDKJ824593',
-      description:
-        'Impresora Todo en Uno HP DeskJet Ink Advantage 5075.',
-        
-    },
-  ]
+function Table_Products({ products, getListProducts }) {
   const classes = useStyles()
+  const history = useHistory()
+
+  useEffect(() => {
+    getListProducts()
+  }, [])
+
   return (
     <div
       style={{
@@ -233,9 +132,8 @@ export default function Table_Products() {
             </TableRow>
           </TableHead>
           <TableBody>
-            {products ? (
+            {products.length > 0 ? (
               products.map((product) => (
-                // console.log(product)&&
                 <StyledTableRow key={product.id}>
                   <StyledTableCell align='left'>
                     <Button onClick = { () => setRenderBorrar(true)} >
@@ -258,35 +156,42 @@ export default function Table_Products() {
                     {product.title}
                   </StyledTableCell>
                   <StyledTableCell align='center'>
-                  <span className = {styles.span}>
-                      <img
-                        src={product.proveedor && product.proveedor.src}
-                        height='25px'
-                        width='30px'
-                        alt=''
+                    <span className={styles.span}>
+                      {product.providers.length === 0 ? (
+                        'SIN PUBLICAR'
+                      ) : (
+                        <img
+                          src={product.proveedor && product.proveedor.src}
+                          height='30px'
+                          width='120px'
+                          alt=''
                         />
+                      )}
                     </span>
                   </StyledTableCell>
                   <StyledTableCell align='right'>
-                    {product.stock}
+                    {product.stock_inicial}
                   </StyledTableCell>
                   <StyledTableCell align='right'>{product.sku}</StyledTableCell>
-                  <StyledTableCell align='right' width={1/4}>
+                  <StyledTableCell align='right' width={1 / 4}>
                     {product.description.slice(0, 40)}
                   </StyledTableCell>
                   <StyledTableCell align='right'>
-                    {product.price}
+                    {product.precio_inicial}
                   </StyledTableCell>
                   <StyledTableCell align='right'>
-                    <Button color = "primary" onClick = { () => setRenderPublicar(true)} >
+                    <Button
+                      color='primary'
+                      onClick={() => history.push(`/post/${product.id}`)}
+                    >
                       Publicar
                     </Button>
                   </StyledTableCell>
                 </StyledTableRow>
               ))
-              ) : (
-                <p>No hay datos para mostrar</p>
-                )}
+            ) : (
+              <p>No hay datos para mostrar</p>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
@@ -311,3 +216,15 @@ export default function Table_Products() {
     </div>
   )
 }
+
+const mapStateToProps = (state) => ({
+  products: state.listProducts,
+})
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getListProducts: () => dispatch(getProducts()),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Table_Products)

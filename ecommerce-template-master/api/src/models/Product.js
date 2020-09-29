@@ -12,7 +12,7 @@ module.exports = (sequelize) => {
       type: DataTypes.STRING,
       // allowNull: false,
     },
-    proveedor: {
+    sku: {
       type: DataTypes.STRING,
       // allowNull: false,
     },
@@ -23,6 +23,17 @@ module.exports = (sequelize) => {
     precio_inicial: {
       type: DataTypes.REAL,
       defaultValue: 0
+    },
+    images: {
+      type: DataTypes.ARRAY(DataTypes.TEXT)
+    },
+    productId_Shopify: {
+      type: DataTypes.BIGINT,
+      defaultValue: null
+    },
+    productId_Meli: {
+      type: DataTypes.STRING,
+      defaultValue: null
     },
   });
 };

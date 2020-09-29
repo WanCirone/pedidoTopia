@@ -1,11 +1,17 @@
-const { crearProducto } = require('./utils');
+const { crearProducto } = require("./utils");
 const server = require("express").Router();
 const request = require("request-promise");
 const meli = require("mercadolibre");
-const fetch = require('node-fetch')
+const fetch = require("node-fetch");
 
 //Modelos
-const { Product, Category, Orders, Productprovider, Provider } = require("../db.js");
+const {
+  Product,
+  Category,
+  Orders,
+  Productprovider,
+  Provider,
+} = require("../db.js");
 
 //Shopify y MeLi
 let {
@@ -85,7 +91,7 @@ server.get("/", async (req, res, next) => {
 });
 
 //Cargar un producto en mi BD
-server.post('/bd', (req, res) => {
+server.post("/bd", (req, res) => {
   const promiseProducto = Product.findOrCreate({
     where: {
       title: req.body.title,
@@ -125,143 +131,148 @@ server.post('/bd', (req, res) => {
     .catch((e) => {
       console.log(e);
     })
-  .then(prod => { res.status(202).send('Se ha creado producto en la bd') })
-  .catch(err => {
-    console.log('No se ha podido crear el producto' + err)
-    res.sendStatus(400)
-  })
-})
+    .then((prod) => {
+      res.status(202).send("Se ha creado producto en la bd");
+    })
+    .catch((err) => {
+      console.log("No se ha podido crear el producto" + err);
+      res.sendStatus(400);
+    });
+});
 
 //Crear o encontrar producto en DB
 server.post("/", async (req, res) => {
-  
   //Crea y devuelve el producto
-  const p = await crearProducto(req)
+  const p = await crearProducto(req);
 
   res.send(p);
 });
 
 //Publicar un producto en MELI
 server.post("/meli/:id", (req, res) => {
-console.log(req.params.id)
-  Product.findOne({ where: {
-    id: req.params.id },
-    include: 
-      [ Category, Provider ]
-  })
-  .then(prod => {
-    console.log(prod)
+  console.log(req.params.id);
+  Product.findOne({
+    where: {
+      id: req.params.id,
+    },
+    include: [Category, Provider],
+  }).then((prod) => {
+    console.log(prod);
 
-    var data =  {
+    var data = {
       title: prod.dataValues.title,
       category_id: prod.dataValues.categories[0].id_Meli,
       price: prod.providers[0].dataValues.productprovider.precio,
-      currency_id:"ARS",
+      currency_id: "ARS",
       available_quantity: prod.providers[0].dataValues.productprovider.stock,
-      condition:"new",
-      listing_type_id:"gold_special",
-      description:{
-         plain_text: prod.dataValues.description
+      condition: "new",
+      listing_type_id: "gold_special",
+      description: {
+        plain_text: prod.dataValues.description,
       },
-      sale_terms:[
-         {
-          id:"WARRANTY_TYPE",
-          value_name:""
-         },
-         {
-          id:"WARRANTY_TIME",
-          value_name:"90 días"
-         }
-      ],
-      pictures:[
+      sale_terms: [
         {
-          source: null
-        }
-      ],
-      attributes:[
+          id: "WARRANTY_TYPE",
+          value_name: "",
+        },
         {
-          id:"COLOR",
-          value_name:"Azul"
-         },
-         {
-          id:"SIZE",
-          value_name: "M"
-         }
-      ]
-    }; console.log(data);
+          id: "WARRANTY_TIME",
+          value_name: "90 días",
+        },
+      ],
+      pictures: [
+        {
+          source: null,
+        },
+      ],
+      attributes: [
+        {
+          id: "COLOR",
+          value_name: "Azul",
+        },
+        {
+          id: "SIZE",
+          value_name: "M",
+        },
+      ],
+    };
+    console.log(data);
     fetch(`https://api.mercadolibre.com/items?access_token=${access_token}`, {
-      method: 'POST', 
-      body: JSON.stringify(data)})
-      .then(res => res.json())
-      .then((response)=> {
-        console.log('Se creo el producto: '+ JSON.stringify(response) + ' en MELI')
+      method: "POST",
+      body: JSON.stringify(data),
+    })
+      .then((res) => res.json())
+      .then((response) => {
+        console.log(
+          "Se creo el producto: " + JSON.stringify(response) + " en MELI"
+        );
       })
-      .catch(err => res.status(502).json({ 
-        error: "No se pudo crear el producto en MELI"
-      }))
-  })
-})
-server.post('/publicar/:id', async (req, res) => {
+      .catch((err) =>
+        res.status(502).json({
+          error: "No se pudo crear el producto en MELI",
+        })
+      );
+  });
+});
+
+server.post("/publicar/:id", async (req, res) => {
   const idProd = req.params.id;
   const { source, precio, stock } = req.body;
 
-  // Busco el producto que quiere publicar el usuario 
+  // Busco el producto que quiere publicar el usuario
   const productToUpdate = await Product.findOne({
-    where: { id: idProd }
-  })
+    where: { id: idProd },
+  });
 
   // Le envio el Producto a la funcion
-  const prod = await publicarShopify(productToUpdate , precio, stock)
-  
-  const idShopifyNuevo = prod.product.id
+  const prod = await publicarShopify(productToUpdate, precio, stock);
+
+  const idShopifyNuevo = prod.product.id;
 
   const productModificado = await Productprovider.findOne({
     where: {
-      productId: idProd
-    }
-  })
+      productId: idProd,
+    },
+  });
 
   await productModificado.update({
-    productId_Shopify: idShopifyNuevo
-  })
-  
+    productId_Shopify: idShopifyNuevo,
+  });
+
   Product.findOne({
     where: { id: idProd },
-    include: [Provider]
-  })
-  .then((producto) => res.send(producto))
-    
+    include: [Provider],
+  }).then((producto) => res.send(producto));
 });
 
-async function publicarShopify(producto, precio, stock){
-
+async function publicarShopify(producto, precio, stock) {
   const productoShopify = {
     product: {
-        title: producto.title,
-        body_html: "<strong>Good snowboard!</strong>",
-        vendor: producto.proveedor,
-        published_scope: "web",
-        variants: [
-          {
-            inventory_management: "shopify",
-            inventory_quantity: stock,
-            price: precio,
-          },
-        ],
-        images: [],
-      },
-};
+      title: producto.title,
+      body_html: "<strong>Good snowboard!</strong>",
+      vendor: producto.proveedor,
+      published_scope: "web",
+      variants: [
+        {
+          inventory_management: "shopify",
+          inventory_quantity: stock,
+          price: precio,
+        },
+      ],
+      images: [],
+    },
+  };
 
   let options = {
     method: "POST",
     uri: testUrl + "products.json",
     body: productoShopify,
     json: true,
-  }; 
+  };
 
   const post = await request(options);
-  console.log('post es: '+ JSON.stringify(post))
-  return post
+  console.log("post es: " + JSON.stringify(post));
+  return post;
 }
 
 module.exports = server;

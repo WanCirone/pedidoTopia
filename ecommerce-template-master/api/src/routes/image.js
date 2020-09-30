@@ -9,7 +9,7 @@ cloudinary.config({
 
 server.post('/', async (req, res) => {
     try{ 
-        const result = await req.body.map(image => cloudinary.v2.uploader.upload(image))
+        const result = await req.body.images.map(image => cloudinary.v2.uploader.upload(image))
         Promise.all(result)
         .then( images => res.send(images))
         

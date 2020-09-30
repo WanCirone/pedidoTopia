@@ -47,12 +47,22 @@ let {
 
 
 function getOrder(orderId) {
-    fetch(`https://api.mercadolibre.com/orders/:${orderId}?access_token=${access_token}`, {})
-    .then(response => response.json())
-    .then(categories => {
-        console.log('')
-        res.send()
+    fetch(`https://api.mercadolibre.com/orders/${orderId}?access_token=${access_token}`, {
+        method: 'GET', 
     })
+    .then(response => response.json())
+    .then(order => {
+        console.log(JSON.stringify(order) + 'RESPUESTA MELI!!! ')
+        Orders.create({
+            shopify_Id: order.id,
+            cantidad: order_items[0].quantity,
+            total: order.total_amount,
+            status: 'created',
+            user_Id: order.buyer.id,
+        })
+    })
+    .then(created => res.status(200).send('Se ha creado la orden en la bd'))
+    .catch(error => console.error('Error: ' + error))
 }
 
 server.post('/shopify', (req, res) => {
@@ -68,14 +78,17 @@ server.post('/shopify', (req, res) => {
             user_Id: req.body.user_id,
         })
   
-    .then(created=>res.status(200).send('Se creado la orden en la bd' + created))
+    .then(created => res.status(200).send('Se ha creado la orden en la bd'))
+    .catch(error => console.error('Error: ' + error))
 })
 
 server.post('/meli', (req, res) => {
     const rta = req.body;
-    console.log(JSON.stringify(rta))
-    res.status(200)
-    getOrder();
+    console.log('Llegó la respuesta de MELI: ' + JSON.stringify(rta))
+    var id = req.body.resource.split('/'); 
+    var orderId = id[id.length-1];
+    console.log(orderId + ' ACAAAAA');
+    getOrder(orderId);
 })
 
 module.exports = server;

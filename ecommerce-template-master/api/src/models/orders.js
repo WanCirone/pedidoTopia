@@ -24,7 +24,7 @@ module.exports = (sequelize) => {
         },
         subtotal: {
             type: DataTypes.DECIMAL,
-            allowNull: false
+            defaultValue: null
         },
         status:{  
             type: DataTypes.ENUM('created'),

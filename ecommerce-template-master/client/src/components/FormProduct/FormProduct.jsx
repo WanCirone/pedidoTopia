@@ -11,7 +11,9 @@ import Link from '@material-ui/core/Link'
 import Typography from '@material-ui/core/Typography'
 import FormProductDetail from './FormProductDetail'
 import FormSelectImages from './FormSelectImages'
-import { firstStepProduct } from '../../actions'
+import swal from 'sweetalert'
+import { useHistory } from 'react-router-dom'
+import { firstStepProduct, createProduct } from '../../actions'
 
 function Copyright() {
   return (
@@ -65,7 +67,8 @@ const useStyles = makeStyles((theme) => ({
 
 const steps = ['Product Details', 'Select Images']
 
-function FormProduct({ setProductDetails }) {
+function FormProduct({ setProductDetails, createProduct }) {
+  const history = useHistory()
   const classes = useStyles()
   const [activeStep, setActiveStep] = React.useState(0)
   const [input, setInput] = React.useState({})
@@ -93,6 +96,35 @@ function FormProduct({ setProductDetails }) {
         throw new Error('Unknown step')
     }
   }
+
+  const product = {
+    title: input.title,
+    description: input.description,
+    category_sugerida: input.category,
+    sku: input.sku,
+    stock_inicial: input.stock,
+    precio_inicial: input.price,
+    images: input.images,
+  }
+
+  const handleCreate = () => {
+    setProductDetails(input)
+    createProduct(product).then((res) => {
+      if (res.status !== 200) {
+        swal({
+          title: 'Error',
+          text: 'Hubo un error al crear el producto',
+          icon: 'error',
+        })
+      } else {
+        setActiveStep(activeStep + 1)
+        setTimeout(() => {
+          history.push('/')
+        }, 1500)
+      }
+    })
+  }
+
   const handleNext = () => {
     setProductDetails(input)
     setActiveStep(activeStep + 1)
@@ -145,7 +177,7 @@ function FormProduct({ setProductDetails }) {
                     <Button
                       variant='contained'
                       color='primary'
-                      onClick={handleNext}
+                      onClick={handleCreate}
                       className={classes.button}
                     >
                       Create
@@ -165,6 +197,7 @@ function FormProduct({ setProductDetails }) {
 const mapDispatchToProps = (dispatch) => {
   return {
     setProductDetails: (product) => dispatch(firstStepProduct(product)),
+    createProduct: (product) => dispatch(createProduct(product)),
   }
 }
 

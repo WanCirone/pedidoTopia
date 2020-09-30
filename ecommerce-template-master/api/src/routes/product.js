@@ -1,8 +1,6 @@
-const { crearProducto } = require('./utils');
 const server = require("express").Router();
 const request = require("request-promise");
 const meli = require("mercadolibre");
-const fetch = require('node-fetch')
 
 //Modelos
 const { Product, Category, Orders, Productprovider, Provider } = require("../db.js");
@@ -20,6 +18,8 @@ let {
   access_token,
   refresh_token,
 } = process.env;
+
+console.log('acces_token: '+ access_token)
 
 //var refresh_token = "";
 const testUrl = `https://${SHOPIFY_API_KEY}:${SHOPIFY_API_PASSWORD}@${APP_DOMAIN}/admin/api/2020-07/`;
@@ -108,11 +108,13 @@ server.post('/', (req, res) => {
       product = values[0][0];
       category = values[1][0];
     
+      console.log('prods: '+JSON.stringify(product))
+      console.log('cats: '+JSON.stringify(category))
+
       product.update({
         categoryId : category.id
       })
       .then(product => {
-        console.log('product aqui seria: '+ JSON.stringify(product))
         return Product.findOne({
           where: { id: product.id },
           include: [Category]
@@ -134,116 +136,48 @@ server.post('/', (req, res) => {
 //   res.send(p);
 // });
 
-//Publicar un producto en MELI
-server.post("/meli/:id", (req, res) => {
-console.log(req.params.id)
-  Product.findOne({ where: {
-    id: req.params.id },
-    include: 
-      [ Category, Provider ]
-  })
-  .then(prod => {
-    console.log(prod)
-
-    var data =  {
-      title: prod.dataValues.title,
-      category_id: "MLA3530",
-      price: prod.providers[0].dataValues.productprovider.precio,
-      currency_id:"ARS",
-      available_quantity: prod.providers[0].dataValues.productprovider.stock,
-      condition:"new",
-      listing_type_id:"gold_special",
-      description:{
-         plain_text: prod.dataValues.description
-      },
-      sale_terms:[
-         {
-          id:"WARRANTY_TYPE",
-          value_name:""
-         },
-         {
-          id:"WARRANTY_TIME",
-          value_name:"90 días"
-         }
-      ],
-      pictures:[
-        {
-          source: "https://d26lpennugtm8s.cloudfront.net/stores/678/525/products/71-9c9d1cf749d0242a5815701896774858-640-0.jpg"
-        }
-      ],
-      attributes:[
-        {
-          id:"COLOR",
-          value_name:"Azul"
-         },
-         {
-          id:"SIZE",
-          value_name: "M"
-         }
-      ]
-    }; 
-
-    console.log(JSON.stringify(data))
-
-    fetch(`https://api.mercadolibre.com/items?access_token=${access_token}`, {
-      method: 'POST', 
-      body: JSON.stringify(data)})
-      .then(res => res.json())
-      .then((response)=> {
-        if(response.error) throw new Error('No se publico')
-        else {
-        console.log('Se creo el producto: '+ JSON.stringify(response) + ' en MELI')
-        console.log('Se creo el producto: '+ JSON.stringify(response.id) + ' en MELI')
-        console.log('Se creo el link: '+ JSON.stringify(response.permalink) + ' en MELI')
-        console.log('req.params.id: '+ req.params.id)
-
-        Productprovider.findOne({
-          where: {
-            productId: req.params.id
-          }
-        }).then(productToUpadte => {
-          productToUpadte.update({
-            productId_Meli: response.id,
-            link_meli: response.permalink
-          })
-
-          Product.findOne({
-            where: { id: req.params.id },
-            include: [Provider]
-          })
-          .then((producto) => res.send(producto))
-        })
-      }
-      })
-      .catch(err => res.status(502).json({ 
-        error: "No se pudo crear el producto en MELI"
-      }))
-  })
-})
-
 server.post('/publicar/:id', async (req, res) => {
   const idProd = req.params.id;
-  const { source, precio, stock } = req.body;
+  const { source, precio, stock, category_id } = req.body;
+  let prod = null;
+  let link = null;
+  let providerId = null;
+  console.log("req bodye s: "+ JSON.stringify(req.body))
 
   // Busco el producto que quiere publicar el usuario 
-  const productToUpdate = await Product.findOne({
+  const productToPublish = await Product.findOne({
     where: { id: idProd }
   })
 
-  // Le envio el Producto a la funcion
-  const prod = await publicarShopify(productToUpdate , precio, stock)
-  
-  const idShopifyNuevo = prod.product.id
+  if(source === 'shopify'){
+    // Le envio el Producto a la funcion
+    prod = await publicarShopify(productToPublish , precio, stock)
+    
+    await productToPublish.update({
+      productId_Shopify: prod.product.id
+    })
 
-  const productModificado = await Productprovider.findOne({
-    where: {
-      productId: idProd
-    }
+    providerId = 2;
+
+  } else if(source === 'mercadolibre') {
+    prod = await publicarMeli(productToPublish, precio, stock, category_id)
+
+    await productToPublish.update({
+      productId_Meli: prod.id
+    })
+    providerId = 1;
+    link = prod.permalink;
+
+  }
+
+  await Productprovider.create({
+    stock,
+    precio,
+    link,
+    productId: productToPublish.id,
+    providerId 
   })
 
-  await productModificado.update({
-    productId_Shopify: idShopifyNuevo
-  })
   
   Product.findOne({
     where: { id: idProd },
@@ -281,6 +215,60 @@ async function publicarShopify(producto, precio, stock){
 
   const post = await request(options);
   console.log('post es: '+ JSON.stringify(post))
+  return post
+}
+
+async function publicarMeli(producto, precio, stock, category_id){
+  console.log(JSON.stringify(producto))
+  let data = {
+    title: producto.title,
+    category_id: category_id,
+    price: precio,
+    currency_id:"ARS",
+    available_quantity: stock,
+    buying_mode:"buy_it_now",
+    condition:"new",
+    listing_type_id:"gold_special",
+    description:{
+        plain_text: producto.description
+    },
+    video_id:"YOUTUBE_ID_HERE",
+    sale_terms:[
+        {
+          id:"WARRANTY_TYPE",
+          value_name:"Garantía del vendedor"
+        },
+        {
+          id:"WARRANTY_TIME",
+          value_name:"90 días"
+        }
+    ],
+    pictures:[
+        {
+          source:"http://mla-s2-p.mlstatic.com/968521-MLA20805195516_072016-O.jpg"
+        }
+    ],
+    attributes:[
+        {
+          id:"BRAND",
+          value_name:"Marca del producto"
+        },
+        {
+          id:"EAN",
+          value_name:"7898095297749"
+        }
+    ]
+  }
+
+  let options = {
+    method: "POST",
+    uri: `https://api.mercadolibre.com/items?access_token=${access_token}`,
+    body: data,
+    json: true,
+  }; 
+
+  const post = await request(options);
+  console.log('post en meli es: '+ JSON.stringify(post))
   return post
 }
 

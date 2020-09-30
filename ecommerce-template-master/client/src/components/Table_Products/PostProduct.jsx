@@ -11,10 +11,25 @@ import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import { connect } from 'react-redux'
-import { getCategories } from '../../actions'
+import { getCategories, postProduct } from '../../actions'
+import swal from 'sweetalert'
 
-function PostProduct({ categories, getCategories, match }) {
+function PostProduct({ categories, getCategories, match, publish }) {
   const id = match.params.id
+  const history = useHistory()
+  const [values, setValues] = useState({
+    precio: '',
+    stock: '',
+    category_id: '',
+    source: '',
+  })
+
+  const handleValues = (e) => {
+    setValues({
+      ...values,
+      [e.target.name]: e.target.value,
+    })
+  }
 
   useEffect(() => {
     getCategories(id)
@@ -27,17 +42,32 @@ function PostProduct({ categories, getCategories, match }) {
           <AttachMoneyRoundedIcon />{' '}
         </i>
         <div className={styles.inputcontenedor}>
-          <input type='number' placeholder='Price' />
+          <input
+            type='number'
+            placeholder='Price'
+            name='precio'
+            onChange={handleValues}
+          />
         </div>
         <i className={styles.icon}>
           <AccountBalanceRoundedIcon />{' '}
         </i>
         <div className={styles.inputcontenedor}>
-          <input type='number' placeholder='Stock' />
+          <input
+            type='number'
+            placeholder='Stock'
+            name='stock'
+            onChange={handleValues}
+          />
         </div>
         {/* <FormGroup aria-label="position" row marginTop = "20px"> */}
         <InputLabel>Category</InputLabel>
-        <Select native>
+        <Select
+          native
+          name='category_id'
+          value={values.category_id}
+          onChange={handleValues}
+        >
           {categories.length > 0 &&
             categories.map((cat) => <option value={cat.id}>{cat.name}</option>)}
         </Select>
@@ -45,16 +75,45 @@ function PostProduct({ categories, getCategories, match }) {
         <div className={styles.Checkbox}>
           <label>
             Mercado Libre
-            <input type='radio' name='provider' value='Mercado Libre' />
+            <input
+              type='radio'
+              name='source'
+              value='mercadolibre'
+              onChange={handleValues}
+            />
           </label>
           <label>
             Shopify
-            <input type='radio' name='provider' value='Mercado Libre' />
+            <input
+              type='radio'
+              name='source'
+              value='shopify'
+              onChange={handleValues}
+            />
           </label>
         </div>
         {/* </FormGroup> */}
         <div className={styles.button}>
-          <Button variant='contained' color='primary'>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() =>
+              publish(id, values).then((res) => {
+                if (res.status !== 200) {
+                  swal({
+                    title: 'Error',
+                    text: 'Hubo un error al publicar el producto',
+                    icon: 'error',
+                  })
+                } else {
+                  swal({
+                    text: 'Se publico correctamente!',
+                    icon: 'success',
+                  })
+                }
+              })
+            }
+          >
             Publicar
           </Button>
           <Button variant='contained' color='secondary' href='/'>
@@ -76,6 +135,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getCategories: (id) => dispatch(getCategories(id)),
+    publish: (id, product) => dispatch(postProduct(id, product)),
   }
 }
 

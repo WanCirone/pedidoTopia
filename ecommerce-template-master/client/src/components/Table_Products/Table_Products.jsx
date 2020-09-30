@@ -91,7 +91,7 @@ function Table_Products({ products, getListProducts }) {
                   <StyledTableCell align='center'>
                     <span>
                       <img
-                        src={product.image && product.image.src}
+                        src={product.images.length > 0 && product.images[0]}
                         height='100px'
                         width='100px'
                         alt=''

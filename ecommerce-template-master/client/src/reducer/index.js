@@ -1,5 +1,7 @@
 const initialState = {
   product: {},
+  listProducts: [],
+  listCategories: [],
 }
 
 export function rootReducer(state = initialState, action) {
@@ -16,6 +18,16 @@ export function rootReducer(state = initialState, action) {
           ...state.product,
           images: action.payload,
         },
+      }
+    case 'GET_PRODUCTS':
+      return {
+        ...state,
+        listProducts: action.payload,
+      }
+    case 'GET_CATEGORIES':
+      return {
+        ...state,
+        listCategories: action.payload,
       }
 
     default:

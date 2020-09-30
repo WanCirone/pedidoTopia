@@ -25,7 +25,7 @@ server.use((req, res, next) => {
   // update to match the domain you will make the request from
   res.header(
     "Access-Control-Allow-Origin",
-    "http://localhost:3000"
+    "http://localhost:3001"
     // "https://localhost:3000"
   );
   res.header("Access-Control-Allow-Credentials", "true");
@@ -44,9 +44,9 @@ server.use("/callback", (req, res) => {
 server.use("/", routes);
 
 // let code;
-// server.use("/", (req, res) => {
-//   res.send(req.query);
-// });
+server.use("/", (req, res) => {
+  res.send(req.query);
+});
 
 // Error catching endware.
 server.use((err, req, res, next) => {

@@ -30,11 +30,11 @@ let {
   );
   
   const getUrlCode = mercadolibre.getAuthURL(redirect_uri);
-  // console.log(getUrlCode);
+   //console.log(getUrlCode);
   
   const meliAuthorize = mercadolibre.authorize(code, redirect_uri, (err, res) => {
     if (res.access_token) {
-      // console.log(res);
+     //  console.log(res);
       access_token = res.access_token;
       refresh_token = res.refresh_token;
     }
@@ -46,25 +46,7 @@ let {
   });
 
 
-function getOrder(orderId) {
-    fetch(`https://api.mercadolibre.com/orders/${orderId}?access_token=${access_token}`, {
-        method: 'GET', 
-    })
-    .then(response => response.json())
-    .then(order => {
-        console.log(JSON.stringify(order) + 'RESPUESTA MELI!!! ')
-        Orders.create({
-            shopify_Id: order.id,
-            cantidad: order_items[0].quantity,
-            total: order.total_amount,
-            status: 'created',
-            user_Id: order.buyer.id,
-        })
-    })
-    .then(created => res.status(200).send('Se ha creado la orden en la bd'))
-    .catch(error => console.error('Error: ' + error))
-}
-
+//Ruta que recibe la notificación desde shopify cuando se crea una nueva orden
 server.post('/shopify', (req, res) => {
     const rta = req.body;
     console.log(JSON.stringify(rta)) 
@@ -82,13 +64,32 @@ server.post('/shopify', (req, res) => {
     .catch(error => console.error('Error: ' + error))
 })
 
+//Ruta que recibe la notificación desde meli cuando se crea una nueva orden
 server.post('/meli', (req, res) => {
     const rta = req.body;
     console.log('Llegó la respuesta de MELI: ' + JSON.stringify(rta))
     var id = req.body.resource.split('/'); 
     var orderId = id[id.length-1];
     console.log(orderId + ' ACAAAAA');
-    getOrder(orderId);
+  
+  fetch(`https://api.mercadolibre.com/orders/${orderId}?access_token=${access_token}`, {
+        method: 'GET', 
+    })
+    .then(response => response.json())
+    .then(order => {
+        console.log(JSON.stringify(order) + 'RESPUESTA MELI!!! ')
+        return Orders.create({
+            meli_Id: order.id,
+            cantidad: order.order_items[0].quantity,
+            total: order.total_amount,
+            status: 'created',
+            user_Id: order.buyer.id,
+        })
+    .then(created => {    
+      console.log(created)
+      res.status(200).send(created)})
+    .catch(error => console.error('Error: ' + error))
+  })
 })
 
 module.exports = server;

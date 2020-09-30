@@ -96,14 +96,10 @@ server.post('/shopify/create', (req, res) => {
   const rtaPubli = req.body;
   console.log("Rta de Shopify" + JSON.stringify(rtaPubli))
 
-    Product.findOne({
-      include: [Provider]
-    })
     Product.create({
       id: req.body.id,
       shopify_Id: req.body.shopify_Id,
       title: req.body.title,
-      // description: req.body.description,
     })
     .then(resp => {
       res.send(rtaPubli)

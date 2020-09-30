@@ -39,25 +39,18 @@ function PostProduct({ categories, getCategories, match }) {
         <InputLabel>Category</InputLabel>
         <Select native>
           {categories.length > 0 &&
-            categories.map((cat) => (
-              <option value={cat.category_id}>{cat.category_name}</option>
-            ))}
+            categories.map((cat) => <option value={cat.id}>{cat.name}</option>)}
         </Select>
 
         <div className={styles.Checkbox}>
-          <FormControlLabel
-            value='end'
-            control={<Checkbox color='primary' />}
-            label='Mercado Libre'
-            labelPlacement='end'
-          />
-          <FormControlLabel
-            value='end'
-            control={<Checkbox color='secondary' />}
-            label='Shopify'
-            labelPlacement='end'
-            fontFamily='Raleway'
-          />
+          <label>
+            Mercado Libre
+            <input type='radio' name='provider' value='Mercado Libre' />
+          </label>
+          <label>
+            Shopify
+            <input type='radio' name='provider' value='Mercado Libre' />
+          </label>
         </div>
         {/* </FormGroup> */}
         <div className={styles.button}>

@@ -19,8 +19,6 @@ let {
   refresh_token,
 } = process.env;
 
-console.log('acces_token: '+ access_token)
-
 //var refresh_token = "";
 const testUrl = `https://${SHOPIFY_API_KEY}:${SHOPIFY_API_PASSWORD}@${APP_DOMAIN}/admin/api/2020-07/`;
 
@@ -94,6 +92,7 @@ server.post('/', (req, res) => {
       sku: req.body.sku,
       stock_inicial: req.body.stock_inicial,
       precio_inicial: req.body.precio_inicial,
+      images: req.body.images
     },
   });
   

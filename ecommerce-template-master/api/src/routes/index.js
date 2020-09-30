@@ -3,6 +3,7 @@ const { Router } = require("express");
 const productRouter = require("./product.js");
 const categoryRouter = require("./category.js");
 const providerRouter = require("./provider.js");
+const imageRouter = require("./image.js");
 
 const router = Router();
 // load each router on a route
@@ -10,5 +11,6 @@ const router = Router();
 router.use("/products", productRouter);
 router.use("/categories", categoryRouter);
 router.use("/providers", providerRouter);
+router.use("/images", imageRouter)
 
 module.exports = router;

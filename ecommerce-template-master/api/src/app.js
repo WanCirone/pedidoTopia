@@ -44,9 +44,9 @@ server.use("/callback", (req, res) => {
 server.use("/", routes);
 
 // let code;
-server.use("/", (req, res) => {
-  res.send(req.query);
-});
+// server.use("/", (req, res) => {
+//   res.send(req.query);
+// });
 
 // Error catching endware.
 server.use((err, req, res, next) => {

@@ -96,9 +96,12 @@ server.post('/shopify/create', (req, res) => {
   const rtaPubli = req.body;
   console.log("Rta de Shopify" + JSON.stringify(rtaPubli))
 
+    Product.findOne({
+      include: [Provider]
+    })
     Product.create({
       id: req.body.id,
-      shopify_Id: req.body.inventory_management,
+      shopify_Id: req.body.shopify_Id,
       title: req.body.title,
       // description: req.body.description,
     })
@@ -106,6 +109,11 @@ server.post('/shopify/create', (req, res) => {
       res.send(rtaPubli)
     })
 
+})
+
+server.get('/orders/fulfilled', (req, res) => {
+  Orders.findAll()
+  .then(order => res.send(order))
 })
 
 module.exports = server;

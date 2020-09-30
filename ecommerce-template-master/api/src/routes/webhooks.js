@@ -58,8 +58,7 @@ function getOrder(orderId) {
 server.post('/shopify', (req, res) => {
     const rta = req.body;
     console.log(JSON.stringify(rta)) 
-  //  res.status(200)
-  //  .then(() => {
+
         Orders.create({
             shopify_Id: req.body.id,
             cantidad: req.body.line_items[0].quantity,
@@ -68,7 +67,7 @@ server.post('/shopify', (req, res) => {
             status: 'created',
             user_Id: req.body.user_id,
         })
-  //  })
+  
     .then(created=>res.status(200).send('Se creado la orden en la bd' + created))
 })
 

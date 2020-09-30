@@ -92,7 +92,7 @@ server.post('/', (req, res) => {
       sku: req.body.sku,
       stock_inicial: req.body.stock_inicial,
       precio_inicial: req.body.precio_inicial,
-      image: req.body.images
+      images: req.body.images
     },
   });
   

@@ -49,7 +49,7 @@ const meliAuthorize = mercadolibre.authorize(code, redirect_uri, (err, res) => {
 const meliRefreshToken = mercadolibre.refreshAccessToken((err, res) => {
   access_token = res.access_token;
   refresh_token = res.refresh_token;
-  console.log(res);
+  // console.log(res);
 });
 
 //Ruta que recibe la notificación desde shopify cuando se crea una nueva orden
@@ -101,6 +101,7 @@ server.post("/meli", (req, res) => {
     });
 });
 
+  
 //Ruta que recibe la notificación desde shopify cuando se crea/actualiza un producto
 server.post("/shopify/create", (req, res, next) => {
   const productCreate = req.body;
@@ -148,6 +149,7 @@ server.post("/shopify/create", (req, res, next) => {
     });
   res.send();
 });
+
 
 //Ruta que recibe la notificación desde meli cuando se crea/actualiza un producto
 server.post("/newproduct/meli", (req, res) => {
@@ -205,6 +207,7 @@ server.post("/newproduct/meli", (req, res) => {
       .catch((error) => console.error("Error: " + error));
    });
 });
+
 
 server.get("/orders/fulfilled", (req, res) => {
   Orders.findAll().then((order) => res.send(order));

@@ -2,7 +2,7 @@ const { Router } = require("express");
 // import all routers;
 const productRouter = require("./product.js");
 const categoryRouter = require("./category.js");
-const webhooks = require('./webhooks.js');
+const webhooks = require("./webhooks.js");
 const providerRouter = require("./provider.js");
 const imageRouter = require("./image.js");
 
@@ -13,6 +13,6 @@ router.use("/products", productRouter);
 router.use("/categories", categoryRouter);
 router.use("/webhooks", webhooks);
 router.use("/providers", providerRouter);
-router.use("/images", imageRouter)
+router.use("/images", imageRouter);
 
 module.exports = router;

@@ -97,16 +97,12 @@ export default function Orders(){
         src:
           'https://www.venex.com.ar/products_images/1599498841_notebooklenovothinkpade14corei510210u8gbssd256gb14.jpg',
       },
-      proveedor: {
-        src: 
-        "https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png",
-       },
-      title: '1',
+     
+      title: 'shopify',
       quantity: 20,
       state: "Proceso",
       sku: 2000,
-      date:
-      "15/1/20"    },
+       },
 
     {
       id: 2,
@@ -114,16 +110,12 @@ export default function Orders(){
         src:
           'https://d26lpennugtm8s.cloudfront.net/stores/911/585/products/jbl-flip-5-21-a3cd6bd39bb60bc05f15810292397285-640-0.jpg',
       },
-      proveedor: {
-        src: 
-        "https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png",
-       },
-      title: '2',
+     
+      title: 'mercadolibre',
       quantity: 15,
       state: "Publicado",
       sku: 50000,
-      date:
-      "01/5/20",
+   
     },
 
     {
@@ -132,16 +124,12 @@ export default function Orders(){
         src:
           'https://d26lpennugtm8s.cloudfront.net/stores/001/166/416/products/8245933-1-11-67cb081bd5fd9832d315886143864513-480-0.jpg',
       },
-      proveedor: {
-       src: 
-       "https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png",
-      },
-      title: '3',
+    
+      title: '',
       quantity: 43,
       state: "Sin Publicar",
       price: 45000,
-      date:
-        "20/2/20"
+     
         
     },
   ]
@@ -163,8 +151,8 @@ export default function Orders(){
         <Table className={classes.table} aria-label='customized table'>
           <TableHead>
             <TableRow>
-              <StyledTableCell align='left'> Filtrar&nbsp;</StyledTableCell>
-              <StyledTableCell align='center'>
+              <StyledTableCell align='center'> Filtrar&nbsp;</StyledTableCell>
+              <StyledTableCell align='left'>
               <div className = {styles.Orders}>
               <select
               required
@@ -172,18 +160,17 @@ export default function Orders(){
               id="all"
               >
               <option value="all">Todo</option>
-              <option value="out">Sin Publicar</option>
-              <option value="published">Proceso</option>
-              <option value="shopify">Publicado</option>
-              <option value="mercadolibre"></option>
+              <option value="out">Mercado Libre</option>
+              <option value="published">Shopify</option>
+              
               </select>
               </div>
               </StyledTableCell>
-              <StyledTableCell align='left'>Usuario&nbsp;</StyledTableCell>
               <StyledTableCell align='center'>Proveedor&nbsp;</StyledTableCell>
-              <StyledTableCell align='center'>Precio</StyledTableCell>
-              <StyledTableCell align='right'>Cantidad&nbsp;</StyledTableCell>
-              <StyledTableCell align='center'>Fecha&nbsp;</StyledTableCell>
+             
+              <StyledTableCell align='center'>Total</StyledTableCell>
+              <StyledTableCell align='center'>Cantidad&nbsp;</StyledTableCell>
+              
               <StyledTableCell align='center'>
                Estado
               </StyledTableCell>
@@ -198,36 +185,25 @@ export default function Orders(){
                   <StyledTableCell align='rigth'>
                   
                   </StyledTableCell>
-                  <StyledTableCell align='center'>
-                    <Button 
+                  <StyledTableCell align='left'>
+                    {/* <Button 
                     variant = "outlined"
                     startIcon={<PermContactCalendarIcon />}
                     color = "primary"
                     size = "small"
                     >
                       Detalle
-                    </Button>
-                  </StyledTableCell>
-                  <StyledTableCell align='left'>
-                    {product.title}
+                    </Button> */}
                   </StyledTableCell>
                   <StyledTableCell align='center'>
-                  <span className = {styles.span}>
-                      <img
-                        src={product.proveedor && product.proveedor.src}
-                        height='30px'
-                        width='120px'
-                        alt=''
-                        />
-                    </span>
+                    {product.title}
                   </StyledTableCell>
+                  
                   <StyledTableCell align='center'>
                     {product.price}
                   </StyledTableCell>
                   <StyledTableCell align='center'>{product.quantity}</StyledTableCell>
-                  <StyledTableCell align='right' width={1/4}>
-                    {product.date.slice(0, 40)}
-                  </StyledTableCell>
+                
                   <StyledTableCell align='center'>
                     {product.state}
                   </StyledTableCell>

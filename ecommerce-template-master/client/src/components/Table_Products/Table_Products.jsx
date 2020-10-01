@@ -107,15 +107,15 @@ const useStyless = makeStyles((theme) => ({
   },
 }));
 
-function Detalle (props){
+function Detalle (props, images){
   
   return(
     <form className = {styless.form}>
       <div className = {styless.content}>
       <div className={styless.image}>
-        {/* {images && images.length > 0 && <Slider images={images} />} */}
+         {images && images.length > 0 && <Slider images={images} />}
         <img
-          src={ defaultImg}
+          src={ props.product.images}
           alt= ""
           onChange={(e) => {
             props.uploadImg(e)
@@ -234,11 +234,11 @@ function Table_Products({ products, getListProducts }) {
               products.map((product) => (
                 <StyledTableRow key={product.id}>
                   <StyledTableCell align='left'>
-                    <Button onClick = { () => setRenderBorrar(true)} >
+                    {/* <Button onClick = { () => setRenderBorrar(true)} >
                       <i>
                         <DeleteOutlineIcon />
                       </i>
-                    </Button>
+                    </Button> */}
                   </StyledTableCell>
                   <StyledTableCell align='center'>
                     <span>
@@ -302,7 +302,8 @@ function Table_Products({ products, getListProducts }) {
                     <div    
                     style={{
                       wordWrap: "break-word",
-                      height: "50px"
+                      height: "50px",
+                      marginTop: "",
                     }}
                      >
                     {product.description.slice(0, 40)}
@@ -327,7 +328,7 @@ function Table_Products({ products, getListProducts }) {
                     startIcon={<PermContactCalendarIcon />}
                     color = "primary"
                     onClick = {() => {setRenderDetalle(true);
-                    setDetallepro({title: product.title, stock_inicial: product.stock_inicial, description: product.description,precio_inicial: product.precio_inicial, sku: product.sku })
+                    setDetallepro({title: product.title, stock_inicial: product.stock_inicial, description: product.description,precio_inicial: product.precio_inicial, sku: product.sku, images: product.images[0]})
                     }}
                     >
                       Detalle

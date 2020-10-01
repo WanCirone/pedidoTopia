@@ -12,6 +12,7 @@ export function secondStepImages(images) {
 }
 
 export function createProduct(product) {
+  console.log(product)
   return function (dispatch) {
     return fetch('http://localhost:3000/products', {
       method: 'POST',
@@ -47,5 +48,38 @@ export function getCategories(id) {
           payload: categories,
         })
       )
+  }
+}
+
+export function uploadImages(imgs) {
+  return function (dispatch) {
+    return fetch('http://localhost:3000/images', {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify({ images: imgs }),
+    })
+      .then((res) => res.json())
+      .then((imgs) =>
+        dispatch({
+          type: 'GET_IMAGES_URL',
+          payload: imgs,
+        })
+      )
+  }
+}
+
+export function postProduct(id, product) {
+  return function (dispatch) {
+    return fetch(`http://localhost:3000/products/publicar/${id}`, {
+      method: 'POST',
+      headers: {
+        Accept: 'application/json',
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(product),
+    })
   }
 }

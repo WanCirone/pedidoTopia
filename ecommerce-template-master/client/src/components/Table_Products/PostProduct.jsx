@@ -4,8 +4,6 @@ import { useHistory } from 'react-router-dom'
 //Material-ui
 
 import Button from '@material-ui/core/Button'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded'
 import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded'
 import InputLabel from '@material-ui/core/InputLabel'
@@ -22,9 +20,11 @@ function PostProduct({ categories, getCategories, match, publish }) {
     stock: '',
     category_id: '',
     source: '',
+    category_name: '',
   })
 
   const handleValues = (e) => {
+    console.log(e.target)
     setValues({
       ...values,
       [e.target.name]: e.target.value,
@@ -68,8 +68,11 @@ function PostProduct({ categories, getCategories, match, publish }) {
           value={values.category_id}
           onChange={handleValues}
         >
+          <option>SELECT...</option>
           {categories.length > 0 &&
-            categories.map((cat) => <option value={cat.id}>{cat.name}</option>)}
+            categories.map((cat) => (
+              <option value={cat.category_id}>{cat.category_name}</option>
+            ))}
         </Select>
 
         <div className={styles.Checkbox}>
@@ -109,7 +112,7 @@ function PostProduct({ categories, getCategories, match, publish }) {
                   swal({
                     text: 'Se publico correctamente!',
                     icon: 'success',
-                  })
+                  }).then(() => history.push('/'))
                 }
               })
             }

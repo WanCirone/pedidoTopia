@@ -12,7 +12,10 @@ server.post("/", async (req, res) => {
     const result = await req.body.images.map((image) =>
       cloudinary.v2.uploader.upload(image)
     );
-    Promise.all(result).then((images) => res.send(images));
+    Promise.all(result).then((images) => {
+      const urls = images.map((img) => img.url);
+      res.send(urls);
+    });
   } catch (err) {
     res.status(500).send({
       error: err,

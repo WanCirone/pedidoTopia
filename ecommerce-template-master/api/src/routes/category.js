@@ -6,23 +6,17 @@ server.get("/predictor/:id", async (req, res) => {
   const productId = +req.params.id;
 
   const product = await Product.findOne({
-    where: { id: productId },
+    where: {
+      id: productId,
+    },
     include: [Category],
   });
 
   if (product) {
-    let titleToPredict = product.title;
     let categoryToPredict = product.category.title_sugerido;
 
-    var dataToPredict = [
-      { title: titleToPredict },
-      { title: categoryToPredict },
-    ];
-
     let options = {
-      method: "POST",
-      uri: `https://api.mercadolibre.com/sites/MLA/category_predictor/predict`,
-      body: dataToPredict,
+      uri: `https://api.mercadolibre.com/sites/MLA/domain_discovery/search?q=${categoryToPredict}`,
       json: true,
     };
 
@@ -34,6 +28,7 @@ server.get("/predictor/:id", async (req, res) => {
       });
     } else {
       console.log("categories es: " + JSON.stringify(predicts));
+
       res.send(predicts);
     }
   } else {

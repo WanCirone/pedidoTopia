@@ -67,7 +67,7 @@ const useStyles = makeStyles((theme) => ({
 
 const steps = ['Product Details', 'Select Images']
 
-function FormProduct({ setProductDetails, createProduct }) {
+function FormProduct({ setProductDetails, createProduct, imagesUrl }) {
   const history = useHistory()
   const classes = useStyles()
   const [activeStep, setActiveStep] = React.useState(0)
@@ -104,11 +104,10 @@ function FormProduct({ setProductDetails, createProduct }) {
     sku: input.sku,
     stock_inicial: input.stock,
     precio_inicial: input.price,
-    images: input.images,
+    images: imagesUrl,
   }
 
   const handleCreate = () => {
-    setProductDetails(input)
     createProduct(product).then((res) => {
       if (res.status !== 200) {
         swal({
@@ -173,7 +172,7 @@ function FormProduct({ setProductDetails, createProduct }) {
                       Next
                     </Button>
                   )}
-                  {activeStep === 1 && (
+                  {activeStep === 1 && imagesUrl.length > 0 && (
                     <Button
                       variant='contained'
                       color='primary'
@@ -194,6 +193,11 @@ function FormProduct({ setProductDetails, createProduct }) {
   )
 }
 
+const mapStateToProps = (state) => {
+  return {
+    imagesUrl: state.imagesUrl,
+  }
+}
 const mapDispatchToProps = (dispatch) => {
   return {
     setProductDetails: (product) => dispatch(firstStepProduct(product)),
@@ -201,4 +205,4 @@ const mapDispatchToProps = (dispatch) => {
   }
 }
 
-export default connect(null, mapDispatchToProps)(FormProduct)
+export default connect(mapStateToProps, mapDispatchToProps)(FormProduct)

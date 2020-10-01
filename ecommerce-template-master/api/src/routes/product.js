@@ -25,6 +25,8 @@ let {
   refresh_token,
 } = process.env
 
+console.log('acces_token: '+ access_token)
+
 //var refresh_token = "";
 const testUrl = `https://${SHOPIFY_API_KEY}:${SHOPIFY_API_PASSWORD}@${APP_DOMAIN}/admin/api/2020-07/`
 

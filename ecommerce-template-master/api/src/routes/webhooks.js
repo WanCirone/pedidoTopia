@@ -92,4 +92,43 @@ server.post('/meli', (req, res) => {
   })
 })
 
+//Ruta que recibe la notificación desde meli cuando se crea un nuevo producto
+server.post('/newproduct/meli', (req, res) => {
+  const rta = req.body;
+  console.log('Llegó la respuesta de MELI: ' + JSON.stringify(rta))
+  var id = req.body.resource.split('/'); 
+  var productId = id[id.length-1];
+  console.log(productId + ' ACAAAAA');
+
+fetch(`https://api.mercadolibre.com/items/${productId}?access_token=${access_token}`, {
+      method: 'GET', 
+  })
+  .then(response => response.json())
+  .then(product => {
+      console.log(JSON.stringify(product) + 'RESPUESTA MELI!!! ')
+      const createProduct = Product.findOrCreate({
+        where: { 
+          title: product.title,
+          productId_Meli: product.id
+        }
+      })
+      const prodXprov = Productprovider.findOrCreate({
+        where: { 
+          stock: product.initial_quantity,
+          precio: product.price,
+          link: product.permalink
+        }
+      })
+  
+  Promise.all([createProduct, prodXprov])
+  
+  .then(created => {    
+    console.log(created)
+    res.status(200).send(created)
+  })
+  .catch(error => console.error('Error: ' + error))
+})
+})
+
 module.exports = server;
+

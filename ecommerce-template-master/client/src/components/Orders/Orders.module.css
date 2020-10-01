@@ -1,0 +1,16 @@
+.Orders{
+    margin-left: -50px;
+    margin-top: 0px;
+}
+.Orders label{
+font-size: 15px;
+}
+.caption{
+    width: 250px;
+    height: 50px;
+    font-size: 25px;
+    margin-left: 450px;
+    margin-top: 20px;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+    
+}

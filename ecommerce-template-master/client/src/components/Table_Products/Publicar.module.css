@@ -18,8 +18,9 @@
   border: 2px solid black;
 }
 .button {
-  margin-top: -38px;
+  margin-top: -30px;
   margin-left: 270px;
+  padding: 3px;
 }
 .content input[type='number'] {
   font-size: 20px;
@@ -53,4 +54,23 @@
 }
 .span {
   border-radius: 8px;
+}
+.select{
+  width: 420px;
+  height: 45px;
+  margin-top: 50px;
+  border-radius: 8px;
+  border: 2px solid black;
+}
+.i{
+  width:100px;
+  height: 200px;
+  margin-left: 20px;
+}
+.i svg {
+  font-size: 33px;
+  margin-left: -10px;
+  position: relative;
+  top: 14px;
+  padding-right: 5px;
 }

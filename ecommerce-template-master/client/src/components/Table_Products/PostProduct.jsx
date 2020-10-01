@@ -1,16 +1,19 @@
 import React, { useState, useEffect } from 'react'
 import styles from './Publicar.module.css'
 import { useHistory } from 'react-router-dom'
-//Material-ui
+import swal from 'sweetalert'
 
+//Material-ui
 import Button from '@material-ui/core/Button'
 import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded'
 import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded'
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import CommentIcon from '@material-ui/icons/Comment';
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import { connect } from 'react-redux'
 import { getCategories, postProduct } from '../../actions'
-import swal from 'sweetalert'
+import ListIcon from '@material-ui/icons/List';
 
 function PostProduct({ categories, getCategories, match, publish }) {
   const id = match.params.id
@@ -61,19 +64,23 @@ function PostProduct({ categories, getCategories, match, publish }) {
           />
         </div>
         {/* <FormGroup aria-label="position" row marginTop = "20px"> */}
-        <InputLabel>Category</InputLabel>
-        <Select
+        {/* <InputLabel>Category</InputLabel> */}
+        <i className = {styles.i}>
+        <ListIcon/>
+        </i>
+        <select
           native
           name='category_id'
           value={values.category_id}
           onChange={handleValues}
+          className = {styles.select}
         >
-          <option>SELECT...</option>
+          <option>Category</option>
           {categories.length > 0 &&
             categories.map((cat) => (
               <option value={cat.category_id}>{cat.category_name}</option>
             ))}
-        </Select>
+        </select>
 
         <div className={styles.Checkbox}>
           <label>

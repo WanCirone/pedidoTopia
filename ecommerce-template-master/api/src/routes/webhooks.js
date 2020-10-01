@@ -49,7 +49,7 @@ const meliAuthorize = mercadolibre.authorize(code, redirect_uri, (err, res) => {
 const meliRefreshToken = mercadolibre.refreshAccessToken((err, res) => {
   access_token = res.access_token;
   refresh_token = res.refresh_token;
-  console.log(res);
+  // console.log(res);
 });
 
 //Ruta que recibe la notificación desde shopify cuando se crea una nueva orden

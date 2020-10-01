@@ -3,6 +3,7 @@ const initialState = {
   listProducts: [],
   listCategories: [],
   imagesUrl: [],
+  listOrders: [],
 }
 
 export function rootReducer(state = initialState, action) {
@@ -34,6 +35,11 @@ export function rootReducer(state = initialState, action) {
       return {
         ...state,
         imagesUrl: action.payload,
+      }
+    case 'GET_ORDERS':
+      return {
+        ...state,
+        listOrders: action.payload,
       }
 
     default:

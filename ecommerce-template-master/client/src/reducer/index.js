@@ -2,6 +2,7 @@ const initialState = {
   product: {},
   listProducts: [],
   listCategories: [],
+  imagesUrl: [],
 }
 
 export function rootReducer(state = initialState, action) {
@@ -28,6 +29,11 @@ export function rootReducer(state = initialState, action) {
       return {
         ...state,
         listCategories: action.payload,
+      }
+    case 'GET_IMAGES_URL':
+      return {
+        ...state,
+        imagesUrl: action.payload,
       }
 
     default:

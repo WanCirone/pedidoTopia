@@ -2,9 +2,9 @@ import React from 'react'
 import { connect } from 'react-redux'
 import Typography from '@material-ui/core/Typography'
 import Slider from '../Slider/Slider.js'
-import { secondStepImages } from '../../actions/index.js'
+import { secondStepImages, uploadImages } from '../../actions/index.js'
 
-function FormSelectImages({ setImages, images }) {
+function FormSelectImages({ setImages, images, upload }) {
   const uploadImg = async (e) => {
     const files = e.target.files
     var newImages = []
@@ -15,6 +15,7 @@ function FormSelectImages({ setImages, images }) {
     }
     // console.log(newImages);
     setImages(newImages)
+    upload(newImages)
   }
   const convertBase64 = (file) => {
     return new Promise((resolve, reject) => {
@@ -61,6 +62,7 @@ const mapStateToProps = (state) => ({
 const mapDispatchToProps = (dispatch) => {
   return {
     setImages: (images) => dispatch(secondStepImages(images)),
+    upload: (images) => dispatch(uploadImages(images)),
   }
 }
 

@@ -4,17 +4,32 @@ import { useHistory } from 'react-router-dom'
 //Material-ui
 
 import Button from '@material-ui/core/Button'
-import Checkbox from '@material-ui/core/Checkbox'
-import FormControlLabel from '@material-ui/core/FormControlLabel'
 import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded'
 import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded'
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import { connect } from 'react-redux'
-import { getCategories } from '../../actions'
+import { getCategories, postProduct } from '../../actions'
+import swal from 'sweetalert'
 
-function PostProduct({ categories, getCategories, match }) {
+function PostProduct({ categories, getCategories, match, publish }) {
   const id = match.params.id
+  const history = useHistory()
+  const [values, setValues] = useState({
+    precio: '',
+    stock: '',
+    category_id: '',
+    source: '',
+    category_name: '',
+  })
+
+  const handleValues = (e) => {
+    console.log(e.target)
+    setValues({
+      ...values,
+      [e.target.name]: e.target.value,
+    })
+  }
 
   useEffect(() => {
     getCategories(id)
@@ -27,17 +42,33 @@ function PostProduct({ categories, getCategories, match }) {
           <AttachMoneyRoundedIcon />{' '}
         </i>
         <div className={styles.inputcontenedor}>
-          <input type='number' placeholder='Price' />
+          <input
+            type='number'
+            placeholder='Price'
+            name='precio'
+            onChange={handleValues}
+          />
         </div>
         <i className={styles.icon}>
           <AccountBalanceRoundedIcon />{' '}
         </i>
         <div className={styles.inputcontenedor}>
-          <input type='number' placeholder='Stock' />
+          <input
+            type='number'
+            placeholder='Stock'
+            name='stock'
+            onChange={handleValues}
+          />
         </div>
         {/* <FormGroup aria-label="position" row marginTop = "20px"> */}
         <InputLabel>Category</InputLabel>
-        <Select native>
+        <Select
+          native
+          name='category_id'
+          value={values.category_id}
+          onChange={handleValues}
+        >
+          <option>SELECT...</option>
           {categories.length > 0 &&
             categories.map((cat) => (
               <option value={cat.category_id}>{cat.category_name}</option>
@@ -45,23 +76,47 @@ function PostProduct({ categories, getCategories, match }) {
         </Select>
 
         <div className={styles.Checkbox}>
-          <FormControlLabel
-            value='end'
-            control={<Checkbox color='primary' />}
-            label='Mercado Libre'
-            labelPlacement='end'
-          />
-          <FormControlLabel
-            value='end'
-            control={<Checkbox color='secondary' />}
-            label='Shopify'
-            labelPlacement='end'
-            fontFamily='Raleway'
-          />
+          <label>
+            Mercado Libre
+            <input
+              type='radio'
+              name='source'
+              value='mercadolibre'
+              onChange={handleValues}
+            />
+          </label>
+          <label>
+            Shopify
+            <input
+              type='radio'
+              name='source'
+              value='shopify'
+              onChange={handleValues}
+            />
+          </label>
         </div>
         {/* </FormGroup> */}
         <div className={styles.button}>
-          <Button variant='contained' color='primary'>
+          <Button
+            variant='contained'
+            color='primary'
+            onClick={() =>
+              publish(id, values).then((res) => {
+                if (res.status !== 200) {
+                  swal({
+                    title: 'Error',
+                    text: 'Hubo un error al publicar el producto',
+                    icon: 'error',
+                  })
+                } else {
+                  swal({
+                    text: 'Se publico correctamente!',
+                    icon: 'success',
+                  }).then(() => history.push('/'))
+                }
+              })
+            }
+          >
             Publicar
           </Button>
           <Button variant='contained' color='secondary' href='/'>
@@ -83,6 +138,7 @@ const mapStateToProps = (state) => {
 const mapDispatchToProps = (dispatch) => {
   return {
     getCategories: (id) => dispatch(getCategories(id)),
+    publish: (id, product) => dispatch(postProduct(id, product)),
   }
 }
 

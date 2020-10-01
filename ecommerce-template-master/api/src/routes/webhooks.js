@@ -92,6 +92,7 @@ server.post('/meli', (req, res) => {
   })
 })
 
+
 //Ruta que recibe la notificación desde meli cuando se crea un nuevo producto
 server.post('/newproduct/meli', (req, res) => {
   const rta = req.body;
@@ -130,5 +131,25 @@ fetch(`https://api.mercadolibre.com/items/${productId}?access_token=${access_tok
 })
 })
 
-module.exports = server;
 
+server.post('/shopify/create', (req, res) => {
+  const rtaPubli = req.body;
+  console.log("Rta de Shopify" + JSON.stringify(rtaPubli))
+
+    Product.create({
+      id: req.body.id,
+      shopify_Id: req.body.shopify_Id,
+      title: req.body.title,
+    })
+    .then(resp => {
+      res.send(rtaPubli)
+    })
+
+})
+
+server.get('/orders/fulfilled', (req, res) => {
+  Orders.findAll()
+  .then(order => res.send(order))
+})
+
+module.exports = server;

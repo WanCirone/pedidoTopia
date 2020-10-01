@@ -24,6 +24,6 @@ const { conn } = require("./src/db.js");
 conn.sync({ force: false }).then(() => {
   server.listen(3000, () => {
     // eslint-disable-line no-console
-    console.log("%s listening at 3000");
+    console.log("% listening at 3000");
   });
 });

@@ -243,7 +243,7 @@ function Table_Products({ products, getListProducts }) {
                   <StyledTableCell align='center'>
                     <span>
                       <img
-                        src={product.image && product.image.src ? product.image: defaultImg }
+                        src={product.images.length > 0 && product.images[0]}
                         height='100px'
                         width='100px'
                         alt=''
@@ -254,18 +254,38 @@ function Table_Products({ products, getListProducts }) {
                     {product.title}
                   </StyledTableCell>
                   <StyledTableCell align='center'>
-                    <span className={styles.span}>
-                      {product.providers.length === 0 ? (
-                        'SIN PUBLICAR'
-                      ) : (
+                    {!product.productId_Meli && !product.productId_Shopify ? (
+                      'SIN PUBLICAR'
+                    ) : !product.productId_Meli && product.productId_Shopify ? (
+                      <img
+                        src='https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png'
+                        height='30px'
+                        width='120px'
+                        alt=''
+                      />
+                    ) : product.productId_Meli && !product.productId_Shopify ? (
+                      <img
+                        src='https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png'
+                        height='30px'
+                        width='120px'
+                        alt=''
+                      />
+                    ) : (
+                      <div>
                         <img
-                          src={product.proveedor && product.proveedor.src}
+                          src='https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png'
                           height='30px'
                           width='120px'
                           alt=''
                         />
-                      )}
-                    </span>
+                        <img
+                          src='https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png'
+                          height='30px'
+                          width='120px'
+                          alt=''
+                        />
+                      </div>
+                    )}
                   </StyledTableCell>
                   <StyledTableCell align='right'>
                     {product.stock_inicial}

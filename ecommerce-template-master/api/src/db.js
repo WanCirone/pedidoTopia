@@ -5,7 +5,7 @@ const path = require("path");
 const { DB_USER, DB_PASSWORD, DB_HOST } = process.env;
 
 const sequelize = new Sequelize(
-  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/pedidotopia`,
+  `postgres://${DB_USER}:${DB_PASSWORD}@${DB_HOST}/pedidotopia2`,
   {
     logging: false, // set to console.log to see the raw SQL queries
     native: false, // lets Sequelize know we can use pg-native for ~30% more speed
@@ -50,6 +50,9 @@ const {
 // Aca vendrian las relaciones
 Category.hasMany(Product);
 Product.belongsTo(Category);
+
+Product.belongsTo(Orders);
+Orders.hasMany(Product);
 
 Product.belongsToMany(Provider, { through: Productprovider });
 Provider.belongsToMany(Product, { through: Productprovider });

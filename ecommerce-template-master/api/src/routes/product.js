@@ -51,7 +51,7 @@ const meliAuthorize = mercadolibre.authorize(code, redirect_uri, (err, res) => {
 const meliRefreshToken = mercadolibre.refreshAccessToken((err, res) => {
   access_token = res.access_token;
   refresh_token = res.refresh_token;
-  // console.log(access_token);
+  console.log(access_token);
 });
 
 server.get("/", async (req, res, next) => {

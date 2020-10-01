@@ -3,6 +3,8 @@ const initialState = {
   listProducts: [],
   listCategories: [],
   imagesUrl: [],
+  listOrders: [],
+  filterOrders: [],
 }
 
 export function rootReducer(state = initialState, action) {
@@ -34,6 +36,29 @@ export function rootReducer(state = initialState, action) {
       return {
         ...state,
         imagesUrl: action.payload,
+      }
+    case 'GET_ORDERS':
+      return {
+        ...state,
+        listOrders: action.payload,
+      }
+    case 'FILTER_ORDERS_MERCADOLIBRE':
+      return {
+        ...state,
+        filterOrders: state.listOrders.filter((order) => {
+          if (order.meli_Id) {
+            return order
+          }
+        }),
+      }
+    case 'FILTER_ORDERS_SHOPIFY':
+      return {
+        ...state,
+        filterOrders: state.listOrders.filter((order) => {
+          if (order.shopify_Id) {
+            return order
+          }
+        }),
       }
 
     default:

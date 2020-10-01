@@ -83,3 +83,27 @@ export function postProduct(id, product) {
     })
   }
 }
+
+export function getOrders() {
+  return function (dispatch) {
+    return fetch(`http://localhost:3000/webhooks/orders/fulfilled`)
+      .then((res) => res.json())
+      .then((orders) =>
+        dispatch({
+          type: 'GET_ORDERS',
+          payload: orders,
+        })
+      )
+  }
+}
+
+export function filterOrdersMeli() {
+  return {
+    type: 'FILTER_ORDERS_MERCADOLIBRE',
+  }
+}
+export function filterOrdersShopify() {
+  return {
+    type: 'FILTER_ORDERS_SHOPIFY',
+  }
+}

@@ -2,11 +2,15 @@ import React, { useState, useEffect } from 'react'
 import styles from './Publicar.module.css'
 import { useHistory } from 'react-router-dom'
 import s from "./Borrar.module.css"
+import styless from "./Detalle.module.css"
+import defaultImg from "../../img/default.jpg"
+import Slider from "../Slider/Slider.js"
 //Material-ui
 import {
   withStyles,
   makeStyles,
   StylesProvider,
+  
 } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
@@ -24,11 +28,52 @@ import FormControl from '@material-ui/core/FormControl';
 import FormLabel from '@material-ui/core/FormLabel';
 import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded';
 import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded';
+import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar';
+import Box from '@material-ui/core/Box';
 
 import Alert from '@material-ui/lab/Alert';
 //import { Box } from "@material-ui/core";
 import { connect } from 'react-redux'
 import { getProducts } from '../../actions'
+import { Grid } from '@material-ui/core'
+
+const shortText = function (text) {
+  var newText = text.substring(0, 50);
+  newText = newText.charAt(0).toUpperCase() + newText.slice(1);
+
+  if (text.length > 120) {
+    return newText + "...";
+  }
+  return newText;
+};
+
+function FormSelectImages({ setImages, images }) {
+  const uploadImg = async (e) => {
+    const files = e.target.files
+    var newImages = []
+
+    for (let i = 0; i < files.length; i++) {
+      const base64 = await convertBase64(files[i])
+      newImages.push(base64)
+    }
+    // console.log(newImages);
+    setImages(newImages)
+  }
+}
+  const convertBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const fileReader = new FileReader()
+      fileReader.readAsDataURL(file)
+
+      fileReader.onload = () => {
+        resolve(fileReader.result)
+      }
+
+      fileReader.onerror = (error) => {
+        reject(error)
+      }
+   })
+ }
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -61,6 +106,55 @@ const useStyless = makeStyles((theme) => ({
     fontSize: "100px"
   },
 }));
+
+function Detalle (props){
+  
+  return(
+    <form className = {styless.form}>
+      <div className = {styless.content}>
+      <div className={styless.image}>
+        {/* {images && images.length > 0 && <Slider images={images} />} */}
+        <img
+          src={ defaultImg}
+          alt= ""
+          onChange={(e) => {
+            props.uploadImg(e)
+          }}
+          accept='image/*'
+          multiple        
+          />
+      </div>
+      <div className = {styless.p}>
+       <p className = {styless.pe}>Producto:</p>
+        <h2>{props.product.title}</h2>
+        <p className = {styless.pe}> Stock:</p>
+        <h3>{props.product.stock_inicial}</h3>
+         <p className = {styless.pe}>Sku:</p>
+        <h3>{props.product.sku}</h3>
+        <p className = {styless.pe}>Descripcion:</p>
+        <body>
+        <div className = {styless.descriptionn}>{shortText(props.product.description)}
+        {/* <h3 className={styless.description}>{shortText(props.product.description)}</h3> */}
+        </div>
+        </body>
+         <p className = {styless.pe}>Precio:</p>
+        <h3>{props.product.precio_inicial}</h3>
+      </div>
+       <div className = {styless.button}>
+        <Button
+        
+        href = "/"
+        variant = "contained"
+        color = "secondary" 
+        >
+          Cancelar
+        </Button>
+        </div>
+      </div>
+    </form>
+  );
+}
+
 function Borrar (){
   const classes = useStyless();
   return (
@@ -93,64 +187,14 @@ function Borrar (){
     </form>
   );
 }
-function Publicar(){
-  return(
-  <form className = {styles.form}>
-      <div className={styles.content}>
-        <i className = {styles.icon}><AttachMoneyRoundedIcon/> </i>
-        <div className={styles.inputcontenedor}>
-        <input
-        type = "number"
-        placeholder = "Price"
-        />
-        </div>
-        <i className = {styles.icon}><AccountBalanceRoundedIcon/> </i>
-        <div className={styles.inputcontenedor}>
-        <input
-        type = "number"
-        placeholder = "Stock"
-        />
-        </div>
-        {/* <FormGroup aria-label="position" row marginTop = "20px"> */}
-        <div className = {styles.Checkbox}>
-        <FormControlLabel
-          value="end"
-          control={<Checkbox color="primary" />}
-          label="Mercado Libre"
-          labelPlacement="end"
-        />
-           <FormControlLabel
-          value="end"
-          control={<Checkbox color="secondary" />}
-          label="Shopify"
-          labelPlacement="end"
-          fontFamily = 'Raleway'
-        />
-        </div>
-        {/* </FormGroup> */}
-        <div className = {styles.button}>
-        <Button 
-        variant='contained' 
-        color='primary'
-        > 
-        Publicar 
-        </Button>
-        <Button 
-        variant='contained' 
-        color='secondary' 
-        href='/'
-        > Cancelar 
-        </Button>
-        </div>
-      </div>
-  </form>
-  )
-};
+
 function Table_Products({ products, getListProducts }) {
   const classes = useStyles()
   const history = useHistory()
   const [renderPublicar, setRenderPublicar] = useState(false);
   const [renderBorrar, setRenderBorrar] = useState(false);
+  const [renderDetalle, setRenderDetalle] = useState(false);
+  const [Detallepro, setDetallepro] = useState({});
   useEffect(() => {
     getListProducts()
   }, [])
@@ -158,7 +202,7 @@ function Table_Products({ products, getListProducts }) {
   return (
     <div
       style={{
-        width: '1150px',
+        width: '1400px',
         marginRight: 'auto',
         marginLeft: 'auto',
         marginTop: '80px',
@@ -174,13 +218,14 @@ function Table_Products({ products, getListProducts }) {
               <StyledTableCell align='center'>Proveedor&nbsp;</StyledTableCell>
               <StyledTableCell align='right'>Stock</StyledTableCell>
               <StyledTableCell align='center'>Sku&nbsp;</StyledTableCell>
-              <StyledTableCell align='right'>Descripcion&nbsp;</StyledTableCell>
+              <StyledTableCell align='center'>Descripcion&nbsp;</StyledTableCell>
               <StyledTableCell align='right'>
                 Precio
                 <div>
 
                 </div>
                 </StyledTableCell>
+              <StyledTableCell align='right'></StyledTableCell>
               <StyledTableCell align='right'></StyledTableCell>
             </TableRow>
           </TableHead>
@@ -198,7 +243,7 @@ function Table_Products({ products, getListProducts }) {
                   <StyledTableCell align='center'>
                     <span>
                       <img
-                        src={product.image && product.image.src}
+                        src={product.image && product.image.src ? product.image: defaultImg }
                         height='100px'
                         width='100px'
                         alt=''
@@ -227,7 +272,22 @@ function Table_Products({ products, getListProducts }) {
                   </StyledTableCell>
                   <StyledTableCell align='right'>{product.sku}</StyledTableCell>
                   <StyledTableCell align='right' width={1 / 4}>
+                    <body
+                    style = {{
+                      backgroundColor: "whitesmoke",
+                      border: "1px solid whitesmoke ",
+                      borderRadius: "5px"
+                    }}
+                    >
+                    <div    
+                    style={{
+                      wordWrap: "break-word",
+                      height: "50px"
+                    }}
+                     >
                     {product.description.slice(0, 40)}
+                    </div>
+                    </body>
                   </StyledTableCell>
                   <StyledTableCell align='right'>
                     {product.precio_inicial}
@@ -236,9 +296,22 @@ function Table_Products({ products, getListProducts }) {
                     <Button
                       color='primary'
                       onClick={() => history.push(`/post/${product.id}`)}
+                      variant = "outlined"
                     >
                       Publicar
                     </Button>
+                  </StyledTableCell>
+                  <StyledTableCell aling = "right">
+                  <Button 
+                    variant = "outlined"
+                    startIcon={<PermContactCalendarIcon />}
+                    color = "primary"
+                    onClick = {() => {setRenderDetalle(true);
+                    setDetallepro({title: product.title, stock_inicial: product.stock_inicial, description: product.description,precio_inicial: product.precio_inicial, sku: product.sku })
+                    }}
+                    >
+                      Detalle
+                   </Button>
                   </StyledTableCell>
                 </StyledTableRow>
               ))
@@ -249,7 +322,9 @@ function Table_Products({ products, getListProducts }) {
         </Table>
       </TableContainer>
       {renderBorrar && <Borrar />}
-      {renderPublicar && <Publicar />}
+      {renderDetalle && <Detalle product = {Detallepro} />}
+
+      {/* {renderPublicar && <Publicar />} */}
       <div style={{ paddingLeft: 'auto' }}>
         <tr>
           <td>

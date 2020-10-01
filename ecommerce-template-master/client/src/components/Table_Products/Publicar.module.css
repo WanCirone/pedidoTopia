@@ -54,3 +54,20 @@
 .span {
   border-radius: 8px;
 }
+.select{
+  width: 420px;
+  height: 43px;
+  margin-top: 50px;
+}
+.i{
+  width:100px;
+  height: 200px;
+  margin-left: 20px;
+}
+.i svg {
+  font-size: 33px;
+  margin-left: -10px;
+  position: relative;
+  top: 14px;
+  padding-right: 5px;
+}

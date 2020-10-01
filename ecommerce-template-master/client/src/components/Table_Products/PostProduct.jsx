@@ -8,6 +8,8 @@ import Checkbox from '@material-ui/core/Checkbox'
 import FormControlLabel from '@material-ui/core/FormControlLabel'
 import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded'
 import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded'
+import ChevronRightIcon from '@material-ui/icons/ChevronRight';
+import CommentIcon from '@material-ui/icons/Comment';
 import InputLabel from '@material-ui/core/InputLabel'
 import Select from '@material-ui/core/Select'
 import { connect } from 'react-redux'
@@ -36,13 +38,13 @@ function PostProduct({ categories, getCategories, match }) {
           <input type='number' placeholder='Stock' />
         </div>
         {/* <FormGroup aria-label="position" row marginTop = "20px"> */}
-        <InputLabel>Category</InputLabel>
-        <Select native>
+        <i className = {styles.i}><CommentIcon/></i>
+        <select className = {styles.select}>
           {categories.length > 0 &&
             categories.map((cat) => (
               <option value={cat.category_id}>{cat.category_name}</option>
             ))}
-        </Select>
+        </select>
 
         <div className={styles.Checkbox}>
           <FormControlLabel

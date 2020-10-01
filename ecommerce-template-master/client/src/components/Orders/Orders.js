@@ -22,6 +22,7 @@ const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.primary.main,
     color: theme.palette.common.white,
+    fontSize: 19,
   },
   body: {
     fontSize: 17,
@@ -100,7 +101,7 @@ export default function Orders(){
         src: 
         "https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png",
        },
-      title: 'NOTEBOOK LENOVO THINKPAD E14 CORE I5',
+      title: '1',
       quantity: 20,
       state: "Proceso",
       sku: 2000,
@@ -117,7 +118,7 @@ export default function Orders(){
         src: 
         "https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png",
        },
-      title: 'PARLANTE BLUETOOTH JBL FLIP 5',
+      title: '2',
       quantity: 15,
       state: "Publicado",
       sku: 50000,
@@ -135,7 +136,7 @@ export default function Orders(){
        src: 
        "https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png",
       },
-      title: 'Impresora Hp Ink 5075 Advantage',
+      title: '3',
       quantity: 43,
       state: "Sin Publicar",
       price: 45000,
@@ -154,7 +155,11 @@ export default function Orders(){
         marginTop: '80px',
       }}
     >
+      
       <TableContainer component={Paper}>
+      <TableHead>
+        <caption className = {styles.caption}>Gestion de Ordenes</caption> 
+          </TableHead>
         <Table className={classes.table} aria-label='customized table'>
           <TableHead>
             <TableRow>
@@ -168,20 +173,20 @@ export default function Orders(){
               >
               <option value="all">Todo</option>
               <option value="out">Sin Publicar</option>
-              <option value="published">Publicado</option>
-              <option value="shopify">Shopify</option>
-              <option value="mercadolibre">Mercado Libre</option>
+              <option value="published">Proceso</option>
+              <option value="shopify">Publicado</option>
+              <option value="mercadolibre"></option>
               </select>
               </div>
               </StyledTableCell>
-              <StyledTableCell align='left'>Producto&nbsp;</StyledTableCell>
+              <StyledTableCell align='left'>Usuario&nbsp;</StyledTableCell>
               <StyledTableCell align='center'>Proveedor&nbsp;</StyledTableCell>
               <StyledTableCell align='center'>Precio</StyledTableCell>
               <StyledTableCell align='right'>Cantidad&nbsp;</StyledTableCell>
               <StyledTableCell align='center'>Fecha&nbsp;</StyledTableCell>
               <StyledTableCell align='center'>
                Estado
-                </StyledTableCell>
+              </StyledTableCell>
               <StyledTableCell align='right'></StyledTableCell>
             </TableRow>
           </TableHead>

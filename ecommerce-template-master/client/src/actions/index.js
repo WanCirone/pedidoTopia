@@ -96,3 +96,14 @@ export function getOrders() {
       )
   }
 }
+
+export function filterOrdersMeli() {
+  return {
+    type: 'FILTER_ORDERS_MERCADOLIBRE',
+  }
+}
+export function filterOrdersShopify() {
+  return {
+    type: 'FILTER_ORDERS_SHOPIFY',
+  }
+}

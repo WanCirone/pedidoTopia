@@ -14,7 +14,7 @@ import TableRow from '@material-ui/core/TableRow'
 import { withStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import Button from '@material-ui/core/Button'
-import { getOrders } from '../../actions'
+import { filterOrdersMeli, filterOrdersShopify, getOrders } from '../../actions'
 import RefreshIcon from '@material-ui/icons/Refresh'
 
 const StyledTableCell = withStyles((theme) => ({
@@ -69,52 +69,22 @@ const useStyless = makeStyles((theme) => ({
 //   )
 // }
 
-function Orders({ orders, getOrders }) {
+function Orders({
+  orders,
+  getOrders,
+  listFilters,
+  filterOrdersMeli,
+  filterOrdersShopify,
+}) {
   useEffect(() => {
     getOrders()
   }, [])
-  // const products = [
-  //   {
-  //     id: 1,
-  //     image: {
-  //       src:
-  //         'https://www.venex.com.ar/products_images/1599498841_notebooklenovothinkpade14corei510210u8gbssd256gb14.jpg',
-  //     },
 
-  //     title: 'shopify',
-  //     quantity: 20,
-  //     state: "Proceso",
-  //     sku: 2000,
-  //      },
+  const handleChange = (e) => {
+    if (e.target.value === 'shopify') {
+    }
+  }
 
-  //   {
-  //     id: 2,
-  //     image: {
-  //       src:
-  //         'https://d26lpennugtm8s.cloudfront.net/stores/911/585/products/jbl-flip-5-21-a3cd6bd39bb60bc05f15810292397285-640-0.jpg',
-  //     },
-
-  //     title: 'mercadolibre',
-  //     quantity: 15,
-  //     state: "Publicado",
-  //     sku: 50000,
-
-  //   },
-
-  //   {
-  //     id: 3,
-  //     image: {
-  //       src:
-  //         'https://d26lpennugtm8s.cloudfront.net/stores/001/166/416/products/8245933-1-11-67cb081bd5fd9832d315886143864513-480-0.jpg',
-  //     },
-
-  //     title: '',
-  //     quantity: 43,
-  //     state: "Sin Publicar",
-  //     price: 45000,
-
-  //   },
-  // ]
   const classes = useStyles()
   return (
     <div
@@ -138,10 +108,10 @@ function Orders({ orders, getOrders }) {
               <StyledTableCell align='center'> Filtrar&nbsp;</StyledTableCell>
               <StyledTableCell align='left'>
                 <div className={styles.Orders}>
-                  <select required name='all' id='all'>
-                    <option value='all'>Todo</option>
-                    <option value='out'>Mercado Libre</option>
-                    <option value='published'>Shopify</option>
+                  <select required name='all' id='all' onChange={handleChange}>
+                    <option value='todo'>Todo</option>
+                    <option value='mercadolibre'>Mercado Libre</option>
+                    <option value='shopify'>Shopify</option>
                   </select>
                 </div>
               </StyledTableCell>
@@ -231,11 +201,14 @@ function Orders({ orders, getOrders }) {
 const mapStateToProps = (state) => {
   return {
     orders: state.listOrders,
+    listFilters: state.filterOrders,
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
     getOrders: () => dispatch(getOrders()),
+    filterOrdersMeli: () => dispatch(filterOrdersMeli()),
+    filterOrdersShopify: () => dispatch(filterOrdersShopify()),
   }
 }
 

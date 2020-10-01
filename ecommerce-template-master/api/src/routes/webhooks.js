@@ -86,7 +86,7 @@ server.post("/shopify", (req, res) => {
     })
     .then((order) => {
       console.log(order);
-      order.setProducts(ProductId);
+      order.addProducts(ProductId);
     })
     .catch((error) => console.error("Error: " + error));
 
@@ -164,7 +164,7 @@ server.post("/shopify/create", (req, res, next) => {
     .then((provider) => {
       provider.setProducts(productId, {
         through: {
-          link: `${APP_DOMAIN}/products/${productCreate.title}`,
+          link: `https://${APP_DOMAIN}/products/${productCreate.title}`,
           stock: productCreate.variants[0].inventory_quantity,
           precio: productCreate.variants[0].price,
         },

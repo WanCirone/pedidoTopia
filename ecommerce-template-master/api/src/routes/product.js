@@ -9,7 +9,11 @@ const {
   Orders,
   Productprovider,
   Provider,
+<<<<<<< HEAD
+} = require("../db.js");
+=======
 } = require('../db.js')
+>>>>>>> master
 
 //Shopify y MeLi
 let {
@@ -42,9 +46,15 @@ const getUrlCode = mercadolibre.getAuthURL(redirect_uri)
 
 const meliAuthorize = mercadolibre.authorize(code, redirect_uri, (err, res) => {
   if (res.access_token) {
+<<<<<<< HEAD
+    console.log(res);
+    access_token = res.access_token;
+    refresh_token = res.refresh_token;
+=======
     // console.log(res);
     access_token = res.access_token
     refresh_token = res.refresh_token
+>>>>>>> master
   }
 })
 
@@ -91,7 +101,11 @@ server.get('/', async (req, res, next) => {
 })
 
 //Cargar un producto en mi BD
+<<<<<<< HEAD
+server.post("/", (req, res) => {
+=======
 server.post('/', (req, res) => {
+>>>>>>> master
   const promiseProducto = Product.findOrCreate({
     where: {
       title: req.body.title,
@@ -101,7 +115,11 @@ server.post('/', (req, res) => {
       precio_inicial: req.body.precio_inicial,
       images: req.body.images,
     },
+<<<<<<< HEAD
+  });
+=======
   })
+>>>>>>> master
 
   const promiseCategoria = Category.findOrCreate({
     where: {
@@ -109,6 +127,77 @@ server.post('/', (req, res) => {
     },
   })
 
+<<<<<<< HEAD
+  Promise.all([promiseProducto, promiseCategoria]).then((values) => {
+    product = values[0][0];
+    category = values[1][0];
+
+    console.log("prods: " + JSON.stringify(product));
+    console.log("cats: " + JSON.stringify(category));
+
+    product
+      .update({
+        categoryId: category.id,
+      })
+      .then((product) => {
+        return Product.findOne({
+          where: { id: product.id },
+          include: [Category],
+        })
+          .then((product) => {
+            console.log("product aqui seria: " + JSON.stringify(product));
+            return Product.findOne({
+              where: { id: product.id },
+              include: [Category],
+            });
+          })
+          .then((producto) => res.send(producto));
+      })
+      .catch((err) => {
+        console.log("No se ha podido crear el producto" + err);
+        res.sendStatus(400);
+      });
+  });
+  //Crear o encontrar producto en DB
+  // server.post("/", async (req, res) => {
+
+  //   //Crea y devuelve el producto
+  //   const p = await crearProducto(req)
+
+  //   res.send(p);
+});
+
+server.post("/publicar/:id", async (req, res) => {
+  const idProd = req.params.id;
+  const { source, precio, stock, category_id } = req.body;
+  let prod = null;
+  let link = null;
+  let providerId = null;
+  console.log("req bodye s: " + JSON.stringify(req.body));
+
+  // Busco el producto que quiere publicar el usuario
+  const productToPublish = await Product.findOne({
+    where: { id: idProd },
+  });
+
+  if (source === "shopify") {
+    // Le envio el Producto a la funcion
+    prod = await publicarShopify(productToPublish, precio, stock);
+
+    await productToPublish.update({
+      productId_Shopify: prod.product.id,
+    });
+
+    providerId = 2;
+  } else if (source === "mercadolibre") {
+    prod = await publicarMeli(productToPublish, precio, stock, category_id);
+
+    await productToPublish.update({
+      productId_Meli: prod.id,
+    });
+    providerId = 1;
+    link = prod.permalink;
+=======
   Promise.all([promiseProducto, promiseCategoria])
     .then((values) => {
       product = values[0][0]
@@ -190,32 +279,74 @@ server.post('/publicar/:id', async (req, res) => {
     }).then((producto) => res.send(producto))
   } catch (error) {
     res.status(500).send(error)
+>>>>>>> master
   }
 })
 
+<<<<<<< HEAD
+  await Productprovider.create({
+    stock,
+    precio,
+    link,
+    productId: productToPublish.id,
+    providerId,
+  });
+
+  Product.findOne({
+    where: { id: idProd },
+    include: [Provider],
+  }).then((producto) => res.send(producto));
+});
+
+=======
+>>>>>>> master
 async function publicarShopify(producto, precio, stock) {
   const productoShopify = {
     product: {
       title: producto.title,
+<<<<<<< HEAD
+      body_html: "<strong>Good snowboard!</strong>",
+      vendor: producto.proveedor,
+      published_scope: "web",
+      variants: [
+        {
+          inventory_management: "shopify",
+=======
       body_html: '<strong>Good snowboard!</strong>',
       vendor: producto.proveedor,
       published_scope: 'web',
       variants: [
         {
           inventory_management: 'shopify',
+>>>>>>> master
           inventory_quantity: stock,
           price: precio,
         },
       ],
       images: [],
     },
+<<<<<<< HEAD
+  };
+=======
   }
+>>>>>>> master
 
   let options = {
     method: 'POST',
     uri: testUrl + 'products.json',
     body: productoShopify,
     json: true,
+<<<<<<< HEAD
+  };
+
+  const post = await request(options);
+  console.log("post es: " + JSON.stringify(post));
+  return post;
+}
+
+async function publicarMeli(producto, precio, stock, category_id) {
+  console.log(JSON.stringify(producto));
+=======
   }
 
   const post = await request(options)
@@ -225,10 +356,30 @@ async function publicarShopify(producto, precio, stock) {
 
 async function publicarMeli(producto, precio, stock, category_id) {
   console.log(JSON.stringify(producto))
+>>>>>>> master
   let data = {
     title: producto.title,
     category_id: category_id,
     price: precio,
+<<<<<<< HEAD
+    currency_id: "ARS",
+    available_quantity: stock,
+    buying_mode: "buy_it_now",
+    condition: "new",
+    listing_type_id: "gold_special",
+    description: {
+      plain_text: producto.description,
+    },
+    video_id: "YOUTUBE_ID_HERE",
+    sale_terms: [
+      {
+        id: "WARRANTY_TYPE",
+        value_name: "Garantía del vendedor",
+      },
+      {
+        id: "WARRANTY_TIME",
+        value_name: "90 días",
+=======
     currency_id: 'ARS',
     available_quantity: stock,
     buying_mode: 'buy_it_now',
@@ -246,11 +397,28 @@ async function publicarMeli(producto, precio, stock, category_id) {
       {
         id: 'WARRANTY_TIME',
         value_name: '90 días',
+>>>>>>> master
       },
     ],
     pictures: [
       {
         source:
+<<<<<<< HEAD
+          "http://mla-s2-p.mlstatic.com/968521-MLA20805195516_072016-O.jpg",
+      },
+    ],
+    attributes: [
+      {
+        id: "BRAND",
+        value_name: "Marca del producto",
+      },
+      {
+        id: "EAN",
+        value_name: "7898095297749",
+      },
+    ],
+  };
+=======
           'http://mla-s2-p.mlstatic.com/968521-MLA20805195516_072016-O.jpg',
       },
     ],
@@ -265,25 +433,42 @@ async function publicarMeli(producto, precio, stock, category_id) {
       },
     ],
   }
+>>>>>>> master
 
   let options = {
     method: 'POST',
     uri: `https://api.mercadolibre.com/items?access_token=${access_token}`,
     body: data,
     json: true,
+<<<<<<< HEAD
+  };
+
+  const post = await request(options);
+  console.log("post en meli es: " + JSON.stringify(post));
+  return post;
+=======
   }
 
   const post = await request(options)
   console.log('post en meli es: ' + JSON.stringify(post))
   return post
+>>>>>>> master
 }
 
-server.get('/db', (req, res) => {
+server.get("/db", (req, res) => {
   Product.findAll({
     include: [Category, Provider],
   }).then((products) => {
+<<<<<<< HEAD
+    res.send(products);
+  });
+});
+
+module.exports = server;
+=======
     res.send(products)
   })
 })
 
 module.exports = server
+>>>>>>> master

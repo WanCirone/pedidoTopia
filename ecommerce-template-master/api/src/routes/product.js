@@ -229,6 +229,9 @@ async function publicarShopify(producto, precio, stock) {
 
 async function publicarMeli(producto, precio, stock, category_id) {
   console.log(JSON.stringify(producto))
+  const images = producto.images.map((i) => {
+    return { source: i }
+  })
   let data = {
     title: producto.title,
     category_id: category_id,
@@ -241,7 +244,7 @@ async function publicarMeli(producto, precio, stock, category_id) {
     description: {
       plain_text: producto.description,
     },
-    video_id: 'YOUTUBE_ID_HERE',
+
     sale_terms: [
       {
         id: 'WARRANTY_TYPE',
@@ -252,12 +255,8 @@ async function publicarMeli(producto, precio, stock, category_id) {
         value_name: '90 días',
       },
     ],
-    pictures: [
-      {
-        source:
-          'http://mla-s2-p.mlstatic.com/968521-MLA20805195516_072016-O.jpg',
-      },
-    ],
+    pictures: images,
+
     attributes: [
       {
         id: 'BRAND',

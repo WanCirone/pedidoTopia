@@ -247,33 +247,65 @@ function Table_Products({ products, getListProducts }) {
                     {!product.productId_Meli && !product.productId_Shopify ? (
                       'SIN PUBLICAR'
                     ) : !product.productId_Meli && product.productId_Shopify ? (
-                      <img
-                        src='https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png'
-                        height='30px'
-                        width='120px'
-                        alt=''
-                      />
-                    ) : product.productId_Meli && !product.productId_Shopify ? (
-                      <img
-                        src='https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png'
-                        height='30px'
-                        width='120px'
-                        alt=''
-                      />
-                    ) : (
-                      <div>
+                      <a
+                        href={
+                          product.providers.length > 0 &&
+                          product.providers[0].productprovider.link
+                        }
+                        target='blank'
+                      >
                         <img
                           src='https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png'
                           height='30px'
                           width='120px'
                           alt=''
                         />
+                      </a>
+                    ) : product.productId_Meli && !product.productId_Shopify ? (
+                      <a
+                        href={
+                          product.providers.length > 0 &&
+                          product.providers[0].productprovider.link
+                        }
+                        target='blank'
+                      >
                         <img
                           src='https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png'
                           height='30px'
                           width='120px'
                           alt=''
                         />
+                      </a>
+                    ) : (
+                      <div>
+                        <a
+                          href={
+                            product.providers.length > 0 &&
+                            product.providers[0].productprovider.link
+                          }
+                          target='blank'
+                        >
+                          <img
+                            src='https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png'
+                            height='30px'
+                            width='120px'
+                            alt=''
+                          />
+                        </a>
+                        <a
+                          href={
+                            product.providers.length > 0 &&
+                            product.providers[1].productprovider.link
+                          }
+                          target='blank'
+                        >
+                          <img
+                            src='https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png'
+                            height='30px'
+                            width='120px'
+                            alt=''
+                          />
+                        </a>
                       </div>
                     )}
                   </StyledTableCell>

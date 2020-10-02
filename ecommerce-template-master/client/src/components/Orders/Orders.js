@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from 'react'
+import React, { useEffect } from 'react'
 import styles from './Orders.module.css'
 //Material-ui
-import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar'
+
 import { makeStyles } from '@material-ui/core/styles'
 import Paper from '@material-ui/core/Paper'
 import Table from '@material-ui/core/Table'
@@ -9,12 +9,11 @@ import TableBody from '@material-ui/core/TableBody'
 import TableCell from '@material-ui/core/TableCell'
 import TableContainer from '@material-ui/core/TableContainer'
 import TableHead from '@material-ui/core/TableHead'
-import TablePagination from '@material-ui/core/TablePagination'
 import TableRow from '@material-ui/core/TableRow'
 import { withStyles } from '@material-ui/core/styles'
 import { connect } from 'react-redux'
 import Button from '@material-ui/core/Button'
-import { filterOrdersMeli, filterOrdersShopify, getOrders } from '../../actions'
+import { getOrders } from '../../actions'
 import RefreshIcon from '@material-ui/icons/Refresh'
 
 const StyledTableCell = withStyles((theme) => ({
@@ -50,40 +49,10 @@ const useStyless = makeStyles((theme) => ({
   },
 }))
 
-// function Filtrar(){
-//   return(
-
-//   <div>
-//   <select
-//      required
-//      name="all"
-//      id="all"
-//      >
-//      <option value="all">Todo</option>
-//      <option value="out">Sin Publicar</option>
-//      <option value="published">Publicado</option>
-//      <option value="shopify">Shopify</option>
-//      <option value="mercadolibre">Mercado Libre</option>
-//      </select>
-//   </div>
-//   )
-// }
-
-function Orders({
-  orders,
-  getOrders,
-  listFilters,
-  filterOrdersMeli,
-  filterOrdersShopify,
-}) {
+function Orders({ orders, getOrders }) {
   useEffect(() => {
     getOrders()
   }, [])
-
-  const handleChange = (e) => {
-    if (e.target.value === 'shopify') {
-    }
-  }
 
   const classes = useStyles()
   return (
@@ -108,7 +77,7 @@ function Orders({
               <StyledTableCell align='center'> Filtrar&nbsp;</StyledTableCell>
               <StyledTableCell align='left'>
                 <div className={styles.Orders}>
-                  <select required name='all' id='all' onChange={handleChange}>
+                  <select required name='all' id='all'>
                     <option value='todo'>Todo</option>
                     <option value='mercadolibre'>Mercado Libre</option>
                     <option value='shopify'>Shopify</option>
@@ -201,14 +170,11 @@ function Orders({
 const mapStateToProps = (state) => {
   return {
     orders: state.listOrders,
-    listFilters: state.filterOrders,
   }
 }
 const mapDispatchToProps = (dispatch) => {
   return {
     getOrders: () => dispatch(getOrders()),
-    filterOrdersMeli: () => dispatch(filterOrdersMeli()),
-    filterOrdersShopify: () => dispatch(filterOrdersShopify()),
   }
 }
 

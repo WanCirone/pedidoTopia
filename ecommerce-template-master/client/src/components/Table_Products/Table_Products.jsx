@@ -125,26 +125,34 @@ function Detalle (props, images){
           />
       </div>
       <div className = {styless.p}>
-       <p className = {styless.pe}>Producto:</p>
+       <div className = {styless.pe}>
+       <p>Producto:</p>
         <h2>{props.product.title}</h2>
-        <p className = {styless.pe}> Stock:</p>
+        </div>
+        <div className = {styless.stock}>
+        <p> Stock:</p>
         <h3>{props.product.stock_inicial}</h3>
-         <p className = {styless.pe}>Sku:</p>
+        </div>
+        <div className = {styless.sku}>
+        <p>Sku:</p>
         <h3>{props.product.sku}</h3>
-        <p className = {styless.pe}>Descripcion:</p>
+        </div>
+        <p className = {styless.hola}>Descripcion:</p>
         <body>
         <div className = {styless.descriptionn}>{shortText(props.product.description)}
         {/* <h3 className={styless.description}>{shortText(props.product.description)}</h3> */}
         </div>
         </body>
-         <p className = {styless.pe}>Precio:</p>
+        <div className = {styless.precio}>
+         <p >Precio:</p>
         <h3>{props.product.precio_inicial}</h3>
+        </div>
       </div>
        <div className = {styless.button}>
         <Button
         
         href = "/"
-        variant = "contained"
+         variant = "outlined"
         color = "secondary" 
         >
           Cancelar
@@ -265,7 +273,7 @@ function Table_Products({ products, getListProducts }) {
                       />
                     ) : product.productId_Meli && !product.productId_Shopify ? (
                       <img
-                        src='https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png'
+                        src='https://seeklogo.com/images/M/mercado-livre-logo-D1DC52B13E-seeklogo.com.pngcd'
                         height='30px'
                         width='120px'
                         alt=''
@@ -273,7 +281,7 @@ function Table_Products({ products, getListProducts }) {
                     ) : (
                       <div>
                         <img
-                          src='https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png'
+                          src='https://seeklogo.com/images/S/shopify-logo-1C711BCDE4-seeklogo.com.png'
                           height='30px'
                           width='120px'
                           alt=''
@@ -292,23 +300,8 @@ function Table_Products({ products, getListProducts }) {
                   </StyledTableCell>
                   <StyledTableCell align='right'>{product.sku}</StyledTableCell>
                   <StyledTableCell align='right' width={1 / 4}>
-                    <body
-                    style = {{
-                      backgroundColor: "whitesmoke",
-                      border: "1px solid whitesmoke ",
-                      borderRadius: "5px"
-                    }}
-                    >
-                    <div    
-                    style={{
-                      wordWrap: "break-word",
-                      height: "50px",
-                      marginTop: "",
-                    }}
-                     >
                     {product.description.slice(0, 40)}
-                    </div>
-                    </body>
+
                   </StyledTableCell>
                   <StyledTableCell align='right'>
                     {product.precio_inicial}

@@ -288,8 +288,8 @@ function Table_Products({ products, getListProducts }) {
                       <div>
                         <a
                           href={
-                            product.providers.length > 0 &&
-                            product.providers[1].productprovider.link
+                            product.providers && product.providers.length > 0 &&
+                            product.providers[0].productprovider.link
                           }
                           target='blank'
                         >

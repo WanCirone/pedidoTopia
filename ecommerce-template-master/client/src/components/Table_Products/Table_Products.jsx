@@ -121,40 +121,36 @@ function Detalle(props, images) {
             accept='image/*'
             multiple
           />
-      </div>
-      <div className = {styless.p}>
-       <div className = {styless.pe}>
-       <p>Producto:</p>
-        <h2>{props.product.title}</h2>
         </div>
-        <div className = {styless.stock}>
-        <p> Stock:</p>
-        <h3>{props.product.stock_inicial}</h3>
+        <div className={styless.p}>
+          <div className={styless.pe}>
+            <p>Producto:</p>
+            <h2>{props.product.title}</h2>
+          </div>
+          <div className={styless.stock}>
+            <p> Stock:</p>
+            <h3>{props.product.stock_inicial}</h3>
+          </div>
+          <div className={styless.sku}>
+            <p>Sku:</p>
+            <h3>{props.product.sku}</h3>
+          </div>
+          <p className={styless.hola}>Descripcion:</p>
+          <body>
+            <div className={styless.descriptionn}>
+              {shortText(props.product.description)}
+              {/* <h3 className={styless.description}>{shortText(props.product.description)}</h3> */}
+            </div>
+          </body>
+          <div className={styless.precio}>
+            <p>Precio:</p>
+            <h3>{props.product.precio_inicial}</h3>
+          </div>
         </div>
-        <div className = {styless.sku}>
-        <p>Sku:</p>
-        <h3>{props.product.sku}</h3>
-        </div>
-        <p className = {styless.hola}>Descripcion:</p>
-        <body>
-        <div className = {styless.descriptionn}>{shortText(props.product.description)}
-        {/* <h3 className={styless.description}>{shortText(props.product.description)}</h3> */}
-        </div>
-        </body>
-        <div className = {styless.precio}>
-         <p >Precio:</p>
-        <h3>{props.product.precio_inicial}</h3>
-        </div>
-      </div>
-       <div className = {styless.button}>
-        <Button
-        
-        href = "/"
-         variant = "outlined"
-        color = "secondary" 
-        >
-          Cancelar
-        </Button>
+        <div className={styless.button}>
+          <Button href='/' variant='outlined' color='secondary'>
+            Cancelar
+          </Button>
         </div>
       </div>
     </form>
@@ -259,33 +255,65 @@ function Table_Products({ products, getListProducts }) {
                     {!product.productId_Meli && !product.productId_Shopify ? (
                       'SIN PUBLICAR'
                     ) : !product.productId_Meli && product.productId_Shopify ? (
-                      <img
-                        src='https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png'
-                        height='30px'
-                        width='120px'
-                        alt=''
-                      />
-                    ) : product.productId_Meli && !product.productId_Shopify ? (
-                      <img
-                        src='https://seeklogo.com/images/M/mercado-livre-logo-D1DC52B13E-seeklogo.com.pngcd'
-                        height='30px'
-                        width='120px'
-                        alt=''
-                      />
-                    ) : (
-                      <div>
+                      <a
+                        href={
+                          product.providers.length > 0 &&
+                          product.providers[0].productprovider.link
+                        }
+                        target='blank'
+                      >
                         <img
                           src='https://seeklogo.com/images/S/shopify-logo-1C711BCDE4-seeklogo.com.png'
                           height='30px'
                           width='120px'
                           alt=''
                         />
+                      </a>
+                    ) : product.productId_Meli && !product.productId_Shopify ? (
+                      <a
+                        href={
+                          product.providers.length > 0 &&
+                          product.providers[0].productprovider.link
+                        }
+                        target='blank'
+                      >
                         <img
                           src='https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png'
                           height='30px'
                           width='120px'
                           alt=''
                         />
+                      </a>
+                    ) : (
+                      <div>
+                        <a
+                          href={
+                            product.providers.length > 0 &&
+                            product.providers[1].productprovider.link
+                          }
+                          target='blank'
+                        >
+                          <img
+                            src='https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png'
+                            height='30px'
+                            width='120px'
+                            alt=''
+                          />
+                        </a>
+                        <a
+                          href={
+                            product.providers.length > 0 &&
+                            product.providers[0].productprovider.link
+                          }
+                          target='blank'
+                        >
+                          <img
+                            src='https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png'
+                            height='30px'
+                            width='120px'
+                            alt=''
+                          />
+                        </a>
                       </div>
                     )}
                   </StyledTableCell>
@@ -295,7 +323,6 @@ function Table_Products({ products, getListProducts }) {
                   <StyledTableCell align='right'>{product.sku}</StyledTableCell>
                   <StyledTableCell align='right' width={1 / 4}>
                     {product.description.slice(0, 40)}
-
                   </StyledTableCell>
                   <StyledTableCell align='right'>
                     {product.precio_inicial}

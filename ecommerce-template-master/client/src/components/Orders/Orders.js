@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react'
+import React, { useEffect, useState } from 'react'
 import styles from './Orders.module.css'
 //Material-ui
 
@@ -54,6 +54,27 @@ function Orders({ orders, getOrders }) {
     getOrders()
   }, [])
 
+  useEffect(() => {
+    setListOrders(orders)
+  }, [orders])
+  const [listOrders, setListOrders] = useState([])
+
+  const handleChange = (e) => {
+    if (e.target.value === 'shopify') {
+      const filter = orders.filter((ord) => {
+        if (ord.shopify_Id) return ord
+      })
+      setListOrders(filter)
+    } else if (e.target.value === 'mercadolibre') {
+      const filter = orders.filter((ord) => {
+        if (ord.meli_Id) return ord
+      })
+      setListOrders(filter)
+    } else {
+      setListOrders(orders)
+    }
+  }
+
   const classes = useStyles()
   return (
     <div
@@ -77,7 +98,7 @@ function Orders({ orders, getOrders }) {
               <StyledTableCell align='center'> Filtrar&nbsp;</StyledTableCell>
               <StyledTableCell align='left'>
                 <div className={styles.Orders}>
-                  <select required name='all' id='all'>
+                  <select required name='all' id='all' onChange={handleChange}>
                     <option value='todo'>Todo</option>
                     <option value='mercadolibre'>Mercado Libre</option>
                     <option value='shopify'>Shopify</option>
@@ -94,8 +115,8 @@ function Orders({ orders, getOrders }) {
             </TableRow>
           </TableHead>
           <TableBody>
-            {orders.length > 0 ? (
-              orders.map((order) => (
+            {listOrders.length > 0 ? (
+              listOrders.map((order) => (
                 // console.log(product)&&
                 <StyledTableRow key={order.id}>
                   <StyledTableCell align='rigth'></StyledTableCell>

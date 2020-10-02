@@ -172,7 +172,7 @@ server.post("/meli", (req, res) => {
       .then((response) => response.json())
       .then((order) => {
         console.log(JSON.stringify(order) + "RESPUESTA MELI!!! ");
-        return Orders.create({
+        return Orders.findOrCreate({
           meli_Id: order.id,
           cantidad: order.order_items[0].quantity,
           total: order.total_amount,

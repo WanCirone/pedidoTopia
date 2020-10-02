@@ -123,24 +123,32 @@ function Detalle(props, images) {
           />
         </div>
         <div className={styless.p}>
-          <p className={styless.pe}>Producto:</p>
-          <h2>{props.product.title}</h2>
-          <p className={styless.pe}> Stock:</p>
-          <h3>{props.product.stock_inicial}</h3>
-          <p className={styless.pe}>Sku:</p>
-          <h3>{props.product.sku}</h3>
-          <p className={styless.pe}>Descripcion:</p>
+          <div className={styless.pe}>
+            <p>Producto:</p>
+            <h2>{props.product.title}</h2>
+          </div>
+          <div className={styless.stock}>
+            <p> Stock:</p>
+            <h3>{props.product.stock_inicial}</h3>
+          </div>
+          <div className={styless.sku}>
+            <p>Sku:</p>
+            <h3>{props.product.sku}</h3>
+          </div>
+          <p className={styless.hola}>Descripcion:</p>
           <body>
             <div className={styless.descriptionn}>
               {shortText(props.product.description)}
               {/* <h3 className={styless.description}>{shortText(props.product.description)}</h3> */}
             </div>
           </body>
-          <p className={styless.pe}>Precio:</p>
-          <h3>{props.product.precio_inicial}</h3>
+          <div className={styless.precio}>
+            <p>Precio:</p>
+            <h3>{props.product.precio_inicial}</h3>
+          </div>
         </div>
         <div className={styless.button}>
-          <Button href='/' variant='contained' color='secondary'>
+          <Button href='/' variant='outlined' color='secondary'>
             Cancelar
           </Button>
         </div>
@@ -255,7 +263,7 @@ function Table_Products({ products, getListProducts }) {
                         target='blank'
                       >
                         <img
-                          src='https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png'
+                          src='https://seeklogo.com/images/S/shopify-logo-1C711BCDE4-seeklogo.com.png'
                           height='30px'
                           width='120px'
                           alt=''
@@ -281,7 +289,7 @@ function Table_Products({ products, getListProducts }) {
                         <a
                           href={
                             product.providers.length > 0 &&
-                            product.providers[0].productprovider.link
+                            product.providers[1].productprovider.link
                           }
                           target='blank'
                         >
@@ -295,7 +303,7 @@ function Table_Products({ products, getListProducts }) {
                         <a
                           href={
                             product.providers.length > 0 &&
-                            product.providers[1].productprovider.link
+                            product.providers[0].productprovider.link
                           }
                           target='blank'
                         >
@@ -314,23 +322,7 @@ function Table_Products({ products, getListProducts }) {
                   </StyledTableCell>
                   <StyledTableCell align='right'>{product.sku}</StyledTableCell>
                   <StyledTableCell align='right' width={1 / 4}>
-                    <body
-                      style={{
-                        backgroundColor: 'whitesmoke',
-                        border: '1px solid whitesmoke ',
-                        borderRadius: '5px',
-                      }}
-                    >
-                      <div
-                        style={{
-                          wordWrap: 'break-word',
-                          height: '50px',
-                          marginTop: '',
-                        }}
-                      >
-                        {product.description.slice(0, 40)}
-                      </div>
-                    </body>
+                    {product.description.slice(0, 40)}
                   </StyledTableCell>
                   <StyledTableCell align='right'>
                     {product.precio_inicial}

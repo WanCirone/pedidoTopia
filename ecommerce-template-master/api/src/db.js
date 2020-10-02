@@ -51,6 +51,9 @@ const {
 Category.hasMany(Product);
 Product.belongsTo(Category);
 
+Product.belongsTo(Orders);
+Orders.hasMany(Product);
+
 Product.belongsToMany(Provider, { through: Productprovider });
 Provider.belongsToMany(Product, { through: Productprovider });
 

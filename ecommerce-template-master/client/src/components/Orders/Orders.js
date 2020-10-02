@@ -1,23 +1,21 @@
-import React, {useState} from "react";
-import styles from "./Orders.module.css"
+import React, { useEffect, useState } from 'react'
+import styles from './Orders.module.css'
 //Material-ui
-import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar';
-import { makeStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
-import Table from '@material-ui/core/Table';
-import TableBody from '@material-ui/core/TableBody';
-import TableCell from '@material-ui/core/TableCell';
-import TableContainer from '@material-ui/core/TableContainer';
-import TableHead from '@material-ui/core/TableHead';
-import TablePagination from '@material-ui/core/TablePagination';
-import TableRow from '@material-ui/core/TableRow';
-import { withStyles} from '@material-ui/core/styles'
 
-
-
-
-
+import { makeStyles } from '@material-ui/core/styles'
+import Paper from '@material-ui/core/Paper'
+import Table from '@material-ui/core/Table'
+import TableBody from '@material-ui/core/TableBody'
+import TableCell from '@material-ui/core/TableCell'
+import TableContainer from '@material-ui/core/TableContainer'
+import TableHead from '@material-ui/core/TableHead'
+import TableRow from '@material-ui/core/TableRow'
+import { withStyles } from '@material-ui/core/styles'
+import { connect } from 'react-redux'
 import Button from '@material-ui/core/Button'
+import { getOrders } from '../../actions'
+import RefreshIcon from '@material-ui/icons/Refresh'
+
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.primary.main,
@@ -46,93 +44,37 @@ const useStyless = makeStyles((theme) => ({
   root: {
     width: '90%',
     marginTop: theme.spacing(8),
-    marginLeft: "20px",
-    fontSize: "100px"
+    marginLeft: '20px',
+    fontSize: '100px',
   },
-}));
+}))
 
+function Orders({ orders, getOrders }) {
+  useEffect(() => {
+    getOrders()
+  }, [])
 
-// function Filtrar(){
-//   return(
+  useEffect(() => {
+    setListOrders(orders)
+  }, [orders])
+  const [listOrders, setListOrders] = useState([])
 
-//   <div>
-//   <select
-//      required
-//      name="all"
-//      id="all"
-//      >
-//      <option value="all">Todo</option>
-//      <option value="out">Sin Publicar</option>
-//      <option value="published">Publicado</option>
-//      <option value="shopify">Shopify</option>
-//      <option value="mercadolibre">Mercado Libre</option>
-//      </select>
-//   </div>
-//   )
-// }
+  const handleChange = (e) => {
+    if (e.target.value === 'shopify') {
+      const filter = orders.filter((ord) => {
+        if (ord.shopify_Id) return ord
+      })
+      setListOrders(filter)
+    } else if (e.target.value === 'mercadolibre') {
+      const filter = orders.filter((ord) => {
+        if (ord.meli_Id) return ord
+      })
+      setListOrders(filter)
+    } else {
+      setListOrders(orders)
+    }
+  }
 
-function createData(provider,price, quantity, state, date) {
-  return { provider, price, quantity, state, date };
-}
-
-
-
-
-export default function Orders(){
-  const [page, setPage] = React.useState(0);
-  const [rowsPerPage, setRowsPerPage] = React.useState(10);
-
-  const handleChangePage = (event, newPage) => {
-    setPage(newPage);
-  };
-
-  const handleChangeRowsPerPage = (event) => {
-    setRowsPerPage(+event.target.value);
-    setPage(0);
-  };
-  const products = [
-    {
-      id: 1,
-      image: {
-        src:
-          'https://www.venex.com.ar/products_images/1599498841_notebooklenovothinkpade14corei510210u8gbssd256gb14.jpg',
-      },
-     
-      title: 'shopify',
-      quantity: 20,
-      state: "Proceso",
-      sku: 2000,
-       },
-
-    {
-      id: 2,
-      image: {
-        src:
-          'https://d26lpennugtm8s.cloudfront.net/stores/911/585/products/jbl-flip-5-21-a3cd6bd39bb60bc05f15810292397285-640-0.jpg',
-      },
-     
-      title: 'mercadolibre',
-      quantity: 15,
-      state: "Publicado",
-      sku: 50000,
-   
-    },
-
-    {
-      id: 3,
-      image: {
-        src:
-          'https://d26lpennugtm8s.cloudfront.net/stores/001/166/416/products/8245933-1-11-67cb081bd5fd9832d315886143864513-480-0.jpg',
-      },
-    
-      title: '',
-      quantity: 43,
-      state: "Sin Publicar",
-      price: 45000,
-     
-        
-    },
-  ]
   const classes = useStyles()
   return (
     <div
@@ -143,48 +85,41 @@ export default function Orders(){
         marginTop: '80px',
       }}
     >
-      
       <TableContainer component={Paper}>
-      <TableHead>
-        <caption className = {styles.caption}>Gestion de Ordenes</caption> 
-          </TableHead>
+        <TableHead>
+          <Button onClick={() => getOrders()}>
+            <RefreshIcon />
+          </Button>
+          <caption className={styles.caption}>Gestion de Ordenes</caption>
+        </TableHead>
         <Table className={classes.table} aria-label='customized table'>
           <TableHead>
             <TableRow>
               <StyledTableCell align='center'> Filtrar&nbsp;</StyledTableCell>
               <StyledTableCell align='left'>
-              <div className = {styles.Orders}>
-              <select
-              required
-              name="all"
-              id="all"
-              >
-              <option value="all">Todo</option>
-              <option value="out">Mercado Libre</option>
-              <option value="published">Shopify</option>
-              
-              </select>
-              </div>
+                <div className={styles.Orders}>
+                  <select required name='all' id='all' onChange={handleChange}>
+                    <option value='todo'>Todo</option>
+                    <option value='mercadolibre'>Mercado Libre</option>
+                    <option value='shopify'>Shopify</option>
+                  </select>
+                </div>
               </StyledTableCell>
               <StyledTableCell align='center'>Proveedor&nbsp;</StyledTableCell>
-             
+
               <StyledTableCell align='center'>Total</StyledTableCell>
               <StyledTableCell align='center'>Cantidad&nbsp;</StyledTableCell>
-              
-              <StyledTableCell align='center'>
-               Estado
-              </StyledTableCell>
+
+              <StyledTableCell align='center'>Estado</StyledTableCell>
               <StyledTableCell align='right'></StyledTableCell>
             </TableRow>
           </TableHead>
           <TableBody>
-            {products ? (
-              products.map((product) => (
+            {listOrders.length > 0 ? (
+              listOrders.map((order) => (
                 // console.log(product)&&
-                <StyledTableRow key={product.id}>
-                  <StyledTableCell align='rigth'>
-                  
-                  </StyledTableCell>
+                <StyledTableRow key={order.id}>
+                  <StyledTableCell align='rigth'></StyledTableCell>
                   <StyledTableCell align='left'>
                     {/* <Button 
                     variant = "outlined"
@@ -196,33 +131,72 @@ export default function Orders(){
                     </Button> */}
                   </StyledTableCell>
                   <StyledTableCell align='center'>
-                    {product.title}
+                    {!order.meli_Id && !order.shopify_Id ? (
+                      'SIN PUBLICAR'
+                    ) : !order.meli_Id && order.shopify_Id ? (
+                      <img
+                        src='https://seeklogo.com/images/S/shopify-logo-1C711BCDE4-seeklogo.com.png'
+                        height='30px'
+                        width='120px'
+                        alt=''
+                      />
+                    ) : order.meli_Id && !order.shopify_Id ? (
+                      <img
+                        src='https://seeklogo.com/images/M/mercado-livre-logo-D1DC52B13E-seeklogo.com.png'
+                        height='30px'
+                        width='120px'
+                        alt=''
+                      />
+                    ) : (
+                      <div>
+                        <img
+                          src='https://seeklogo.com/images/S/shopify-logo-1C711BCDE4-seeklogo.com.png'
+                          height='30px'
+                          width='120px'
+                          alt=''
+                        />
+                        <img
+                          src='https://seeklogo.com/images/M/mercado-livre-logo-D1DC52B13E-seeklogo.com.png'
+                          height='30px'
+                          width='120px'
+                          alt=''
+                        />
+                      </div>
+                    )}
                   </StyledTableCell>
-                  
+
                   <StyledTableCell align='center'>
-                    {product.price}
+                    {order.total}
                   </StyledTableCell>
-                  <StyledTableCell align='center'>{product.quantity}</StyledTableCell>
-                
                   <StyledTableCell align='center'>
-                    {product.state}
+                    {order.cantidad}
                   </StyledTableCell>
-                  <StyledTableCell align='right'>
-                 
+
+                  <StyledTableCell align='center'>
+                    {order.status}
                   </StyledTableCell>
+                  <StyledTableCell align='right'></StyledTableCell>
                 </StyledTableRow>
               ))
-              ) : (
-                <p>No hay datos para mostrar</p>
-                )}
+            ) : (
+              <p>No hay datos para mostrar</p>
+            )}
           </TableBody>
         </Table>
       </TableContainer>
-     
- 
-      
-         
     </div>
-    
-    )
+  )
 }
+
+const mapStateToProps = (state) => {
+  return {
+    orders: state.listOrders,
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    getOrders: () => dispatch(getOrders()),
+  }
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(Orders)

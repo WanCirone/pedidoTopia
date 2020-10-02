@@ -165,7 +165,7 @@ server.post('/publicar/:id', async (req, res) => {
       await productToPublish.update({
         productId_Shopify: prod.product.id,
       })
-
+    //  link = prod.title.toLowerCase().replace(/\s+/g, "-");
       providerId = 2
     } else if (source === 'mercadolibre') {
       prod = await publicarMeli(productToPublish, precio, stock, category_id)

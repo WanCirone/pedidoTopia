@@ -1,16 +1,15 @@
 import React, { useState, useEffect } from 'react'
 import styles from './Publicar.module.css'
 import { useHistory } from 'react-router-dom'
-import s from "./Borrar.module.css"
-import styless from "./Detalle.module.css"
-import defaultImg from "../../img/default.jpg"
-import Slider from "../Slider/Slider.js"
+import s from './Borrar.module.css'
+import styless from './Detalle.module.css'
+import defaultImg from '../../img/default.jpg'
+import Slider from '../Slider/Slider.js'
 //Material-ui
 import {
   withStyles,
   makeStyles,
   StylesProvider,
-  
 } from '@material-ui/core/styles'
 import Table from '@material-ui/core/Table'
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline'
@@ -21,31 +20,31 @@ import TableHead from '@material-ui/core/TableHead'
 import TableRow from '@material-ui/core/TableRow'
 import Paper from '@material-ui/core/Paper'
 import Button from '@material-ui/core/Button'
-import Checkbox from '@material-ui/core/Checkbox';
-import FormGroup from '@material-ui/core/FormGroup';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
-import FormControl from '@material-ui/core/FormControl';
-import FormLabel from '@material-ui/core/FormLabel';
-import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded';
-import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded';
-import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar';
-import Box from '@material-ui/core/Box';
+import Checkbox from '@material-ui/core/Checkbox'
+import FormGroup from '@material-ui/core/FormGroup'
+import FormControlLabel from '@material-ui/core/FormControlLabel'
+import FormControl from '@material-ui/core/FormControl'
+import FormLabel from '@material-ui/core/FormLabel'
+import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded'
+import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded'
+import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar'
+import Box from '@material-ui/core/Box'
 
-import Alert from '@material-ui/lab/Alert';
+import Alert from '@material-ui/lab/Alert'
 //import { Box } from "@material-ui/core";
 import { connect } from 'react-redux'
 import { getProducts } from '../../actions'
 import { Grid } from '@material-ui/core'
 
 const shortText = function (text) {
-  var newText = text.substring(0, 50);
-  newText = newText.charAt(0).toUpperCase() + newText.slice(1);
+  var newText = text.substring(0, 50)
+  newText = newText.charAt(0).toUpperCase() + newText.slice(1)
 
   if (text.length > 120) {
-    return newText + "...";
+    return newText + '...'
   }
-  return newText;
-};
+  return newText
+}
 
 function FormSelectImages({ setImages, images }) {
   const uploadImg = async (e) => {
@@ -60,20 +59,20 @@ function FormSelectImages({ setImages, images }) {
     setImages(newImages)
   }
 }
-  const convertBase64 = (file) => {
-    return new Promise((resolve, reject) => {
-      const fileReader = new FileReader()
-      fileReader.readAsDataURL(file)
+const convertBase64 = (file) => {
+  return new Promise((resolve, reject) => {
+    const fileReader = new FileReader()
+    fileReader.readAsDataURL(file)
 
-      fileReader.onload = () => {
-        resolve(fileReader.result)
-      }
+    fileReader.onload = () => {
+      resolve(fileReader.result)
+    }
 
-      fileReader.onerror = (error) => {
-        reject(error)
-      }
-   })
- }
+    fileReader.onerror = (error) => {
+      reject(error)
+    }
+  })
+}
 
 const StyledTableCell = withStyles((theme) => ({
   head: {
@@ -102,99 +101,90 @@ const useStyless = makeStyles((theme) => ({
   root: {
     width: '90%',
     marginTop: theme.spacing(8),
-    marginLeft: "20px",
-    fontSize: "100px"
+    marginLeft: '20px',
+    fontSize: '100px',
   },
-}));
+}))
 
-function Detalle (props, images){
-  
-  return(
-    <form className = {styless.form}>
-      <div className = {styless.content}>
-      <div className={styless.image}>
-         {images && images.length > 0 && <Slider images={images} />}
-        <img
-          src={ props.product.images}
-          alt= ""
-          onChange={(e) => {
-            props.uploadImg(e)
-          }}
-          accept='image/*'
-          multiple        
+function Detalle(props, images) {
+  return (
+    <form className={styless.form}>
+      <div className={styless.content}>
+        <div className={styless.image}>
+          {images && images.length > 0 && <Slider images={images} />}
+          <img
+            src={props.product.images}
+            alt=''
+            onChange={(e) => {
+              props.uploadImg(e)
+            }}
+            accept='image/*'
+            multiple
           />
-      </div>
-      <div className = {styless.p}>
-       <p className = {styless.pe}>Producto:</p>
-        <h2>{props.product.title}</h2>
-        <p className = {styless.pe}> Stock:</p>
-        <h3>{props.product.stock_inicial}</h3>
-         <p className = {styless.pe}>Sku:</p>
-        <h3>{props.product.sku}</h3>
-        <p className = {styless.pe}>Descripcion:</p>
-        <body>
-        <div className = {styless.descriptionn}>{shortText(props.product.description)}
-        {/* <h3 className={styless.description}>{shortText(props.product.description)}</h3> */}
         </div>
-        </body>
-         <p className = {styless.pe}>Precio:</p>
-        <h3>{props.product.precio_inicial}</h3>
-      </div>
-       <div className = {styless.button}>
-        <Button
-        
-        href = "/"
-        variant = "contained"
-        color = "secondary" 
-        >
-          Cancelar
-        </Button>
+        <div className={styless.p}>
+          <p className={styless.pe}>Producto:</p>
+          <h2>{props.product.title}</h2>
+          <p className={styless.pe}> Stock:</p>
+          <h3>{props.product.stock_inicial}</h3>
+          <p className={styless.pe}>Sku:</p>
+          <h3>{props.product.sku}</h3>
+          <p className={styless.pe}>Descripcion:</p>
+          <body>
+            <div className={styless.descriptionn}>
+              {shortText(props.product.description)}
+              {/* <h3 className={styless.description}>{shortText(props.product.description)}</h3> */}
+            </div>
+          </body>
+          <p className={styless.pe}>Precio:</p>
+          <h3>{props.product.precio_inicial}</h3>
+        </div>
+        <div className={styless.button}>
+          <Button href='/' variant='contained' color='secondary'>
+            Cancelar
+          </Button>
         </div>
       </div>
     </form>
-  );
+  )
 }
 
-function Borrar (){
-  const classes = useStyless();
+function Borrar() {
+  const classes = useStyless()
   return (
-    <form className = {s.formulario}>
-       <div className = {s.contenedor}>
-    
-      <div className={classes.root}>
-      <Alert variant="outlined" severity="error" marginTop = "100px" height = "100px" marginLeft = "50px">
-        ¿Seguro que deseas Borrar?      
-      </Alert>
+    <form className={s.formulario}>
+      <div className={s.contenedor}>
+        <div className={classes.root}>
+          <Alert
+            variant='outlined'
+            severity='error'
+            marginTop='100px'
+            height='100px'
+            marginLeft='50px'
+          >
+            ¿Seguro que deseas Borrar?
+          </Alert>
+        </div>
+        <div className={s.buttons}>
+          <Button variant='contained' color='primary'>
+            Borrar
+          </Button>
+          <Button variant='contained' color='secondary' href='/'>
+            Cancelar
+          </Button>
+        </div>
       </div>
-        <div className = {s.buttons}>
-         <Button
-         variant = "contained"
-         color = "primary"
-         
-         >
-          Borrar
-         </Button>
-         <Button
-         variant = "contained"
-         color = "secondary"
-         href = "/"
-         
-         >
-          Cancelar
-         </Button>
-         </div>
-     </div>
     </form>
-  );
+  )
 }
 
 function Table_Products({ products, getListProducts }) {
   const classes = useStyles()
   const history = useHistory()
-  const [renderPublicar, setRenderPublicar] = useState(false);
-  const [renderBorrar, setRenderBorrar] = useState(false);
-  const [renderDetalle, setRenderDetalle] = useState(false);
-  const [Detallepro, setDetallepro] = useState({});
+  const [renderPublicar, setRenderPublicar] = useState(false)
+  const [renderBorrar, setRenderBorrar] = useState(false)
+  const [renderDetalle, setRenderDetalle] = useState(false)
+  const [Detallepro, setDetallepro] = useState({})
   useEffect(() => {
     getListProducts()
   }, [])
@@ -218,13 +208,13 @@ function Table_Products({ products, getListProducts }) {
               <StyledTableCell align='center'>Proveedor&nbsp;</StyledTableCell>
               <StyledTableCell align='right'>Stock</StyledTableCell>
               <StyledTableCell align='center'>Sku&nbsp;</StyledTableCell>
-              <StyledTableCell align='center'>Descripcion&nbsp;</StyledTableCell>
+              <StyledTableCell align='center'>
+                Descripcion&nbsp;
+              </StyledTableCell>
               <StyledTableCell align='right'>
                 Precio
-                <div>
-
-                </div>
-                </StyledTableCell>
+                <div></div>
+              </StyledTableCell>
               <StyledTableCell align='right'></StyledTableCell>
               <StyledTableCell align='right'></StyledTableCell>
             </TableRow>
@@ -247,7 +237,7 @@ function Table_Products({ products, getListProducts }) {
                         height='100px'
                         width='100px'
                         alt=''
-                        />
+                      />
                     </span>
                   </StyledTableCell>
                   <StyledTableCell align='left'>
@@ -293,21 +283,21 @@ function Table_Products({ products, getListProducts }) {
                   <StyledTableCell align='right'>{product.sku}</StyledTableCell>
                   <StyledTableCell align='right' width={1 / 4}>
                     <body
-                    style = {{
-                      backgroundColor: "whitesmoke",
-                      border: "1px solid whitesmoke ",
-                      borderRadius: "5px"
-                    }}
+                      style={{
+                        backgroundColor: 'whitesmoke',
+                        border: '1px solid whitesmoke ',
+                        borderRadius: '5px',
+                      }}
                     >
-                    <div    
-                    style={{
-                      wordWrap: "break-word",
-                      height: "50px",
-                      marginTop: "",
-                    }}
-                     >
-                    {product.description.slice(0, 40)}
-                    </div>
+                      <div
+                        style={{
+                          wordWrap: 'break-word',
+                          height: '50px',
+                          marginTop: '',
+                        }}
+                      >
+                        {product.description.slice(0, 40)}
+                      </div>
                     </body>
                   </StyledTableCell>
                   <StyledTableCell align='right'>
@@ -317,22 +307,30 @@ function Table_Products({ products, getListProducts }) {
                     <Button
                       color='primary'
                       onClick={() => history.push(`/post/${product.id}`)}
-                      variant = "outlined"
+                      variant='outlined'
                     >
                       Publicar
                     </Button>
                   </StyledTableCell>
-                  <StyledTableCell aling = "right">
-                  <Button 
-                    variant = "outlined"
-                    startIcon={<PermContactCalendarIcon />}
-                    color = "primary"
-                    onClick = {() => {setRenderDetalle(true);
-                    setDetallepro({title: product.title, stock_inicial: product.stock_inicial, description: product.description,precio_inicial: product.precio_inicial, sku: product.sku, images: product.images[0]})
-                    }}
+                  <StyledTableCell aling='right'>
+                    <Button
+                      variant='outlined'
+                      startIcon={<PermContactCalendarIcon />}
+                      color='primary'
+                      onClick={() => {
+                        setRenderDetalle(true)
+                        setDetallepro({
+                          title: product.title,
+                          stock_inicial: product.stock_inicial,
+                          description: product.description,
+                          precio_inicial: product.precio_inicial,
+                          sku: product.sku,
+                          images: product.images[0],
+                        })
+                      }}
                     >
                       Detalle
-                   </Button>
+                    </Button>
                   </StyledTableCell>
                 </StyledTableRow>
               ))
@@ -343,7 +341,7 @@ function Table_Products({ products, getListProducts }) {
         </Table>
       </TableContainer>
       {renderBorrar && <Borrar />}
-      {renderDetalle && <Detalle product = {Detallepro} />}
+      {renderDetalle && <Detalle product={Detallepro} />}
 
       {/* {renderPublicar && <Publicar />} */}
       <div style={{ paddingLeft: 'auto' }}>

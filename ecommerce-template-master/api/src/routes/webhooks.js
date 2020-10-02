@@ -93,36 +93,99 @@ server.post("/shopify", (req, res) => {
   // .then((created) => res.status(200).send(rta))
 });
 
-//Ruta que recibe la notificación desde meli cuando se crea una nueva orden
+//Ruta que recibe la notificación desde meli cuando se crea una nueva orden (ESTA ES LA QUE VA!)
 server.post("/meli", (req, res) => {
   const rta = req.body;
-  console.log("Llegó la respuesta de MELI: " + JSON.stringify(rta));
-  var id = req.body.resource.split("/");
-  var orderId = id[id.length - 1];
-  console.log(orderId + " ACAAAAA");
+  const topic = req.body.topic;
+  if(topic === 'items') {
+    const rta = req.body;
+    console.log("Llegó la respuesta de MELI: " + JSON.stringify(rta));
+    var id = req.body.resource.split("/");
+    var productId = id[id.length - 1];
+    var category_id;
+    console.log(productId + " ACAAAAA");
 
   fetch(
-    `https://api.mercadolibre.com/orders/${orderId}?access_token=${access_token}`,
+    `https://api.mercadolibre.com/items/${productId}?access_token=${access_token}`,
     {
       method: "GET",
     }
   )
     .then((response) => response.json())
-    .then((order) => {
-      console.log(JSON.stringify(order) + "RESPUESTA MELI!!! ");
-      return Orders.create({
-        meli_Id: order.id,
-        cantidad: order.order_items[0].quantity,
-        total: order.total_amount,
-        status: "created",
-        user_Id: order.buyer.id,
+    .then((product) => {
+      category_id = product.category_id;
+      //  console.log(JSON.stringify(product) + " RESPUESTA MELI!!! ");
+      Product.findOrCreate({
+        where: {
+          title: product.title,
+          productId_Meli: product.id,
+          images: product.pictures.map((i) => {
+            return i.secure_url;
+          }),
+        },
       })
-        .then((created) => {
-          console.log(created);
-          res.status(200).send(created);
+        .then((product) => {
+          //  console.log(product);
+          productId = product[0].dataValues.id;
+          return Category.findOrCreate({
+            where: {
+              title_sugerido: category_id,
+            },
+          });
         })
-        .catch((error) => console.error("Error: " + error));
+        .then((category) => {
+          //  console.log(category);
+          return category[0].setProducts(productId);
+        })
+        .then((v) => {
+          //  console.log(v);
+          return Provider.findByPk(1);
+        })
+        .then((provider) => {
+          //  console.log(provider)
+          return provider.setProducts(productId, {
+            through: {
+              stock: product.initial_quantity,
+              precio: product.price,
+              link: product.permalink,
+            },
+          });
+        })
+        .then(() => {
+          res.sendStatus(200);
+        })
+        .catch((error) => next("Error: " + error));
     });
+  }
+  else if (topic === 'created_orders') { 
+    console.log("Llegó la respuesta de MELI: " + JSON.stringify(rta));
+    var id = req.body.resource.split("/");
+    var orderId = id[id.length - 1];
+    console.log(orderId + " ACAAAAA");
+
+    fetch(
+      `https://api.mercadolibre.com/orders/${orderId}?access_token=${access_token}`,
+      {
+        method: "GET",
+      }
+    )
+      .then((response) => response.json())
+      .then((order) => {
+        console.log(JSON.stringify(order) + "RESPUESTA MELI!!! ");
+        return Orders.create({
+          meli_Id: order.id,
+          cantidad: order.order_items[0].quantity,
+          total: order.total_amount,
+          status: "created",
+          user_Id: order.buyer.id,
+        })
+          .then((created) => {
+            console.log(created);
+            res.status(200).send(created);
+          })
+          .catch((error) => console.error("Error: " + error));
+      });
+    }
 });
 
 //Ruta que recibe la notificación desde shopify cuando se crea/actualiza un producto
@@ -174,8 +237,8 @@ server.post("/shopify/create", (req, res, next) => {
   res.send();
 });
 
-//Ruta que recibe la notificación desde meli cuando se crea/actualiza un producto
-server.post("/newproduct/meli", (req, res) => {
+//Ruta que recibe la notificación desde meli cuando se crea/actualiza un producto (YA NO SE USA ESTA!!)
+server.post("/newproduct/meli", (req, res, next) => {
   const rta = req.body;
   console.log("Llegó la respuesta de MELI: " + JSON.stringify(rta));
   var id = req.body.resource.split("/");

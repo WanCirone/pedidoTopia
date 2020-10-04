@@ -29,7 +29,7 @@ import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded'
 import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded'
 import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar'
 import Box from '@material-ui/core/Box'
-
+import TextField from '@material-ui/core/TextField';
 import Alert from '@material-ui/lab/Alert'
 //import { Box } from "@material-ui/core";
 import { connect } from 'react-redux'
@@ -131,9 +131,16 @@ function Detalle(props, images) {
         <p> Stock:</p>
         <h3>{props.product.stock_inicial}</h3>
         </div>
-        <div className = {styless.sku}>
-        <p>Sku:</p>
-        <h3>{props.product.sku}</h3>
+        <div >
+        <TextField
+          id="outlined-read-only-input"
+          label="Read Only"
+          defaultValue="hola"
+          InputProps={{
+            readOnly: true,
+          }}
+          variant="outlined"
+        />
         </div>
         <p className = {styless.hola}>Descripcion:</p>
         <body>

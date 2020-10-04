@@ -29,7 +29,7 @@ import AccountBalanceRoundedIcon from '@material-ui/icons/AccountBalanceRounded'
 import AttachMoneyRoundedIcon from '@material-ui/icons/AttachMoneyRounded'
 import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar'
 import Box from '@material-ui/core/Box'
-import TextField from '@material-ui/core/TextField';
+import TextField from "@material-ui/core/TextField";
 import Alert from '@material-ui/lab/Alert'
 //import { Box } from "@material-ui/core";
 import { connect } from 'react-redux'
@@ -121,50 +121,65 @@ function Detalle(props, images) {
             accept='image/*'
             multiple
           />
-      </div>
-      <div className = {styless.p}>
-       <div className = {styless.pe}>
-       <p>Producto:</p>
-        <h2>{props.product.title}</h2>
         </div>
-        <div className = {styless.stock}>
-        <p> Stock:</p>
-        <h3>{props.product.stock_inicial}</h3>
-        </div>
-        {/* <div >
-        <TextField
+        <div className={styless.p}>
+          <div className={styless.title}>
+          <TextField
           id="outlined-read-only-input"
-          label="Read Only"
-          defaultValue="hola"
+          label="Producto"
+          defaultValue= {props.product.title}
           InputProps={{
-            readOnly: true,
+            readOnly: true
           }}
           variant="outlined"
         />
-        </div> */}
-        <div className={styless.p}>
-          <div className={styless.pe}>
-            <p>Producto:</p>
-            <h2>{props.product.title}</h2>
           </div>
-          <div className={styless.stock}>
-            <p> Stock:</p>
-            <h3>{props.product.stock_inicial}</h3>
+          <div className={styless.Stock}>
+          <TextField
+          id="outlined-read-only-input"
+          label="Stock"
+          defaultValue= {props.product.stock_inicial}
+          InputProps={{
+            readOnly: true
+          }}
+          variant="outlined"
+        />
           </div>
           <div className={styless.sku}>
-            <p>Sku:</p>
-            <h3>{props.product.sku}</h3>
-          </div>
-          <p className={styless.hola}>Descripcion:</p>
-          <body>
-            <div className={styless.descriptionn}>
-              {shortText(props.product.description)}
+          <TextField
+          id="outlined-read-only-input"
+          label="Sku"
+          defaultValue= {props.product.sku}
+          InputProps={{
+            readOnly: true
+          }}
+          variant="outlined"
+        />
+         </div>  
+          <div className={styless.description}>
+         <TextField
+          id="outlined-read-only-input"
+          label="Descripcion"
+          defaultValue= {shortText(props.product.description)}
+          InputProps={{
+            readOnly: true
+          }}
+          variant="outlined"
+        />
+              {/* {shortText(props.product.description)} */}
               {/* <h3 className={styless.description}>{shortText(props.product.description)}</h3> */}
             </div>
-          </body>
+          
           <div className={styless.precio}>
-            <p>Precio:</p>
-            <h3>{props.product.precio_inicial}</h3>
+          <TextField
+          id="outlined-read-only-input"
+          label="Precio"
+          defaultValue= {props.product.precio_inicial}
+          InputProps={{
+            readOnly: true
+          }}
+          variant="outlined"
+        />
           </div>
         </div>
         <div className={styless.button}>

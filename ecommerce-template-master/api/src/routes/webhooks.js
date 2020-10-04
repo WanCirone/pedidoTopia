@@ -58,15 +58,16 @@ server.post("/shopify", (req, res) => {
   console.log(JSON.stringify(rta));
   res.send();
   var ProductId;
-  const items = rta.line_items.map((product) => {
-    return Product.findAll({
+  const items = rta.line_items[0];
+  
+  Product.findOne({
       where: {
-        productId_Shopify: product.product_id,
+        productId_Shopify: items.product_id,
       },
-    });
-  });
-  Promise.all(items)
+    })
+ 
     .then((value) => {
+      console.log(value  + ' estooo');
       value.map((p) => {
         console.log(p);
         return (ProductId = p[0].dataValues.id);
@@ -91,9 +92,10 @@ server.post("/shopify", (req, res) => {
     .catch((error) => console.error("Error: " + error));
 
   // .then((created) => res.status(200).send(rta))
-});
 
-//Ruta que recibe la notificación desde meli cuando se crea una nueva orden (ESTA ES LA QUE VA!)
+})
+
+//Ruta que recibe la notificación desde meli cuando se crea una nueva orden/nuevo producto/modificar producto (ESTA ES LA QUE VA!)
 server.post("/meli", (req, res) => {
   const rta = req.body;
   const topic = req.body.topic;
@@ -172,7 +174,7 @@ server.post("/meli", (req, res) => {
       .then((response) => response.json())
       .then((order) => {
         console.log(JSON.stringify(order) + "RESPUESTA MELI!!! ");
-        return Orders.create({
+        return Orders.findOrCreate({
           meli_Id: order.id,
           cantidad: order.order_items[0].quantity,
           total: order.total_amount,

@@ -131,7 +131,7 @@ function Detalle(props, images) {
         <p> Stock:</p>
         <h3>{props.product.stock_inicial}</h3>
         </div>
-        <div >
+        {/* <div >
         <TextField
           id="outlined-read-only-input"
           label="Read Only"
@@ -141,7 +141,7 @@ function Detalle(props, images) {
           }}
           variant="outlined"
         />
-        </div>
+        </div> */}
         <div className={styless.p}>
           <div className={styless.pe}>
             <p>Producto:</p>

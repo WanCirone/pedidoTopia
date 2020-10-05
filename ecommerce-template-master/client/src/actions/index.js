@@ -86,7 +86,7 @@ export function postProduct(id, product) {
 
 export function getOrders() {
   return function (dispatch) {
-    return fetch(`http://localhost:3000/webhooks/orders/fulfilled`)
+    return fetch(`http://apipedidotopia.herokuapp.com/webhooks/orders/fulfilled`)
       .then((res) => res.json())
       .then((orders) =>
         dispatch({

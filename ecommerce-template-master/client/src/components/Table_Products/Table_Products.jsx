@@ -298,7 +298,7 @@ function Table_Products({ products, getListProducts }) {
                         target='blank'
                       >
                         <img
-                          src='https://seeklogo.com/images/S/shopify-logo-1C711BCDE4-seeklogo.com.png'
+                          src='https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png'
                           height='30px'
                           width='120px'
                           alt=''

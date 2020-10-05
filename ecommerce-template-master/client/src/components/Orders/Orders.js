@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import styles from './Orders.module.css'
+import styless from "./DetalleOrders.module.css"
+import Slider from '../Slider/Slider.js'
 //Material-ui
 
 import { makeStyles } from '@material-ui/core/styles'
@@ -15,7 +17,8 @@ import { connect } from 'react-redux'
 import Button from '@material-ui/core/Button'
 import { getOrders } from '../../actions'
 import RefreshIcon from '@material-ui/icons/Refresh'
-
+import PermContactCalendarIcon from '@material-ui/icons/PermContactCalendar'
+import TextField from "@material-ui/core/TextField";
 const StyledTableCell = withStyles((theme) => ({
   head: {
     backgroundColor: theme.palette.primary.main,
@@ -26,7 +29,15 @@ const StyledTableCell = withStyles((theme) => ({
     fontSize: 17,
   },
 }))(TableCell)
+const shortText = function (text) {
+  var newText = text && text.substring(0, 50)
+  newText = newText && newText.charAt(0).toUpperCase() + newText.slice(1)
 
+  if ( text && text.length > 120) {
+    return newText + '...'
+  }
+  return newText
+}
 const StyledTableRow = withStyles((theme) => ({
   root: {
     '&:nth-of-type(odd)': {
@@ -35,6 +46,91 @@ const StyledTableRow = withStyles((theme) => ({
   },
 }))(TableRow)
 
+function DetalleOrders(props, images) {
+  return (
+    <form className={styless.form}>
+      <div className={styless.content}>
+        <div className={styless.image}>
+          {images && images.length > 0 && <Slider images={images} />}
+          <img
+            src={props.order.images}
+            alt=''
+            onChange={(e) => {
+              props.uploadImg(e)
+            }}
+            accept='image/*'
+            multiple
+          />
+        </div>
+        <div className={styless.p}>
+          <div className={styless.title}>
+          <TextField
+          id="outlined-read-only-input"
+          label="Producto"
+          defaultValue= {props.order.title}
+          InputProps={{
+            readOnly: true
+          }}
+          variant="outlined"
+        />
+          </div>
+          <div className={styless.Stock}>
+          <TextField
+          id="outlined-read-only-input"
+          label="Stock"
+          defaultValue= {props.order.stock_inicial}
+          InputProps={{
+            readOnly: true
+          }}
+          variant="outlined"
+        />
+          </div>
+          <div className={styless.sku}>
+          <TextField
+          id="outlined-read-only-input"
+          label="Sku"
+          defaultValue= {props.order.sku}
+          InputProps={{
+            readOnly: true
+          }}
+          variant="outlined"
+        />
+         </div>  
+          <div className={styless.description}>
+         <TextField
+          id="outlined-read-only-input"
+          label="Descripcion"
+          defaultValue= {shortText(props.order.description)}
+          InputProps={{
+            readOnly: true
+          }}
+          variant="outlined"
+        />
+              {/* {shortText(props.product.description)} */}
+              {/* <h3 className={styless.description}>{shortText(props.product.description)}</h3> */}
+            </div>
+          
+          <div className={styless.precio}>
+          <TextField
+          id="outlined-read-only-input"
+          label="Precio"
+          defaultValue= {props.order.precio_inicial}
+          InputProps={{
+            readOnly: true
+          }}
+          variant="outlined"
+        />
+          </div>
+        </div>
+        <div className={styless.button}>
+          <Button href='/orders' variant='outlined' color='secondary'>
+            Cancelar
+          </Button>
+        </div>
+      </div>
+    </form>
+  )
+}
 const useStyles = makeStyles({
   table: {
     minWidth: 600,
@@ -53,12 +149,14 @@ function Orders({ orders, getOrders }) {
   useEffect(() => {
     getOrders()
   }, [])
-
+  
+  const [renderDetalle, setRenderDetalle] = useState(false)
+    const [Detallepro, setDetallepro] = useState({})
   useEffect(() => {
     setListOrders(orders)
   }, [orders])
   const [listOrders, setListOrders] = useState([])
-
+console.log(listOrders)
   const handleChange = (e) => {
     if (e.target.value === 'shopify') {
       const filter = orders.filter((ord) => {
@@ -75,6 +173,7 @@ function Orders({ orders, getOrders }) {
     }
   }
 
+  
   const classes = useStyles()
   return (
     <div
@@ -121,28 +220,38 @@ function Orders({ orders, getOrders }) {
                 <StyledTableRow key={order.id}>
                   <StyledTableCell align='rigth'></StyledTableCell>
                   <StyledTableCell align='left'>
-                    {/* <Button 
+                     <Button 
                     variant = "outlined"
                     startIcon={<PermContactCalendarIcon />}
                     color = "primary"
                     size = "small"
+                    onClick = {() =>   {setRenderDetalle(true)
+                      setDetallepro({
+                        title: order.products[0] && order.products[0].title,
+                        stock_inicial: order.products[0] && order.products[0].stock_inicial,
+                        description: order.products[0] && order.products[0].description,
+                        precio_inicial: order.products[0] && order.products[0].precio_inicial,
+                        sku: order.products[0] && order.products[0].sku,
+                        images: order.products[0] && order.products[0].images[0]
+                      })
+                    }}
                     >
                       Detalle
-                    </Button> */}
+                    </Button> 
                   </StyledTableCell>
                   <StyledTableCell align='center'>
                     {!order.meli_Id && !order.shopify_Id ? (
                       'SIN PUBLICAR'
                     ) : !order.meli_Id && order.shopify_Id ? (
                       <img
-                        src='https://seeklogo.com/images/S/shopify-logo-1C711BCDE4-seeklogo.com.png'
+                        src='https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png'
                         height='30px'
                         width='120px'
                         alt=''
                       />
                     ) : order.meli_Id && !order.shopify_Id ? (
                       <img
-                        src='https://seeklogo.com/images/M/mercado-livre-logo-D1DC52B13E-seeklogo.com.png'
+                        src='https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png'
                         height='30px'
                         width='120px'
                         alt=''
@@ -150,13 +259,13 @@ function Orders({ orders, getOrders }) {
                     ) : (
                       <div>
                         <img
-                          src='https://seeklogo.com/images/S/shopify-logo-1C711BCDE4-seeklogo.com.png'
+                          src='https://seeklogo.com/images/S/shopify-logo-D197C4F3BC-seeklogo.com.png'
                           height='30px'
                           width='120px'
                           alt=''
                         />
                         <img
-                          src='https://seeklogo.com/images/M/mercado-livre-logo-D1DC52B13E-seeklogo.com.png'
+                          src='https://seeklogo.com/images/M/mercado-libre-logo-058319A524-seeklogo.com.png'
                           height='30px'
                           width='120px'
                           alt=''
@@ -179,10 +288,11 @@ function Orders({ orders, getOrders }) {
                 </StyledTableRow>
               ))
             ) : (
-              <p>No hay datos para mostrar</p>
+              <p>No hay ordenes para mostrar</p>
             )}
           </TableBody>
         </Table>
+      {renderDetalle && <DetalleOrders order={Detallepro} />}
       </TableContainer>
     </div>
   )

@@ -99,6 +99,7 @@ server.post('/', (req, res) => {
       description: req.body.description,
       sku: req.body.sku,
       stock_inicial: req.body.stock_inicial,
+      stock_total_actual: req.body.stock_inicial,
       precio_inicial: req.body.precio_inicial,
       images: req.body.images,
     },
@@ -166,6 +167,9 @@ server.post('/publicar/:id', async (req, res) => {
         productId_Shopify: prod.product.id,
       })
     //  link = prod.title.toLowerCase().replace(/\s+/g, "-");
+    link = `https://${APP_DOMAIN}/products/${prod.product.title
+    .toLowerCase()
+    .replace(/\s+/g, "-")}`;
       providerId = 2
     } else if (source === 'mercadolibre') {
       prod = await publicarMeli(productToPublish, precio, stock, category_id)

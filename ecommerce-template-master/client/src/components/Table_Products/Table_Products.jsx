@@ -322,10 +322,12 @@ function Table_Products({ products, getListProducts }) {
                     ) : (
                       <div>
                         <a
-                          href={
-                            product.providers && product.providers.length > 0 &&
-                            product.providers[0].productprovider.link
-                          }
+                            href={
+                        product.providers &&
+                        product.providers.length > 0 &&
+                        product.providers[1] && 
+                        product.providers[1].productprovider.link
+                      }
                           target='blank'
                         >
                           <img

@@ -136,14 +136,7 @@ server.post('/', (req, res) => {
       res.sendStatus(400)
     })
 })
-//Crear o encontrar producto en DB
-// server.post("/", async (req, res) => {
 
-//   //Crea y devuelve el producto
-//   const p = await crearProducto(req)
-
-//   res.send(p);
-// });
 
 server.post('/publicar/:id', async (req, res) => {
   try {

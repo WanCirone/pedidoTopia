@@ -95,7 +95,7 @@ server.post("/shopify", (req, res) => {
 
 })
 
-//Ruta que recibe la notificación desde meli cuando se crea una nueva orden/nuevo producto/modificar producto (ESTA ES LA QUE VA!)
+//Ruta que recibe la notificación desde meli cuando se crea una nueva orden/nuevo producto/modificar producto
 server.post("/meli", (req, res) => {
   const rta = req.body;
   const topic = req.body.topic;

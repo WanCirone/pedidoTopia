@@ -4,7 +4,7 @@
 
 # Proyecto final: Pedidotopia
 
-Este trabajo forma parte de nuestro proyecto final integrador realizado en equipo como instancia evaluativa en [Soy Henry](https://www.soyhenry.com/)
+Este trabajo es nuestro proyecto final integrador realizado en equipo como instancia evaluativa en [Soy Henry](https://www.soyhenry.com/)
 
 ## Tecnologías utilizadas: 
 

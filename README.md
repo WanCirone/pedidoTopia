@@ -6,7 +6,7 @@
 
 Este trabajo es nuestro proyecto final integrador realizado en equipo como instancia evaluativa en [Soy Henry](https://www.soyhenry.com/)
 
-## Tecnologías utilizadas: 
+## Tecnologías utilizadas :computer: 
 
 * __Javascript__
 * __React - Redux__
@@ -18,8 +18,17 @@ Este trabajo es nuestro proyecto final integrador realizado en equipo como insta
 * __Mercado Libre API__
 * __Shopify API__
 
+## Instalación 🔧
 
-## Contribuidores: 
+```
+git clone https://github.com/WanCirone/pedidoTopia.git
+npm install >> pedidotopia/api/
+npm start >> pedidotopia/api/
+npm install >> pedidotopia/client/
+npm start >> pedidotopia/client/
+```
+
+## Contribuidores 🚀 
 
 * [Wanda Cirone](https://github.com/WanCirone)
 * [German Moren](https://github.com/GerMoren)

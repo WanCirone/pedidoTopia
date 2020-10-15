@@ -28,6 +28,22 @@ npm install >> pedidotopia/client/
 npm start >> pedidotopia/client/
 ```
 
+## Previews 
+
+<p align='left'>
+    <img width:"50%" src='https://github.com/WanCirone/pedidoTopia/blob/master/images/nuevoprod.png' </img>
+</p>
+<p align='left'>
+    <img src='https://github.com/WanCirone/pedidoTopia/blob/master/images/imagen.png' </img>
+</p>
+<p align='left'>
+    <img src='https://github.com/WanCirone/pedidoTopia/blob/master/images/publicarprod.png' </img>
+</p>
+<p align='left'>
+    <img src='https://github.com/WanCirone/pedidoTopia/blob/master/images/publicado.png' </img>
+</p>
+
+
 ## Contribuidores 🚀 
 
 * [Wanda Cirone](https://github.com/WanCirone)

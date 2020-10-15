@@ -5,6 +5,8 @@ import s from './Borrar.module.css'
 import styless from './Detalle.module.css'
 import defaultImg from '../../img/default.jpg'
 import Slider from '../Slider/Slider.js'
+import style from '../Table_Products/Table_Products.module.css'
+
 //Material-ui
 import {
   withStyles,
@@ -242,6 +244,7 @@ function Table_Products({ products, getListProducts }) {
       }}
     >
       <TableContainer component={Paper}>
+      <caption className={style.caption}>Gestión de Productos</caption>
         <Table className={classes.table} aria-label='customized table'>
           <TableHead>
             <TableRow>

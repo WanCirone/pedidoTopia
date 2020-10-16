@@ -42,6 +42,9 @@ npm start >> pedidotopia/client/
 <p align='left'>
     <img src='https://github.com/WanCirone/pedidoTopia/blob/master/images/publicado.png' </img>
 </p>
+<p align='left'>
+    <img src='https://github.com/WanCirone/pedidoTopia/blob/master/images/tabla.jpg' </img>
+</p>
 
 
 ## Contribuidores 🚀 
